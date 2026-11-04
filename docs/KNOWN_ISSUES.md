@@ -14,7 +14,7 @@
 | KI-11 | P3 | `SIMS_schema_review.md` unavailable; 52 dictionary-only tables / Lesson Plan not migrated. |
 | KI-12 | P3 | DB password was shared in chat; rotate it. |
 | KI-13 | P3 | `npm audit`: 2 findings (1 high) in PostCSS bundled with Next 15; build-time only, fixed by Next 16 (major upgrade, deferred). |
-| KI-14 | P2 | UI verified only up to the login screen; signed-in pages untested until an admin exists. Notifications and global search are not built (no fake placeholders). |
+| KI-14 | P2 (partly resolved 2026-11-04) | Signed-in pages were opened once as a super administrator on an empty database (see RTM); other roles and all data-changing flows are still untested. Original note: UI verified only up to the login screen; signed-in pages untested until an admin exists. Notifications and global search are not built (no fake placeholders). |
 | KI-15 | P2 | Supabase Auth dashboard settings (redirect URLs, SMTP, sign-up policy) not configured; password-reset emails untested. |
 | KI-16 | P2 | Finance status maintenance (PAID/PARTIALLY_PAID, PARTIALLY_REFUNDED/REFUNDED) is an inference from balances, not stated in the source; confirm with the owner. |
 | KI-17 | P2 | Student registration needs both `STUDENT.ALL.CREATE` and `ADMISSION.ALL.CREATE` at the programme scope. In the seed data only ADMISSION_OFFICER, STUDENT_SECTION_OFFICER and SUPER_ADMIN have both; REGISTRAR has no `ADMISSION.CREATE`. Confirm this is intended. |
