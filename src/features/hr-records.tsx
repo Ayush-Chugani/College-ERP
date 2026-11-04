@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { BUCKET, checkFile, formatSize, label, ownerStorageKey } from '@/lib/document-validation';
+import { DocumentSharing } from '@/features/hr-extras';
 import { createClient } from '@/lib/supabase/client';
 
 export type Masked = { id: number; masked: string; name?: string; status: string; remarks: string | null; purpose?: string | null; issue_date?: string | null };
@@ -153,7 +154,7 @@ export function IdentityPanel({ employeeId, data }: { employeeId: number; data: 
   );
 }
 
-export function HrDocuments({ employeeId, docs, categories, types, canReview, canDelete, canUpload, ownerId }: { employeeId: number; docs: HrDoc[]; categories: Opt[]; types: Opt[]; canReview: boolean; canDelete: boolean; canUpload: boolean; ownerId: number | null }) {
+export function HrDocuments({ employeeId, docs, categories, types, canReview, canDelete, canUpload, canShare, ownerId }: { employeeId: number; docs: HrDoc[]; categories: Opt[]; types: Opt[]; canReview: boolean; canDelete: boolean; canUpload: boolean; canShare: boolean; ownerId: number | null }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [f, setF] = useState({ category: '', type: '', title: '', number: '', issue: '', expiry: '' });
@@ -218,6 +219,7 @@ export function HrDocuments({ employeeId, docs, categories, types, canReview, ca
               <div className="flex flex-wrap items-center gap-2">
                 <Button type="button" variant="outline" disabled={busy} onClick={() => open(d.employee_document_id)}>Open</Button>
                 {canReview && d.verification_status === 'PENDING' && <><Button type="button" variant="outline" disabled={busy} onClick={() => decide(d.employee_document_id, 'VERIFIED', null)}>Verify</Button><Button type="button" variant="outline" onClick={() => setReview({ id: d.employee_document_id, reason: '' })}>Reject…</Button></>}
+                {canShare && ownerId !== employeeId && <DocumentSharing documentId={d.employee_document_id} />}
                 {(canDelete || ownerId === employeeId) && d.verification_status !== 'VERIFIED' && <Button type="button" variant="outline" disabled={busy} onClick={() => remove(d.employee_document_id)}>Delete</Button>}
               </div>
               {review?.id === d.employee_document_id && (
