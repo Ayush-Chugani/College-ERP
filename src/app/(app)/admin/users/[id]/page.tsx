@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getUser, listRoles, listScopes, parseId } from '@/features/iam-data';
 import { AccountStatusForm, AssignRoleForm, RevokeButton } from '@/features/iam-forms';
+import { OverridePanel, type Override } from '@/features/override-panel';
 import { label } from '@/lib/iam-validation';
 import { requireContext } from '@/lib/server-context';
 
@@ -16,6 +17,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   const u = await getUser(supabase, id);
   if (!u) notFound();
   const [roles, scopes] = u.can_update ? await Promise.all([listRoles(supabase), listScopes(supabase)]) : [[], { INSTITUTION: [], CAMPUS: [], DEPARTMENT: [], PROGRAMME: [] }];
+  const overrides: Override[] = u.can_update ? (((await supabase.rpc('iam_override_list', { p_user_id: id })).data ?? []) as Override[]) : [];
   return (
     <div className="max-w-5xl space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -43,6 +45,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
           </table>
         </CardContent>
       </Card>
+      {u.can_update && <Card><CardHeader><CardTitle>Permission overrides</CardTitle></CardHeader><CardContent><OverridePanel userId={u.user_id} overrides={overrides} scopes={scopes} disabled={u.is_self} /></CardContent></Card>}
       {u.can_update && <Card><CardHeader><CardTitle>Assign a role</CardTitle></CardHeader><CardContent><AssignRoleForm userId={u.user_id} roles={roles} scopes={scopes} disabled={u.is_self} /></CardContent></Card>}
     </div>
   );

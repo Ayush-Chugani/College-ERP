@@ -1,7 +1,7 @@
 # Development Checklist
 
 Legend: [x] done and verified · [~] done with gaps (see the linked issue) · [ ] not started · [!] blocked on a person or an external system.
-This file is a short view of [RTM.md](RTM.md), which is the source of truth for every requirement. Updated 2026-11-04.
+This file is a short view of [RTM.md](RTM.md), which is the source of truth for every requirement. Updated 2026-11-04 (after M057).
 
 ## Phase 0 – Audit
 - [x] Repository, SQL and data dictionary inspected and reconciled (`PROJECT_AUDIT.md`, `SCHEMA_RECONCILIATION.md`)
@@ -11,7 +11,7 @@ This file is a short view of [RTM.md](RTM.md), which is the source of truth for 
 ## Phase 1 – MySQL to PostgreSQL
 - [x] 213 tables, 500 foreign keys, 16 triggers, 10 views translated; catalogue compared with the source
 - [x] Seed data carried (M011); row counts checked by `tools/validate/seed_counts.mjs` (see RTM R-P1-20)
-- [x] Migrations 001-048 apply on embedded PostgreSQL **and on a real PostgreSQL 16** (concurrency suite)
+- [x] Migrations 001-057 apply on embedded PostgreSQL; 001-056 also on a real PostgreSQL 16 (concurrency suite)
 
 ## Phase 2 – Identity, RBAC, RLS
 - [x] Identity map, scoped permission helpers, deny-by-default RLS, workflow guards
@@ -23,13 +23,16 @@ This file is a short view of [RTM.md](RTM.md), which is the source of truth for 
 - [x] Students, employees (with sub-records), admissions, registration, attendance, timetable, assessment, finance (assessments, payments, refunds, receipts, holds), feedback, mentoring, grievances, communication
 - [x] Student activities and evidence, staff profile and research, student documents
 - [x] Reference-data administration (32 lists), notifications, global search, personal dashboards
-- [~] Finance: concessions, scholarships, instalments, late fees, adjustments (KI-59)
-- [~] Employee identity numbers, bank accounts, HR documents (KI-8, KI-58)
+- [x] Finance: concessions, scholarships, sponsorships, instalments, late fees, penalties, adjustments (M053, KI-67)
+- [x] Employee identity numbers (encrypted), bank accounts, HR documents (M054, KI-65)
+- [x] Research leftovers (M055), MFA recovery codes (M056), permission overrides (M057)
+- [x] Role-based access completed and documented (M052, `ROLE_PERMISSION_MATRIX.md`)
 - [ ] Lesson Plan and the dictionary-only tables (decision D-6)
 
 ## Phase 4 – Storage
 - [x] Private bucket, owner/permission-scoped policies, signed URLs, logged downloads (student documents, activity evidence, staff evidence)
-- [~] Employee HR documents, certificate requests, announcement attachments (KI-53, KI-54)
+- [x] Employee HR documents (M054)
+- [~] Certificate requests, announcement attachments (KI-53, KI-54)
 
 ## Phase 5 – Tests
 - [x] Database, unit, drift, view, concurrency (real PostgreSQL, opt-in) and Playwright smoke suites
@@ -40,4 +43,4 @@ This file is a short view of [RTM.md](RTM.md), which is the source of truth for 
 
 ## Phase 7 – Deployment
 - [x] `vercel.json`, `supabase/config.toml`, deployment checklist
-- [!] Nothing deployed; migrations 044-048 not applied to the live project (D-1, D-2)
+- [!] Nothing deployed; migrations 051-057 not applied to the live project (D-1, D-2)

@@ -32,16 +32,16 @@ One section per application area: what it does, where it lives, the database obj
 | Module | Screens | Database | Notes |
 |---|---|---|---|
 | Students (6) | `/students`, `/students/[id]/records`, `/students/[id]/documents` | M022, M042, M046 | Registration, edit, status, sub-records, documents |
-| Employees (7) | `/employees`, `/employees/[id]/records` | M023, M046 | Registration, assignments, qualifications, previous employment; identity numbers and bank accounts are excluded (KI-8) |
+| Employees (7) | `/employees`, `/employees/[id]/records`, `/employees/[id]/hr`, `/my-hr` | M023, M046, M054 | Registration, assignments, qualifications, previous employment; PAN, Aadhaar and bank accounts (encrypted, masked, reveal logged) and HR documents; employees see and correct their own until HR verifies |
 | Student documents (8) | `/my-documents` | M042 | Private bucket, signed URLs, verification |
 | Student activities and evidence (23) | `/activities` | M043 | Draft, evidence with versions, verification, approval, team |
-| Staff profile and research (22) | `/staff-profile` | M044 | 12 kinds of record through a catalogue-driven form, contributors, evidence |
+| Staff profile and research (22) | `/staff-profile` | M044, M055 | 12 kinds of record through a catalogue-driven form, contributors, evidence; research supervision, project utilisation and journal / conference indexing on the record; journal metrics in the reference data |
 
 ## Communication and finance
 | Module | Screens | Database | Notes |
 |---|---|---|---|
 | Communication (10) | `/announcements`, `/announcements/manage` | M040 | Audiences, approval workflow, feed |
-| Student finance (21) | `/finance`, `/finance/account/[id]`, `/finance/receipt/[id]` | M008, M014, M021, M034, M047 | Assessments, payments, allocations, refunds, receipts, holds. Benefits, instalments, late fees and adjustments are not built |
+| Student finance (21) | `/finance`, `/finance/account/[id]`, `/finance/receipt/[id]` | M008, M014, M021, M034, M047, M052, M053 | Assessments, payments, allocations, refunds, receipts, holds. Concessions, scholarships, sponsorships, adjustments, instalments, late fees and penalties (M052, M053); students see their own account. |
 
 ## Dashboards
 `/dashboard` shows the charts for the modules the caller can read (M036) plus personal cards (M048): a student's classes today, attendance per course and results; an employee's upcoming sessions and unmarked ones.
@@ -50,3 +50,6 @@ One section per application area: what it does, where it lives, the database obj
 - **Generic catalogue-driven forms** (`sims_private.describe_columns`, `form_columns`, `write_row`, `write_detail`): used for staff record details (M044), student and employee sub-records and reference data (M046). Only whitelisted tables are reachable, only catalogue columns can be written, keys, audit columns and user references are rejected, and constraint violations become readable messages.
 - **Workflow lifecycle** (DRAFT -> SUBMITTED -> UNDER_REVIEW -> APPROVED / REJECTED, NEEDS_CORRECTION back to DRAFT, nobody reviews their own record): student activities (M043) and staff records (M044), sharing `workflow-actions.tsx` and `evidence-panel.tsx`.
 - **Private Storage**: one bucket, `student/<id>/...` and `employee/<id>/...` prefixes, 60-second signed URLs after an RPC has authorised and logged the download ([STORAGE_DOCUMENTATION.md](STORAGE_DOCUMENTATION.md)).
+
+## Access control
+Every default grant is listed in [ROLE_PERMISSION_MATRIX.md](ROLE_PERMISSION_MATRIX.md) (generated). Per-user exceptions are permission overrides on `/admin/users/[id]` (migration 057). Recovery codes for two-step verification are on `/settings` (migration 056).

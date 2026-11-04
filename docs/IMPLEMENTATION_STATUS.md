@@ -28,7 +28,7 @@ Date: 2026-11-04
 | Identity administration: user list, account activation / deactivation, role assignment and revocation with safeguards (migration 041; `/admin/users`) | Built; 8 DB tests + unit tests. M041 applied live. No override or user-linking screens, no MFA (KI-52) |
 | Audit viewer: filters, paging, before / after detail (migration 041; `/audit`) | Built; shares the M041 tests. Shows writes only |
 | Student documents on private Storage: upload, register, list, signed-URL open (logged), verify / reject, delete (migration 042; `/my-documents`, `/students/[id]/documents`) | Built; 12 DB tests + 8 unit tests. M042 applied live 2026-11-04: the private bucket exists on the real project (verified); the upload and signed-URL flow has not been run against it. Student documents only (KI-53) |
-| Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 38 smoke tests pass; nothing deployed |
+| Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 48 smoke tests pass; nothing deployed |
 | Student activities and evidence: drafting, team members, evidence with versions and logged downloads, submission gate on mandatory evidence, verification and approval, summary report (migration 043; `/activities`) | Built; 14 DB tests + 9 unit tests. M043 applied live. Gaps in KI-54 |
 | Account features: two-step verification (TOTP) enforced by the database, sign-in log, self-service contact details, notifications with a header bell, global search (migration 045; `/settings`, `/mfa`, `/notifications`, `/search`, `/audit/logins`) | Built; 14 DB tests + 9 unit tests. M044-M050 applied live 2026-11-04 Gaps in KI-57 |
 | Record sections and reference data: student and employee sub-records (addresses, guardians, previous education, entrance exams, residence, qualifications, previous employment) and 32 maintainable reference lists (migration 046; `/students/[id]/records`, `/employees/[id]/records`, `/admin/reference`) | Built; 12 DB tests + 8 unit tests. M044-M050 applied live 2026-11-04 Gaps in KI-58 (PAN / Aadhaar / bank accounts / HR documents not covered) |
@@ -38,10 +38,17 @@ Date: 2026-11-04
 | Quality tooling: concurrency suite on real PostgreSQL (`npm run test:concurrency`), view tests, seed-count check, generated DATABASE_SCHEMA.md, performance harness (`tools/perf`) | Built and run |
 | Policy anchor lookups (029) | Fixes a flaw in 018/020: multi-hop anchors read intermediate tables as the caller, so writers without read access to another module were silently denied. 63 tables now resolve through SECURITY DEFINER lookups; regression-tested |
 | Workflow guards (020) and finance RPCs (021) | Implemented, tested, applied to live project. UI built (see Finance UI row) |
-| Admin RPCs for permission overrides and user linking; MFA recovery codes and a "require MFA" policy; concessions, scholarships, instalments, late fees, adjustments; employee identity numbers, bank accounts and HR documents | Not started |
-| Storage buckets/policies | Student documents only (M042); other document kinds not started |
+| Role-based access completion (students read their own fees, SUPER_ADMIN reads fees, auditors, grievance officer), generated role matrix (migration 052; `docs/ROLE_PERMISSION_MATRIX.md`) | Built; tests in finance-receipts, finance-read, dashboard, views. Not applied live |
+| Fee benefits: concessions, scholarships, sponsorships, adjustments, instalments, late-fee suggestion, penalties (migration 053; `/finance/account/[id]`) | Built; 8 DB tests. Rules are inferences (KI-67). Not applied live |
+| Employee PAN, Aadhaar and bank accounts (encrypted, masked, logged reveal) and HR documents (migration 054; `/employees/[id]/hr`, `/my-hr`) | Built; 12 DB tests. Needs Vault and pgcrypto (KI-65). Not applied live |
+| Research leftovers: supervision, utilisation, indexing, journal metrics (migration 055) | Built; 6 DB tests (KI-67). Not applied live |
+| MFA recovery codes (migration 056; `/settings`, `/mfa`) | Built; 6 DB tests (KI-66). Not applied live |
+| Permission overrides administration (migration 057; `/admin/users/[id]`) | Built; 5 DB tests (KI-68). Not applied live |
+| Upgrade to Next 16 (proxy, flat ESLint config) | Done; build, lint, tests and smoke tests pass (KI-13) |
+| Still not built | Lesson Plan and dictionary-only tables (decision D-6), certificate requests, announcement attachments, fee-structure approval screens, online payments, linking an existing Auth user, "require MFA" policy |
+| Storage buckets/policies | Student documents (M042), activity and staff evidence (M043, M044), HR documents (M054); certificate requests and announcement attachments not started |
 | Module services/CRUD | Not started |
-| Tests | 572 passing (376 database + 196 unit) plus 38 Playwright smoke tests. Plus 8 opt-in concurrency tests on a real PostgreSQL. No signed-in UI tests (see TESTING_REPORT.md) |
+| Tests | 624 passing (422 database + 202 unit) plus 48 Playwright smoke tests. Plus 8 opt-in concurrency tests on a real PostgreSQL. No signed-in UI tests (see TESTING_REPORT.md) |
 | Security audit | Done as a self-review (SECURITY_AUDIT.md). Performance report: not started |
 
 Pending modules: none unstarted; see listed per module in RTM.md.

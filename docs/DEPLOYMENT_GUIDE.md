@@ -4,7 +4,7 @@ Nothing has been deployed by this repository's tooling. This guide is the checkl
 
 ## 1. Supabase project
 1. Create (or pick) the project. Note the project URL and the **publishable** key (Settings > API). Never copy the service-role key or the database password into the web app.
-2. Apply migrations `001` to `051` **in order**. Either `supabase link --project-ref <ref>` then `supabase db push` (uses `supabase/config.toml`), or the operator scripts in `tools/` (see DATABASE_MIGRATION.md). Migration 042 creates the `sims-documents` bucket and its policies.
+2. Apply migrations `001` to `057` **in order**. Either `supabase link --project-ref <ref>` then `supabase db push` (uses `supabase/config.toml`), or the operator scripts in `tools/` (see DATABASE_MIGRATION.md). Migration 042 creates the `sims-documents` bucket and its policies.
 3. Authentication > URL configuration: Site URL = the production origin; redirect URLs = `<origin>/auth/callback` and `<origin>/reset-password`.
 4. Authentication > Multi-factor: enable TOTP (enrol and verify) so the screens in `/settings` and `/mfa` work (matches `config.toml`). Authentication > Providers > Email: sign-ups **disabled** (accounts are provisioned), confirmation on, minimum password length 12 (matches `config.toml`). Configure a real SMTP provider or password-reset mails will not arrive.
 5. Create the first user in Authentication > Users, then run `tools/bootstrap_admin.py` (one transaction; verifies identity resolution). After that, manage accounts and roles from `/admin/users`.
@@ -27,3 +27,9 @@ Nothing has been deployed by this repository's tooling. This guide is the checkl
 
 ## 4. Rollback
 Migrations are forward-only SQL. Take a backup (Dashboard > Database > Backups, or `pg_dump`) before each `db push`; to roll back restore the backup, then redeploy the previous Vercel build.
+
+## Notes for migrations 052 to 057
+- **M054 needs Vault and pgcrypto.** On Supabase both are available; the migration enables `pgcrypto` in the `extensions` schema and creates the secret `sims_pii_key` in Vault if it is missing. Do not delete or rename that secret: the encrypted PAN, Aadhaar and bank numbers cannot be read without it. Include it in your backup and key-rotation plan (KI-65).
+- **M056** deletes rows from `auth.mfa_factors` when a recovery code is used. Check once, on the live project, that the migration role may do that (`select * from has_table_privilege('postgres', 'auth.mfa_factors', 'DELETE')`).
+- **Next.js 16**: `src/middleware.ts` is now `src/proxy.ts`; Vercel needs Node 20.9 or newer. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` for the build, otherwise static pages fail to prerender.
+- After applying M052, students see their own fees and the super administrator reads fee data: tell the finance office. `docs/ROLE_PERMISSION_MATRIX.md` lists every grant (`npm run docs:roles` regenerates it).

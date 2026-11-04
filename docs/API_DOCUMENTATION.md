@@ -242,6 +242,38 @@ Same catalogue-driven mechanism as staff records: forms are described from the c
 | `fin_payment_receipts(account_id)` / `fin_receipt_get(receipt_id)` | `FEE_PAYMENT.READ` | Payments with their latest receipt; one receipt with allocations and `can_cancel`. |
 | `fin_hold_place(account_id, type, reason)` / `fin_hold_release(hold_id, reason)` / `fin_holds(account_id)` | `FEE_ASSESSMENT.UPDATE` / `READ` | One active hold per type (idempotent); the account is ON_HOLD while any hold is active. |
 
+## Fee benefits, adjustments, instalments, penalties (migrations 052, 053)
+All SECURITY DEFINER; they authorise `FEES.<resource>.<action>` at the student's scope, audit into `fee_activity_audit`, and the person who requested something can never decide it.
+| RPC | Permission | Notes |
+|---|---|---|
+| `fin_benefit_create(kind, student, year, type_id, amount, percentage, reference, authority, remarks)` -> id | `FEE_BENEFIT.CREATE` | kind CONCESSION / SCHOLARSHIP / SPONSORSHIP; checks the type's limits; starts SUBMITTED (PENDING for a sponsorship). |
+| `fin_benefit_decide(kind, id, approve, amount?, percentage?, remarks?)` | `FEE_BENEFIT.APPROVE` | Not the requester; reject needs a reason; approval may change the amount within the limits. |
+| `fin_benefit_apply(kind, benefit_id, item_id, amount?)` -> id | `FEE_BENEFIT.UPDATE` | Approved benefits only, same student, within what is left, the item's balance and its original amount; lowers net and balance. |
+| `fin_adjustment_create(number, account, item, type, amount, reason)` / `fin_adjustment_decide(id, approve, remarks?)` | `FEE_REFUND.CREATE` / `APPROVE` | CREDIT, WAIVER, WRITE_OFF, DEBIT; idempotent on the number; four-eyes; takes effect on approval. |
+| `fin_instalment_apply(assessment, plan, first_due)` -> count / `fin_instalment_refresh(assessment)` / `fin_instalment_cancel(assessment)` | `FEE_ASSESSMENT.UPDATE` | Equal monthly split with the plan's minimum first share; refresh matches payments oldest first and marks overdue. |
+| `fin_late_fee_suggest(assessment, rule, as_of?)` -> amount | `FEE_ASSESSMENT.READ` | Read-only calculation from `late_fee_rule`. |
+| `fin_penalty_assess(account, fee_type, amount, reason, year, due)` -> id / `fin_penalty_waive(penalty, amount, reason)` | `FEE_ASSESSMENT.CREATE` / `FEE_REFUND.APPROVE` | A penalty is a PENALTY assessment with one item, payable like any other. |
+| `fin_account_extras(account)` -> jsonb | `FEE_ASSESSMENT.READ` | Benefits, adjustments (only with their READ), instalments, penalties and the `can` flags for the account page; a student sees their own instalments and penalties. |
+
+## Employee identity data and HR documents (migration 054)
+| RPC | Permission | Notes |
+|---|---|---|
+| `emp_pan_save(employee, pan, name, issue_date?, remarks?)`, `emp_aadhaar_save(employee, number, name, purpose, remarks?)`, `emp_bank_save(employee, account_id?, holder, bank, branch, number?, confirm?, ifsc, type, upi, primary, salary)` -> id | `EMPLOYEE.PAN/AADHAAR/BANK_ACCOUNT.CREATE` / `UPDATE`, or the owner while PENDING / REJECTED | Format checks (PAN, Aadhaar Verhoeff, IFSC); stored encrypted; any change resets verification. |
+| `emp_sensitive_list(employee)` -> jsonb | `.READ` or the owner | Masked values, statuses and `can` flags. |
+| `emp_sensitive_review(kind, id, VERIFIED/REJECTED, remarks?)` | `.VERIFY` | Not the last editor; PENDING only. |
+| `emp_sensitive_reveal(kind, id, purpose?)` -> text | `.EXPORT` or the owner | Purpose required for non-owners; writes `employee_sensitive_access_audit` (DECRYPT). |
+| `emp_sensitive_delete(kind, id)` | `.DELETE`, or the owner while PENDING / REJECTED | Blocked while documents reference it. |
+| `employee_document_register / list / download_info / review / delete` | `EMPLOYEE.EMPLOYEE_DOCUMENT.CREATE / READ / VERIFY (+APPROVE) / DELETE`, or the owner (register, list, download, delete) | Same flow as student documents under `employee/<id>/`; downloads are logged. |
+
+## Research leftovers (migration 055)
+`section_*` RPCs accept kind `activity` with sections `supervision` (staff activity of a professional contribution) and `utilization` (funded research project). `staff_indexing_list(activity)`, `staff_indexing_save(activity, agency, status, year?, url?, remarks?)`, `staff_indexing_delete(activity, agency)` cover journal and conference indexing (`STAFF_ACTIVITY.READ` / `UPDATE`; VERIFIED needs `VERIFY`). `journal_metric` and `metric_type` are reference lists (`ref_*`).
+
+## MFA recovery codes (migration 056)
+`mfa_recovery_generate()` -> 10 codes (once; needs a fully signed-in session), `mfa_recovery_status()` -> `{unused, generated_at}`, `mfa_recovery_use(code)` -> boolean (works at aal1 for a person with MFA on; removes the TOTP factors and turns enforcement off; five wrong tries in 15 minutes block).
+
+## Permission overrides (migration 057)
+`iam_permission_options(search?)`, `iam_override_list(user)` (`IAM.ALL.READ`), `iam_override_set(user, permission, ALLOW/DENY, scope, entity?, justification, valid_to?)` and `iam_override_end(id, reason?)` (`IAM.ALL.UPDATE` globally; not your own; sensitive / IAM / AUDIT ALLOWs are for super administrators).
+
 ## Personal dashboard (migration 048)
 `my_dashboard()` takes no argument and describes the caller: students get `attendance` (per course: conducted, present, percentage) and `today` (classes); employees get `upcoming` (sessions of the next seven days), `unmarked` (past planned sessions of the last 30 days) and `sections`. `null` without an identity.
 

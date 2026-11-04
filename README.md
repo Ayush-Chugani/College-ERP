@@ -1,6 +1,6 @@
 # SIMS – Student Information Management System
 
-Next.js 15 (App Router, strict TypeScript, Tailwind 4) on Supabase (PostgreSQL, Auth, RLS). The database was migrated from the MySQL schema in `SIMS-DatabaseWithoutLessonPlan.sql`.
+Next.js 16 (App Router, strict TypeScript, Tailwind 4) on Supabase (PostgreSQL, Auth, RLS). The database was migrated from the MySQL schema in `SIMS-DatabaseWithoutLessonPlan.sql`.
 
 **Status: in progress.** Database, identity/RBAC, RLS and most application modules (students, employees, admissions, registration, attendance, assessment, finance, feedback, mentoring, grievances, announcements, student documents, student activities, staff profile and research, notifications, search, two-step verification, users and roles, audit log) are implemented and tested on an embedded database. Nothing has been exercised signed in against a real Supabase project, and migration 051 is not applied to the live project. See `docs/IMPLEMENTATION_STATUS.md` and `docs/KNOWN_ISSUES.md` for the honest picture.
 
