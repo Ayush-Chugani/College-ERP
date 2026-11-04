@@ -34,3 +34,5 @@ Date: 2026-11-03
 
 Pending modules: all 23 application modules (database layer exists for each; no application layer).
 Known issues: see `docs/DATABASE_MIGRATION.md` (divergences, SD-1, collation).
+
+See also [RTM.md](RTM.md), the full requirements traceability matrix (requirement to implementation, tests and status).

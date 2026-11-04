@@ -27,3 +27,5 @@ First administrator: see `tools/bootstrap_admin.py` (needs an Auth user created 
 
 ## Security notes
 Never put the service-role key or the database password in `NEXT_PUBLIC_*` variables or client code. The browser only ever uses the publishable key; all access is constrained by RLS (see `docs/RLS_SECURITY_MODEL.md`).
+
+Requirements traceability: [docs/RTM.md](docs/RTM.md).
