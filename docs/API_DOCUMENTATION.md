@@ -289,6 +289,9 @@ All SECURITY DEFINER; they authorise `FEES.<resource>.<action>` at the student's
 ## Holds (migration 062)
 No new RPC: `student_term_registration` inserts are refused while an ACTIVE REGISTRATION hold exists, `my_results()` hides results under a RESULT hold, certificate requests cannot be approved or issued under a CERTIFICATE hold.
 
+## Competencies, document sharing, service requests (migration 063)
+`emp_competency_list(employee)`, `emp_competency_save(employee, course, level, valid_from?, valid_to?)`, `emp_competency_delete(employee, course)` (`EMPLOYEE.ALL.READ / CREATE / UPDATE / DELETE`; the employee reads their own). `emp_doc_rule_list(document)`, `emp_doc_rule_set(document, role_code?, username?, can_view, can_download, valid_to?)`, `emp_doc_rule_end(rule)` (`EMPLOYEE_DOCUMENT.UPDATE`; not the owner); `employee_document_list` and `_download_info` honour the rules. `svc_request_create(kind, term?, planned_date?, detail?, student?)`, `svc_request_list(kind?, status?)`, `svc_request_decide(id, APPROVE | REJECT | COMPLETE, remarks?)` -> reference number (`DOCUMENT.ALL.APPROVE`), `svc_request_cancel(id)`, `svc_my_terms()`; kinds HALL_TICKET, HOSTEL_CHECKOUT, GRADUATION.
+
 ## Personal dashboard (migration 048)
 `my_dashboard()` takes no argument and describes the caller: students get `attendance` (per course: conducted, present, percentage) and `today` (classes); employees get `upcoming` (sessions of the next seven days), `unmarked` (past planned sessions of the last 30 days) and `sections`. `null` without an identity.
 

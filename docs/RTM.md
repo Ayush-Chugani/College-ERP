@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix (RTM)
 
 SIMS: MySQL to Supabase migration, backend and frontend.
-Snapshot: 2026-11-04, repository `Ayush-Chugani/College-ERP`, `main`. Updated after migrations 040 to 062 (communication, IAM administration and audit viewer, student documents, student activities, staff profile, account features, record sections, receipts, dashboards, user provisioning, performance, role and fee access, finance benefits, encrypted employee data and HR documents, research leftovers, MFA recovery codes, permission overrides; the announcements module is the Communication implementation, M040_communication), the Playwright suite, the deployment files and the missing documents. Rows changed since the first snapshot are marked in the Status column; the evidence column names what exists.
+Snapshot: 2026-11-04, repository `Ayush-Chugani/College-ERP`, `main`. Updated after migrations 040 to 063 (communication, IAM administration and audit viewer, student documents, student activities, staff profile, account features, record sections, receipts, dashboards, user provisioning, performance, role and fee access, finance benefits, encrypted employee data and HR documents, research leftovers, MFA recovery codes, permission overrides; the announcements module is the Communication implementation, M040_communication), the Playwright suite, the deployment files and the missing documents. Rows changed since the first snapshot are marked in the Status column; the evidence column names what exists.
 
 This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (sections 2 to 18) to the design that answers it, the code that implements it, the tests that prove it and its honest status. It was written from the repository as it is, not from intentions: a row says **Done** only when the evidence column names something that exists and, where a test is claimed, that test was executed.
 
@@ -20,7 +20,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 **Evidence conventions**
 
-- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M050 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh` (M044 to M050 on 2026-11-04 with `tools/apply_migrations.py`, after review). **M051 to M062 (permission memo, role and fee access, finance benefits, employee identity data and HR documents, research leftovers, MFA recovery codes, permission overrides, user linking and MFA policy, announcement attachments, certificate requests, fee structures, hold enforcement) are not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
+- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M050 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh` (M044 to M050 on 2026-11-04 with `tools/apply_migrations.py`, after review). **M051 to M063 (permission memo, role and fee access, finance benefits, employee identity data and HR documents, research leftovers, MFA recovery codes, permission overrides, user linking and MFA policy, announcement attachments, certificate requests, fee structures, hold enforcement, competencies, document sharing, service requests) are not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
 - `DB:` and `UT:` name the Vitest files in `tests/db/` and `tests/unit/`, with the number of tests in brackets.
 - `KI-n` is an entry in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - Routes are paths under `src/app/(app)/`.
@@ -29,13 +29,13 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 | Check | Result |
 |---|---|
-| `npx vitest run` | **649 passed, 0 failed** (65 files: 40 database files with 447 tests, 25 unit files with 202 tests) |
+| `npx vitest run` | **657 passed, 0 failed** (66 files: 41 database files with 455 tests, 25 unit files with 202 tests) |
 | `npx tsc --noEmit` | clean (strict mode, `noUncheckedIndexedAccess`) |
 | `npm run lint` | clean |
 | `npm run build` | succeeds |
-| Migrations applied to the live project | 50 of 62 (M051 to M062 pending) |
+| Migrations applied to the live project | 50 of 63 (M051 to M063 pending) |
 | Signed-in manual or browser verification of any screen | **Partly done on 2026-11-04**: signed in as the first super administrator (Auth user created in the dashboard, linked with `tools/bootstrap_admin.py`), the dashboard, the Users page and the Staff profile page were opened and looked right, and 26 other list and form pages returned 200 with no error text. The database is empty, so only empty states were seen: no create, edit, approve or search flow was exercised, no other role (student, faculty, finance) was tried, and the Create user form was not submitted (no service-role key) |
-| Playwright end-to-end tests | **56 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
+| Playwright end-to-end tests | **58 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
 | Multi-connection (concurrent) tests | **not run** (the test database is single-connection embedded PostgreSQL) |
 
 ---
@@ -65,7 +65,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | R-SRC-4 | Identify missing tables, columns, relationships, views | Dictionary 265 tables vs SQL 213 tables: 52 dictionary-only tables listed | [SCHEMA_RECONCILIATION.md](SCHEMA_RECONCILIATION.md) | Done | |
 | R-SRC-5 | Do not silently introduce the 52 extra tables or Lesson Plan | None of them were created | `tests/db/schema.test.ts` asserts exactly 213 tables (DB: schema [17]) | Done | |
 | R-SRC-6 | Keep unresolved differences in a migration backlog | KI-9 (source defect SD-1), KI-11 (52 tables, Lesson Plan, missing `SIMS_schema_review.md`) | [KNOWN_ISSUES.md](KNOWN_ISSUES.md) | Done | Decisions still owed by you |
-| R-SRC-7 | Do not invent business rules the source does not establish | Every inferred rule is flagged for confirmation: KI-28, 31, 35, 38, 40, 43, 46, 47, 49, 50, 65, 66, 67, 68, 69 | Migration headers list the numbered assumptions | Done (flagged) | The rules themselves still need your confirmation |
+| R-SRC-7 | Do not invent business rules the source does not establish | Every inferred rule is flagged for confirmation: KI-28, 31, 35, 38, 40, 43, 46, 47, 49, 50, 65, 66, 67, 68, 69, 70 | Migration headers list the numbered assumptions | Done (flagged) | The rules themselves still need your confirmation |
 | R-SRC-8 | Record the `SIMS_schema_review.md` dependency | Recorded as unavailable | KI-11 | Done | Request the file before claiming the review is satisfied |
 
 ---
@@ -88,7 +88,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | R-STK-12 | Git | Repository initialised and pushed to `Ayush-Chugani/College-ERP` | Done | |
 | R-STK-13 | ESLint and Prettier | `eslint.config.mjs` (flat config), `.prettierrc.json`, `npm run lint`, `npm run format` | Done | |
 | R-STK-14 | Vitest | 391 tests | Done | |
-| R-STK-15 | Playwright | `playwright.config.ts`; `tests/e2e/smoke.spec.ts` (public pages, route protection, phone-width check) and `tests/e2e/auth.spec.ts` (sign-in flow, skipped without `E2E_EMAIL` / `E2E_PASSWORD`); `npm run test:e2e` | Partial | 56 smoke tests pass on desktop and phone projects; the signed-in flow has never run against a real project |
+| R-STK-15 | Playwright | `playwright.config.ts`; `tests/e2e/smoke.spec.ts` (public pages, route protection, phone-width check) and `tests/e2e/auth.spec.ts` (sign-in flow, skipped without `E2E_EMAIL` / `E2E_PASSWORD`); `npm run test:e2e` | Partial | 58 smoke tests pass on desktop and phone projects; the signed-in flow has never run against a real project |
 | R-STK-16 | Supabase CLI and migration-based version control | Migrations are versioned SQL files in `supabase/migrations/`; `supabase/config.toml` now exists (auth redirect URLs, sign-up off, password length 12). M001 to M039 were applied to the live project with a Python script; M040 to M042 have **not** been applied anywhere except the embedded test database | Partial | Run `supabase link` and `supabase db push` (DEPLOYMENT_GUIDE.md); the CLI itself was not run here |
 | R-STK-17 | No unnecessary backend frameworks; PostgreSQL authoritative | No separate backend server exists | Done | |
 
@@ -222,8 +222,8 @@ Table counts come from the dictionary map in `tools/rls/table_module.json` (265 
 | 4 | Academic Calendar | 4 | **Built (gaps)** | M024 | `/calendar` (years, terms, semesters) | DB: academic [11]; UT: academic [7] | KI-22; no `time_slot` screens (KI-44) |
 | 5 | Curriculum and Course Catalogue | 5 | **Built (gaps)** | M026 | `/curriculum`, `/courses`, `/courses/categories` | DB: courses [8]; UT: courses [10] | KI-24, KI-26, KI-27 |
 | 6 | Student Management | 6 | **Built (gaps)** | M022, M046 | `/students` (list, detail, create, edit, status), `/students/[id]/records` (addresses, parents and guardians, previous education, entrance exams, residence) | DB: students [9], sections-reference [12]; UT: students [7], records | KI-6, KI-7, KI-8, KI-17, KI-19, KI-58; the student cannot edit these records themself (staff-managed) |
-| 7 | Employee Management | 26 | **Built (gaps)** | M023, M046, M054 | `/employees` (list, detail, create, edit, assign, status), `/employees/[id]/records` (addresses, qualifications, previous employment), `/employees/[id]/hr` and `/my-hr` (PAN, Aadhaar, bank accounts, HR documents) | DB: employees [13], sections-reference [12], employee-sensitive [12]; UT: employees [7], records | KI-20, KI-21, KI-58, KI-65: competencies and document access rules have no screen; key rotation is manual |
-| 8 | Document Management | 5 | **Built (gaps)** | M005, M009 (schema), M042, M043, M044, M054, M059, M060 | `/my-documents`, `/students/[id]/documents`, `/employees/[id]/hr`, `/certificates`, announcement attachments, evidence panels | DB: student-documents [12], employee-sensitive [12], announcement-attachments [5], certificate-requests [6]; UT: documents | KI-53, KI-65, KI-69: no versioning UI, no virus scanning, employee document access rules have no screen |
+| 7 | Employee Management | 26 | **Built (gaps)** | M023, M046, M054, M063 | `/employees` (list, detail, create, edit, assign, status), `/employees/[id]/records` (addresses, qualifications, previous employment), `/employees/[id]/hr` and `/my-hr` (PAN, Aadhaar, bank accounts, HR documents, courses the person can teach, sharing a document) | DB: employees [13], sections-reference [12], employee-sensitive [12]; UT: employees [7], records | KI-20, KI-21, KI-58, KI-65, KI-70: key rotation is manual; competencies do not yet restrict course assignment |
+| 8 | Document Management | 5 | **Built (gaps)** | M005, M009 (schema), M042, M043, M044, M054, M059, M060 | `/my-documents`, `/students/[id]/documents`, `/employees/[id]/hr`, `/certificates`, announcement attachments, evidence panels | DB: student-documents [12], employee-sensitive [12], announcement-attachments [5], certificate-requests [6]; UT: documents | KI-53, KI-65, KI-69, KI-70: no versioning UI, no virus scanning |
 | 9 | Audit and Compliance | 1 | **Built (gaps)** | M006, M022, per-module audit triggers, M041, M045 | `/audit`, `/audit/[id]`, `/audit/logins` | DB: iam-admin [8], account-features [14] and audit assertions inside module tests | KI-19, KI-57; writes only (plus logged document downloads), no export |
 | 10 | Communication | 3 | **Built (gaps)** | M005 (schema), M040 | `/announcements` (feed), `/announcements/manage`, `/announcements/new`, `/announcements/[id]`, `/announcements/[id]/edit` | DB: communication [18]; UT: communication [7] | KI-51 (attachments added in M059):  no notification delivery; the author cannot approve their own announcement |
 | 11 | Admissions | 4 | **Built** | M027 | `/admissions` (list, detail, new, categories) | DB: admissions [16]; UT: admissions [9] | KI-28, KI-29, KI-30 |
@@ -287,6 +287,9 @@ Reading the matrix: server-side sorting is mostly fixed (not user-selectable); o
 | R-DOC-8 | Never log document contents, passwords or Aadhaar numbers | Done: only metadata and a download event are logged; `user_account` is not row-audited because its row holds `password_hash`; counselling notes are kept out of the audit log (M038) |
 | R-DOC-9 | Certificate requests | `cert_request_*` (M060) and `/certificates`: request, approve / reject, issue a signed PDF, download (logged), cancel; types are reference data | M060; DB: certificate-requests [6] | Done | KI-69 |
 | R-DOC-10 | Announcement attachments | `announcement_attachment_*` (M059) on `/announcements/[id]`: up to 10 files, follow the announcement's visibility, downloads logged | M059; DB: announcement-attachments [5] | Done | KI-69 |
+| R-DOC-11 | Employee document access rules | `emp_doc_rule_*` (M063) and the "Sharing…" control on `/employees/[id]/hr`: a named user or a role can view / download one HR document for a period; honoured by list, download and the Storage policy; never grants verify, approve, change or delete | M063; DB: competency-rules-requests [8] | Done | KI-70 |
+| R-EMP-30 | Employee competencies | `emp_competency_*` (M063) and the "Courses this person can teach" card: course, level, validity period; HR edits, the employee reads | M063; DB: competency-rules-requests [8] | Done | Not used to restrict assignment (KI-70) |
+| R-STU-30 | Hall ticket, hostel check-out and graduation requests | `svc_request_*` (M063) and `/requests`: request, approve / reject, complete with a reference number, cancel; fee holds apply | M063; DB: competency-rules-requests [8] | Partial | Request and approval only: no printable ticket, seating, hostel allocation or degree audit (KI-70) |
 
 ---
 
@@ -364,7 +367,7 @@ One page serves every role. It shows a count tile for each readable module and t
 | R-FIN-9 | Student self-service for fees | Students read their own assessments, instalments, penalties, payments and receipts (`FEES.FEE_ASSESSMENT.READ`, `FEE_PAYMENT.READ` at SELF, M052; `fin_account_extras` hides benefits and adjustments from them) | DB: finance-benefits [8], finance-read [7], dashboard [10] | Done | No online payment (KI-42) |
 | R-FIN-10 | Segregation of duties on money changes | The requester of a benefit or an adjustment cannot decide it; a receipt, refund and adjustment each need their own permission | DB: finance-benefits [8] | Done | The check compares users, not people with two accounts |
 | R-FIN-11 | Fee structure maintenance and approval | `fin_structure_*` (M061) and `/finance/structures`: draft with items, submit, approve by a second person (supersedes the earlier one), new versions, delete drafts | M061; DB: fee-structures [6] | Done | Structures do not create assessments by themselves (KI-69) |
-| R-FIN-12 | Holds enforced in other modules | M062: REGISTRATION blocks term registration, RESULT hides the student's results, CERTIFICATE blocks approving / issuing a certificate | M062; DB: hold-enforcement [3] | Partial | EXAMINATION, HALL_TICKET, HOSTEL_CHECKOUT and GRADUATION have no feature to block (KI-42) |
+| R-FIN-12 | Holds enforced in other modules | M062 and M063: REGISTRATION blocks term registration, RESULT hides the student's results, CERTIFICATE blocks approving / issuing a certificate, EXAMINATION blocks requesting a hall ticket, HALL_TICKET / HOSTEL_CHECKOUT / GRADUATION block approving and completing those requests | M062, M063; DB: hold-enforcement [3], competency-rules-requests [8] | Done | The hall ticket, check-out and graduation features are minimal request workflows (KI-70) |
 
 ---
 
@@ -415,7 +418,7 @@ One page serves every role. It shows a count tile for each readable module and t
 | R-TST-5 | RPC functions | Every RPC family has authorised, unauthorised, invalid-input and replay cases | Done | |
 | R-TST-6 | Transaction rollback | Failed multi-step RPCs leave no rows (for example feedback submit validation, mentoring, grievance limits) | DB: feedback [19] and others | Done | |
 | R-TST-7 | Concurrent financial operations | `tests/concurrency/finance.concurrency.test.ts` on a real PostgreSQL 16 (see R-FIN-4) | `npm run test:concurrency` with `PG_CONCURRENCY_URL` | Done | Skipped unless a scratch server is configured; the migrations also apply cleanly on real PostgreSQL there |
-| R-TST-8 | Authentication tests (login, logout, invalid credentials, expiry, reset, unauthorised routes) | Automated: login page, validation, phone layout, redirect of every protected route (Playwright, 56 tests); database-level MFA, sign-in log and identity rules (DB: account-features [14], rls [30]). The sign-in, sign-out and invalid-credential browser flows are written (`tests/e2e/auth.spec.ts`) but skipped | | Partial | Needs a test user in a non-production Supabase project (D-1) |
+| R-TST-8 | Authentication tests (login, logout, invalid credentials, expiry, reset, unauthorised routes) | Automated: login page, validation, phone layout, redirect of every protected route (Playwright, 58 tests); database-level MFA, sign-in log and identity rules (DB: account-features [14], rls [30]). The sign-in, sign-out and invalid-credential browser flows are written (`tests/e2e/auth.spec.ts`) but skipped | | Partial | Needs a test user in a non-production Supabase project (D-1) |
 | R-TST-9 | RLS tests for every important role | DB: rls [30] plus module tests with registrar, faculty, finance, student and super-admin identities | Done | KI-2: representative, not every table |
 | R-TST-10 | Frontend tests (page load, validation, CRUD, search, pagination, filters, navigation, errors, responsive) | Unit tests of validation, payload builders and navigation only (133 tests) | Partial | No component or page tests |
 | R-TST-11 | End-to-end tests with Playwright | `tests/e2e/` (see R-STK-15) | Partial | Smoke only; signed-in flows blocked on a test user (KI-3) |
@@ -515,7 +518,7 @@ Known limits of this evidence: the database runs on embedded PostgreSQL (PGlite)
 | 11 | SECURITY_AUDIT.md | Done (self-review) |
 | 12 | DEPLOYMENT_GUIDE.md | Done (checklist; nothing deployed) |
 | 13 | ENVIRONMENT_SETUP.md | Done |
-| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-69) |
+| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-70) |
 | 15 | IMPLEMENTATION_STATUS.md | Done |
 
 Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLICY_MAP.md (generated), DEVELOPMENT_CHECKLIST.md, this RTM.
@@ -529,7 +532,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | R-DEP-3 | Seed scripts | Partial | Reference seed is in M011; no sample-data or per-role test-user seed (and no fabricated records, by the rules) |
 | R-DEP-4 | Test scripts | Done | `npm test`, `npm run test:db`, `npm run test:unit` |
 | R-DEP-5 | Deployment configuration | `vercel.json` (framework, install and build commands, HSTS) and `supabase/config.toml` | Done | Neither has been used for a real deployment |
-| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M050 are applied to the Supabase project; M051 to M062 are not) |
+| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M050 are applied to the Supabase project; M051 to M063 are not) |
 | R-DEP-7 | Never commit secrets; never run a destructive production migration without approval and backup | Done | |
 
 ---
@@ -652,6 +655,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | M060 | Certificate requests | hand-written |
 | M061 | Fee structure maintenance and approval | hand-written |
 | M062 | Enforcement of fee holds (registration, results, certificates) | hand-written |
+| M063 | Employee competencies, document access rules, hall ticket / hostel check-out / graduation requests | hand-written |
 
 ## 19. Screen inventory
 
@@ -701,6 +705,6 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 
 1. **Unblock authentication** (D-1, D-2): apply migrations 051 to 062 to the live project (read the notes for M054, M056 and M062 in DEPLOYMENT_GUIDE.md), then verify every built screen signed in and run the skipped Playwright flows (`E2E_EMAIL` / `E2E_PASSWORD`, a throwaway test account).
 2. **Owner decisions still open:** Lesson Plan and the dictionary-only tables (D-6, with `SIMS_schema_review.md`); an online payment provider and its credentials (KI-42); the admission-application payment rules; confirm or correct the inferred rules (D-4); rotate the shared database password (D-3).
-3. **Employee records:** competencies and document access rules; key rotation tooling (KI-65).
-4. **Hard database enforcement** of the "require MFA" policy if wanted (KI-69); holds for features that do not exist yet.
+3. **Employee records:** key rotation tooling (KI-65); using competencies to restrict course assignment (KI-70).
+4. **Hard database enforcement** of the "require MFA" policy if wanted (KI-69); real hall tickets (printable, seating, subjects), hostel allocation and degree audit if the institution needs more than the request workflow (KI-70).
 5. **Quality:** a load test with many simultaneous users; `pg_trgm` indexes if substring search grows slow; set-based RLS policies if the institution grows far beyond a few thousand students (PERFORMANCE_REPORT.md); clearing the dev-only minimatch advisory when the ESLint toolchain ships a fix (KI-13).

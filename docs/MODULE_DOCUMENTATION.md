@@ -32,7 +32,7 @@ One section per application area: what it does, where it lives, the database obj
 | Module | Screens | Database | Notes |
 |---|---|---|---|
 | Students (6) | `/students`, `/students/[id]/records`, `/students/[id]/documents` | M022, M042, M046 | Registration, edit, status, sub-records, documents |
-| Employees (7) | `/employees`, `/employees/[id]/records`, `/employees/[id]/hr`, `/my-hr` | M023, M046, M054 | Registration, assignments, qualifications, previous employment; PAN, Aadhaar and bank accounts (encrypted, masked, reveal logged) and HR documents; employees see and correct their own until HR verifies |
+| Employees (7) | `/employees`, `/employees/[id]/records`, `/employees/[id]/hr`, `/my-hr` | M023, M046, M054, M063 | Registration, assignments, qualifications, previous employment; PAN, Aadhaar and bank accounts (encrypted, masked, reveal logged) and HR documents; employees see and correct their own until HR verifies |
 | Student documents (8) | `/my-documents`, `/certificates` | M042, M060 | Private bucket, signed URLs, verification; certificate requests with approval and an issued PDF |
 | Student activities and evidence (23) | `/activities` | M043 | Draft, evidence with versions, verification, approval, team |
 | Staff profile and research (22) | `/staff-profile` | M044, M055 | 12 kinds of record through a catalogue-driven form, contributors, evidence; research supervision, project utilisation and journal / conference indexing on the record; journal metrics in the reference data |
@@ -41,7 +41,7 @@ One section per application area: what it does, where it lives, the database obj
 | Module | Screens | Database | Notes |
 |---|---|---|---|
 | Communication (10) | `/announcements`, `/announcements/manage` | M040, M059 | Audiences, approval workflow, feed |
-| Student finance (21) | `/finance`, `/finance/account/[id]`, `/finance/receipt/[id]` | M008, M014, M021, M034, M047, M052, M053, M061, M062 | Assessments, payments, allocations, refunds, receipts, holds. Concessions, scholarships, sponsorships, adjustments, instalments, late fees and penalties (M052, M053); students see their own account; fee structures are drafted, approved and versioned on `/finance/structures`; holds block registration, results and certificates. |
+| Student finance (21) | `/finance`, `/finance/account/[id]`, `/finance/receipt/[id]` | M008, M014, M021, M034, M047, M052, M053, M061, M062, M063 | Assessments, payments, allocations, refunds, receipts, holds. Concessions, scholarships, sponsorships, adjustments, instalments, late fees and penalties (M052, M053); students see their own account; fee structures are drafted, approved and versioned on `/finance/structures`; holds block registration, results and certificates. |
 
 ## Dashboards
 `/dashboard` shows the charts for the modules the caller can read (M036) plus personal cards (M048): a student's classes today, attendance per course and results; an employee's upcoming sessions and unmarked ones.
@@ -53,3 +53,6 @@ One section per application area: what it does, where it lives, the database obj
 
 ## Access control
 Every default grant is listed in [ROLE_PERMISSION_MATRIX.md](ROLE_PERMISSION_MATRIX.md) (generated). Per-user exceptions are permission overrides on `/admin/users/[id]` (migration 057). Recovery codes for two-step verification are on `/settings` (migration 056).
+
+## Student services
+`/requests` (migration 063): hall ticket per term, hostel check-out and graduation requests, approved by `DOCUMENT.ALL.APPROVE`, blocked by the matching fee hold. `/certificates` (migration 060): certificate requests.

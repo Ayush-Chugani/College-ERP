@@ -11,7 +11,7 @@ This file is a short view of [RTM.md](RTM.md), which is the source of truth for 
 ## Phase 1 – MySQL to PostgreSQL
 - [x] 213 tables, 500 foreign keys, 16 triggers, 10 views translated; catalogue compared with the source
 - [x] Seed data carried (M011); row counts checked by `tools/validate/seed_counts.mjs` (see RTM R-P1-20)
-- [x] Migrations 001-062 apply on embedded PostgreSQL and also on a real PostgreSQL 16 (concurrency suite)
+- [x] Migrations 001-063 apply on embedded PostgreSQL and also on a real PostgreSQL 16 (concurrency suite)
 
 ## Phase 2 – Identity, RBAC, RLS
 - [x] Identity map, scoped permission helpers, deny-by-default RLS, workflow guards
@@ -44,4 +44,4 @@ This file is a short view of [RTM.md](RTM.md), which is the source of truth for 
 
 ## Phase 7 – Deployment
 - [x] `vercel.json`, `supabase/config.toml`, deployment checklist
-- [!] Nothing deployed; migrations 051-062 not applied to the live project (D-1, D-2)
+- [!] Nothing deployed; migrations 051-063 not applied to the live project (D-1, D-2)
