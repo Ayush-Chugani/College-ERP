@@ -154,7 +154,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 | ID | Requirement | Implementation | Evidence | Status | Gap or note |
 |---|---|---|---|---|---|
-| R-AUTH-1 | Registration where permitted | Not offered: sign-up is meant to be disabled (users are provisioned) | | Partial | The "where permitted" case (applicant self-registration) is not built; KI-29 |
+| R-AUTH-1 | Registration where permitted | Self-registration stays off (sign-up disabled). Administrators create users: `/admin/users/new` (server action with the service-role key) and `tools/create_admin.mjs` for the first administrator (M049) | DB: user-provisioning [6]; UT: user-provisioning [6] | Partial | Not run against a real Supabase project (needs your service-role key); applicant self-registration is not built (KI-29, KI-62) |
 | R-AUTH-2 | Login | `src/app/(auth)/login` | Build; no signed-in test | Partial | Never exercised with a real user |
 | R-AUTH-3 | Logout | `src/app/auth/signout/route.ts` | Build | Partial | Same |
 | R-AUTH-4 | Forgot password | `src/app/(auth)/forgot-password` | Build | Partial | Needs Auth redirect settings (R-AUTH-10) |

@@ -158,6 +158,14 @@ Error codes: `42501` not authorised / unknown; `22023` invalid input; `23505` ke
 ### Not covered
 Admission-application (`application_id`) payments, fee receipts (the numbering rule is not defined in the source), online-gateway confirmation, late-fee/installment automation, ledger postings. Concurrent interleavings are protected by row locks and unique keys but **have not been load-tested** (tests ran on a single connection).
 
+## User provisioning (migration 049)
+| Function | Who may call | Notes |
+|---|---|---|
+| `iam_can_provision()` | any signed-in user | True only for a global `IAM.ALL.CREATE` holder. The server asks this with the caller's own session before it uses the service-role key. |
+| `iam_provision_user(auth_user, email, student_number?, employee_number?, actor_user_id)` -> user id | **service_role only** | Creates the `user_account` (ACTIVE, must change password, no password stored), links a student or employee (not both, each once), maps the Auth identity, audits `PROVISION`. Idempotent for an already-mapped Auth user. |
+
+The Auth user and its password are created by the web server (`createUserAction`, `src/features/user-provisioning-actions.ts`) with the Supabase admin API; the password never reaches the database or any log.
+
 ## Identity administration and audit viewer (migration 041)
 Everything needs a GLOBAL grant: `IAM.ALL.READ` to read, `IAM.ALL.UPDATE` to change, `AUDIT.ALL.READ` for the audit viewer. Without it the list functions return no rows and the others raise `42501`.
 | RPC | Notes |

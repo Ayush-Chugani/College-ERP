@@ -28,7 +28,10 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
   const pages = Math.max(1, Math.ceil(total / IAM_PAGE_SIZE));
   return (
     <div className="max-w-6xl space-y-4">
-      <div><h1 className="text-xl font-semibold">Users and roles</h1><p className="text-sm text-muted-foreground">Activate or deactivate accounts and manage role assignments.</p></div>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+              <div><h1 className="text-xl font-semibold">Users and roles</h1><p className="text-sm text-muted-foreground">Activate or deactivate accounts and manage role assignments.</p></div>
+        {can(ctx, 'IAM.ALL.CREATE') && <Link href="/admin/users/new" className="inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm text-primary-foreground hover:opacity-90">Create user</Link>}
+      </div>
       <form method="get" action="/admin/users" className="flex flex-wrap gap-2" role="search">
         <input name="q" defaultValue={params.q ?? ''} aria-label="Search" placeholder="Username or email" maxLength={100} className="h-9 w-72 rounded-md border border-border bg-card px-3 text-sm" />
         <select name="status" defaultValue={params.status ?? ''} aria-label="Status" className="h-9 rounded-md border border-border bg-card px-3 text-sm"><option value="">Any status</option>{STATUSES.map((s) => <option key={s} value={s}>{label(s)}</option>)}</select>
