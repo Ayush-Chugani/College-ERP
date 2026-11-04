@@ -1,5 +1,7 @@
 # Performance report
 
+> **Update (migration 051).** The finding below (KI-61) is mitigated: the caller's permissions are resolved once per transaction and the helpers evaluate against a decoded set (steps 1 and 2 of the recommended fix, KI-64). On a native PostgreSQL 16 with the same 20,000 students, the exact count of students went from more than 20 s to about 0.7 s, and the activity lists from 2.4 s to 0.5 s. The before/after table, the plans and the remaining cost (about 30 microseconds per row, so set-based policies are the next step if the institution grows) are in [PERFORMANCE_REPORT_NATIVE.md](PERFORMANCE_REPORT_NATIVE.md). The statement "No caching is used" at the end of this report no longer holds: there is a per-transaction memo (KI-64). The text below is the original first measurement, unchanged.
+
 Status 2026-11-04. This is the first measurement of query plans. It answers KI-10 ("RLS helper performance unmeasured") and finds a **real problem**.
 
 ## How it was measured

@@ -1,0 +1,222 @@
+{
+  "at": "2026-11-04T08:06:05.874Z",
+  "version": "PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit",
+  "counts": {
+    "students": "20003",
+    "employees": "2002",
+    "audit": "165027",
+    "logins": "50000",
+    "activities": "20000",
+    "payments": "15000"
+  },
+  "results": [
+    {
+      "name": "my_context (every page load)",
+      "who": "registrar",
+      "sub": "00000000-0000-0000-0000-000000000002",
+      "sql": "select public.my_context()",
+      "median": 4.83,
+      "max": 7.504,
+      "seq": []
+    },
+    {
+      "name": "Students list, page 1 (RLS per row)",
+      "who": "registrar",
+      "sub": "00000000-0000-0000-0000-000000000002",
+      "sql": "select student_id, student_number, display_name from student order by display_name limit 20",
+      "median": 580.514,
+      "max": 623.944,
+      "seq": [
+        "student"
+      ]
+    },
+    {
+      "name": "Students list, page 500",
+      "who": "registrar",
+      "sub": "00000000-0000-0000-0000-000000000002",
+      "sql": "select student_id, student_number, display_name from student order by display_name limit 20 offset 9980",
+      "median": 651.957,
+      "max": 893.155,
+      "seq": [
+        "student"
+      ]
+    },
+    {
+      "name": "Students search \"ra\" (substring)",
+      "who": "registrar",
+      "sub": "00000000-0000-0000-0000-000000000002",
+      "sql": "select student_id, display_name from student where display_name ilike '%ra%' or student_number ilike '%ra%' order by display_name limit 20",
+      "median": 644.051,
+      "max": 706.155,
+      "seq": [
+        "student"
+      ]
+    },
+    {
+      "name": "Students count (list header)",
+      "who": "registrar",
+      "sub": "00000000-0000-0000-0000-000000000002",
+      "sql": "select count(*) from student",
+      "median": 689.247,
+      "max": 801.716,
+      "seq": [
+        "student"
+      ]
+    },
+    {
+      "name": "global_search \"ra\"",
+      "who": "registrar",
+      "sub": "00000000-0000-0000-0000-000000000002",
+      "sql": "select * from public.global_search('ra', 8)",
+      "median": 616.951,
+      "max": 767.833,
+      "seq": []
+    },
+    {
+      "name": "Student own record",
+      "who": "student",
+      "sub": "00000000-0000-0000-0000-000000000001",
+      "sql": "select * from student",
+      "median": 348.154,
+      "max": 461.274,
+      "seq": [
+        "student"
+      ]
+    },
+    {
+      "name": "my_notification_count",
+      "who": "student",
+      "sub": "00000000-0000-0000-0000-000000000001",
+      "sql": "select public.my_notification_count()",
+      "median": 2.215,
+      "max": 5.586,
+      "seq": []
+    },
+    {
+      "name": "my_dashboard",
+      "who": "student",
+      "sub": "00000000-0000-0000-0000-000000000001",
+      "sql": "select public.my_dashboard()",
+      "median": 2.872,
+      "max": 4.639,
+      "seq": []
+    },
+    {
+      "name": "student_activity_list (staff, page 1)",
+      "who": "super admin",
+      "sub": "00000000-0000-0000-0000-000000000008",
+      "sql": "select * from public.student_activity_list(null, null, null, 20, 0)",
+      "median": 441.358,
+      "max": 469.645,
+      "seq": []
+    },
+    {
+      "name": "student_activity_list (staff, search)",
+      "who": "super admin",
+      "sub": "00000000-0000-0000-0000-000000000008",
+      "sql": "select * from public.student_activity_list(null, 'hack', null, 20, 0)",
+      "median": 511.885,
+      "max": 589.492,
+      "seq": []
+    },
+    {
+      "name": "Audit log, page 1",
+      "who": "super admin",
+      "sub": "00000000-0000-0000-0000-000000000008",
+      "sql": "select * from public.audit_list(null, null, null, null, null, 25, 0)",
+      "median": 154.953,
+      "max": 166.911,
+      "seq": []
+    },
+    {
+      "name": "Audit log, one module",
+      "who": "super admin",
+      "sub": "00000000-0000-0000-0000-000000000008",
+      "sql": "select * from public.audit_list('STUDENT', null, null, null, null, 25, 0)",
+      "median": 100.52,
+      "max": 134.898,
+      "seq": []
+    },
+    {
+      "name": "Audit log, date range",
+      "who": "super admin",
+      "sub": "00000000-0000-0000-0000-000000000008",
+      "sql": "select * from public.audit_list(null, null, null, now() - interval '2 days', now(), 25, 0)",
+      "median": 113.697,
+      "max": 119.176,
+      "seq": []
+    },
+    {
+      "name": "Sign-in log, page 1",
+      "who": "super admin",
+      "sub": "00000000-0000-0000-0000-000000000008",
+      "sql": "select * from public.login_audit_list(null, null, null, null, 25, 0)",
+      "median": 41.839,
+      "max": 61.065,
+      "seq": []
+    },
+    {
+      "name": "Sign-in log, failures for a name",
+      "who": "super admin",
+      "sub": "00000000-0000-0000-0000-000000000008",
+      "sql": "select * from public.login_audit_list('user42', false, null, null, 25, 0)",
+      "median": 33.956,
+      "max": 39.879,
+      "seq": []
+    },
+    {
+      "name": "Users list",
+      "who": "super admin",
+      "sub": "00000000-0000-0000-0000-000000000008",
+      "sql": "select * from public.iam_user_list(null, null, 20, 0)",
+      "median": 1.672,
+      "max": 2.076,
+      "seq": []
+    },
+    {
+      "name": "Grievance list",
+      "who": "super admin",
+      "sub": "00000000-0000-0000-0000-000000000008",
+      "sql": "select * from public.grievance_list(null, null, null, 20, 0)",
+      "median": 42.314,
+      "max": 61.538,
+      "seq": []
+    },
+    {
+      "name": "Fee accounts list",
+      "who": "finance",
+      "sub": "00000000-0000-0000-0000-000000000004",
+      "sql": "select * from public.fin_accounts(null, null, 20, 0)",
+      "median": 149.432,
+      "max": 209.263,
+      "seq": []
+    },
+    {
+      "name": "Fee balance view",
+      "who": "finance",
+      "sub": "00000000-0000-0000-0000-000000000004",
+      "sql": "select * from v_student_fee_balance limit 20",
+      "median": 1.336,
+      "max": 1.628,
+      "seq": []
+    },
+    {
+      "name": "Enrolment dashboard",
+      "who": "registrar",
+      "sub": "00000000-0000-0000-0000-000000000002",
+      "sql": "select * from public.dash_enrolments()",
+      "median": 641.892,
+      "max": 741.444,
+      "seq": []
+    },
+    {
+      "name": "Employees list",
+      "who": "registrar",
+      "sub": "00000000-0000-0000-0000-000000000002",
+      "sql": "select employee_id, display_name from employee order by display_name limit 20",
+      "median": 43.106,
+      "max": 53.764,
+      "seq": []
+    }
+  ]
+}

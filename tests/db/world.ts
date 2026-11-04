@@ -31,25 +31,33 @@ export async function as<T = Record<string, unknown>>(role: 'authenticated' | 'a
 export const asUser = <T = Record<string, unknown>>(sub: string | null, sql: string) => as<T>('authenticated', sub, sql);
 export const ids = async (sub: string | null, sql: string) => (await asUser<{ id: number | string }>(sub, sql)).map((r) => Number(r.id)).sort((a, b) => a - b);
 
-export async function fkSwitch(enable: boolean) {
-  const { rows } = await db.query<{ t: string; n: string }>(
+export async function fkSwitch(enable: boolean, runner: SqlRunner = db) {
+  const { rows } = await runner.query<{ t: string; n: string }>(
     "select c.relname t, g.tgname n from pg_trigger g join pg_class c on c.oid=g.tgrelid join pg_namespace s on s.oid=c.relnamespace where s.nspname='public' and g.tgisinternal and g.tgconstraint<>0 and g.tgname like 'RI_ConstraintTrigger%'",
   );
-  for (const r of rows) await db.exec(`ALTER TABLE public.${r.t} ${enable ? 'ENABLE' : 'DISABLE'} TRIGGER "${r.n}"`);
+  for (const r of rows) await runner.exec(`ALTER TABLE public.${r.t} ${enable ? 'ENABLE' : 'DISABLE'} TRIGGER "${r.n}"`);
 }
 
 export const role = (code: string) => `(select role_id from role where role_code='${code}')`;
 
+/** The two methods the fixture needs; PGlite satisfies it, and so does a thin wrapper around a node-postgres client (tests/concurrency). */
+export type SqlRunner = { exec(sql: string): Promise<unknown>; query<T = Record<string, unknown>>(sql: string, params?: unknown[]): Promise<{ rows: T[] }> };
+
 export async function createWorld() {
   db = new PGlite();
+  await buildWorld(db);
+}
+
+export async function buildWorld(runner: SqlRunner, opts: { stubSql?: string } = {}) {
+  const db = runner;
   // --- stub of the Supabase environment (before migrations, like a real project) ---
-  await db.exec(SUPABASE_STUB);
+  await db.exec(opts.stubSql ?? SUPABASE_STUB);
   for (const f of fs.readdirSync(MIGRATIONS).filter((x) => x.endsWith('.sql')).sort()) {
     await db.exec(fs.readFileSync(path.join(MIGRATIONS, f), 'utf8'));
   }
 
   // --- fixtures (FK checks off; user triggers, unique/check constraints stay on) ---
-  await fkSwitch(false);
+  await fkSwitch(false, db);
   await db.exec(`
     INSERT INTO institution (institution_id, university_id, institution_code, institution_name) VALUES (1,1,'I1','Inst 1'),(2,1,'I2','Inst 2');
     INSERT INTO campus (campus_id, institution_id, campus_code, campus_name) VALUES (1,1,'C1','Campus 1'),(2,2,'C2','Campus 2');
@@ -75,7 +83,7 @@ export async function createWorld() {
       VALUES (7, (select permission_id from permission where permission_code='STUDENT.ALL.READ'), 'DENY', 'INSTITUTION', 1, 'test deny');
     INSERT INTO announcement_type (announcement_type_id, type_code, type_name) VALUES (1,'GEN','General') ON CONFLICT DO NOTHING;
   `);
-  await fkSwitch(true);
+  await fkSwitch(true, db);
   // fixtures used explicit ids: move identity sequences past them, as migration 015 does for seed data
   await db.exec(fs.readFileSync(path.join(MIGRATIONS, '015_identity_sequence_resync.sql'), 'utf8'));
   for (const [i, sub] of [U.student1, U.registrar1, U.facultyD1, U.finance1, U.disabled, U.unmapped, U.denied, U.superAdmin, U.registrar2].entries()) {

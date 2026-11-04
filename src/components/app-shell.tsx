@@ -1,6 +1,9 @@
 'use client';
 
-import { Bell, Search, BookOpen, BookText, CalendarCheck, ClipboardCheck, ClipboardList, Briefcase, CalendarDays, Building2, ChevronRight, GraduationCap, LayoutDashboard, LogOut, Settings } from 'lucide-react';
+import {
+  Award, Bell, BookOpen, BookText, Briefcase, Building2, CalendarCheck, CalendarDays, ChevronRight, ClipboardCheck, ClipboardList, Database, FileText, GraduationCap, HeartHandshake, LayoutDashboard, LogOut,
+  Megaphone, MessageSquare, Microscope, Receipt, ScrollText, Search, Settings, ShieldCheck, Table2, Trophy, Users, UserRound,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -9,15 +12,30 @@ import { cn } from '@/lib/utils';
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   '/dashboard': LayoutDashboard,
+  '/announcements': Megaphone,
   '/students': GraduationCap,
   '/admissions': ClipboardList,
   '/registration': ClipboardCheck,
   '/attendance': CalendarCheck,
+  '/timetable': Table2,
+  '/assessment': FileText,
+  '/results/grades': Award,
+  '/my-results': Award,
+  '/my-documents': FileText,
+  '/activities': Trophy,
+  '/staff-profile': Microscope,
+  '/grievances': MessageSquare,
+  '/mentoring': HeartHandshake,
+  '/feedback': ScrollText,
+  '/finance': Receipt,
   '/employees': Briefcase,
   '/structure': Building2,
   '/calendar': CalendarDays,
   '/curriculum': BookOpen,
   '/courses': BookText,
+  '/admin/users': Users,
+  '/admin/reference': Database,
+  '/audit': ShieldCheck,
   '/settings': Settings,
 };
 
@@ -73,7 +91,7 @@ export function AppShell({
         <div className="px-5 py-4 text-lg font-semibold tracking-tight">SIMS</div>
         <nav className="space-y-1 px-3">
           {nav.map((item) => {
-            const Icon = ICONS[item.href] ?? LayoutDashboard;
+            const Icon = ICONS[item.href] ?? UserRound;
             return (
               <Link
                 key={item.href}

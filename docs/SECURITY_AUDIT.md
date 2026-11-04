@@ -14,6 +14,8 @@ Read the migrations, RPCs, middleware and forms; ran the database tests that att
 | S-4 | Medium | `npm audit --omit=dev` reports 2 findings in PostCSS bundled with Next 15 (build-time CSS processing; no attacker-controlled CSS reaches it). Dev-only tooling has 14 more. Fix needs a Next major upgrade. | Open (KI-13) |
 | S-5 | Medium | No MFA (`multi_factor_enabled` is not consulted); no login/auth event log (`login_audit` is never written). | Open |
 | S-6 | Low | No virus scanning or content sniffing of uploads beyond type and size; the declared MIME type comes from the browser (the bucket restricts it as well). | Open (KI-53) |
+| S-8 | Medium (found and fixed during development) | `can_student()` and `can_employee()` returned `NULL` instead of `false` for a caller with a SELF grant who is not a student or employee and asks about someone else's record. Callers that write `IF NOT can_student(...) THEN RAISE` would skip their refusal on `NULL`. The rewritten functions (M051) return `false`; the equivalence test covers it. No exploitable path existed in the seed (no role holds such a grant), but the trap was real. | Fixed before release |
+| S-9 | Low | The permission memo (M051) caches a caller's permissions for the length of one transaction. A change made inside that same transaction is not seen by later checks of the same user. No RPC depends on it (KI-64). | Documented |
 | S-7 | Low | No rate limiting beyond Supabase's built-in Auth limits. | Open |
 
 ## Controls in place
