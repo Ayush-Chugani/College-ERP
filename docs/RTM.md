@@ -20,7 +20,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 **Evidence conventions**
 
-- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M043 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`. **M044 (staff profile) and M045 (account features) are not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
+- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M043 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`. **M044 to M048 (staff profile, account features, record sections and reference data, receipts and holds, personal dashboard) are not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
 - `DB:` and `UT:` name the Vitest files in `tests/db/` and `tests/unit/`, with the number of tests in brackets.
 - `KI-n` is an entry in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - Routes are paths under `src/app/(app)/`.
@@ -29,11 +29,11 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 | Check | Result |
 |---|---|
-| `npx vitest run` | **519 passed, 0 failed** (46 files: 24 database files with 342 tests, 22 unit files with 177 tests) |
+| `npx vitest run` | **551 passed, 0 failed** (51 files: 27 database files with 365 tests, 24 unit files with 186 tests) |
 | `npx tsc --noEmit` | clean (strict mode, `noUncheckedIndexedAccess`) |
 | `npm run lint` | clean |
 | `npm run build` | succeeds |
-| Migrations applied to the live project | 43 of 45 (M044 and M045 pending) |
+| Migrations applied to the live project | 43 of 48 (M044 to M048 pending) |
 | Signed-in manual or browser verification of any screen | **not done** (no Auth user exists yet, see R-AUTH-9 and KI-3, KI-14) |
 | Playwright end-to-end tests | **38 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
 | Multi-connection (concurrent) tests | **not run** (the test database is single-connection embedded PostgreSQL) |
@@ -46,7 +46,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 |---|---|
 | Schema migration (213 tables, 500 FKs, 16 triggers, 10 views) | **Done**, catalogue comparison shows no differences, applied live |
 | RLS on all tables, RBAC resolution, identity mapping | **Done**, tested on embedded PostgreSQL; sampled rather than exhaustive per table (KI-2) |
-| Modules with working screens, RPCs and tests | 16 of 23 are built (some with gaps), 7 are partial, none is unstarted |
+| Modules with working screens, RPCs and tests | 20 of 23 are built (some with gaps), 3 are partial, none is unstarted |
 | Supabase Storage / document workflows | **Partial**: student documents (private bucket, policies, signed URLs, review); other document kinds not started |
 | Supabase Auth flows in the app | Built; **never exercised signed in** |
 | Edge Functions | **Not started** (not needed so far; RPCs were used) |
@@ -212,15 +212,15 @@ Table counts come from the dictionary map in `tools/rls/table_module.json` (265 
 
 | # | Module | Tables | Status | Migrations | Screens | Tests | Open issues |
 |---|---|---|---|---|---|---|---|
-| 1 | Platform and Reference Data | 25 | **Partial** | M001, M011 (seed), M016, M018 | none of its own; lookups feed forms | DB: schema [17], rls [30] | KI-18: lookups are read-only for users, no management screens |
+| 1 | Platform and Reference Data | 25 | **Built (gaps)** | M001, M011 (seed), M016, M018, M046 | `/admin/reference`, `/admin/reference/[table]`: 32 lists (genders, castes, countries, states, document types, qualification levels, designations, staff-profile lists, fee configuration) | DB: sections-reference [12], schema [17], rls [30]; UT: records | KI-58: the system, module and event tables (`system_module`, `outbox_event` ...) have no screens; fee configuration needs a GLOBAL FEES grant that no seeded role holds (KI-45) |
 | 2 | Identity and Access Management | 29 | **Partial** | M006, M015, M017, M019, M020, M041 | login, forgot and reset password, `/settings`, `/no-access`, `/admin/users` (list, status, roles) | DB: rls [30], iam-admin [8]; UT: iam | KI-3, KI-15, KI-52; no override or user-linking screens, no MFA |
 | 3 | University and Institution | 8 | **Built (gaps)** | M025 | `/structure`, `/structure/[kind]/[id]`, `/structure/[kind]/new` | DB: structure [9]; UT: structure [10] | KI-22, KI-23, KI-25: no screens for buildings, rooms, specialisations |
 | 4 | Academic Calendar | 4 | **Built (gaps)** | M024 | `/calendar` (years, terms, semesters) | DB: academic [11]; UT: academic [7] | KI-22; no `time_slot` screens (KI-44) |
 | 5 | Curriculum and Course Catalogue | 5 | **Built (gaps)** | M026 | `/curriculum`, `/courses`, `/courses/categories` | DB: courses [8]; UT: courses [10] | KI-24, KI-26, KI-27 |
-| 6 | Student Management | 6 | **Partial** | M022 | `/students` (list, detail, create, edit, status) | DB: students [9]; UT: students [7] | KI-6, KI-7, KI-8, KI-17, KI-19; no screens for addresses, guardians, previous education, entrance exams, residence |
-| 7 | Employee Management | 26 | **Partial** | M023 | `/employees` (list, detail, create, edit, assign, status) | DB: employees [13]; UT: employees [7] | KI-20, KI-21; no screens for the 20+ HR sub-tables (qualifications, bank, PAN and Aadhaar, documents) |
+| 6 | Student Management | 6 | **Built (gaps)** | M022, M046 | `/students` (list, detail, create, edit, status), `/students/[id]/records` (addresses, parents and guardians, previous education, entrance exams, residence) | DB: students [9], sections-reference [12]; UT: students [7], records | KI-6, KI-7, KI-8, KI-17, KI-19, KI-58; the student cannot edit these records themself (staff-managed) |
+| 7 | Employee Management | 26 | **Built (gaps)** | M023, M046 | `/employees` (list, detail, create, edit, assign, status), `/employees/[id]/records` (addresses, qualifications, previous employment) | DB: employees [13], sections-reference [12]; UT: employees [7], records | KI-20, KI-21, KI-58: PAN, Aadhaar and bank accounts wait for the encryption-owner decision (KI-8); HR documents and competencies have no screen |
 | 8 | Document Management | 5 | **Partial** | M005, M009 (schema), M042 | `/my-documents`, `/students/[id]/documents` | DB: student-documents [12]; UT: documents | KI-53: student documents only; see section 8 |
-| 9 | Audit and Compliance | 1 | **Partial** | M006, M022, per-module audit triggers, M041 | `/audit`, `/audit/[id]` | DB: iam-admin [8] and audit assertions inside module tests | KI-19; writes only, no export |
+| 9 | Audit and Compliance | 1 | **Built (gaps)** | M006, M022, per-module audit triggers, M041, M045 | `/audit`, `/audit/[id]`, `/audit/logins` | DB: iam-admin [8], account-features [14] and audit assertions inside module tests | KI-19, KI-57; writes only (plus logged document downloads), no export |
 | 10 | Communication | 3 | **Built (gaps)** | M005 (schema), M040 | `/announcements` (feed), `/announcements/manage`, `/announcements/new`, `/announcements/[id]`, `/announcements/[id]/edit` | DB: communication [18]; UT: communication [7] | KI-51: no attachments, no notification delivery; the author cannot approve their own announcement |
 | 11 | Admissions | 4 | **Built** | M027 | `/admissions` (list, detail, new, categories) | DB: admissions [16]; UT: admissions [9] | KI-28, KI-29, KI-30 |
 | 12 | Student Registration | 6 | **Built** | M028, M030 | `/registration` (offerings, term registration, course registration) | DB: registration [16]; UT: registration [7] | KI-31, KI-32, KI-34 |
@@ -232,13 +232,13 @@ Table counts come from the dictionary map in `tools/rls/table_module.json` (265 
 | 18 | Feedback | 8 | **Built** | M037 | `/feedback`, `/feedback/give/[cycle]`, `/feedback/results/*`, `/feedback/setup` | DB: feedback [19]; UT: feedback [10] | KI-46, KI-47, KI-48 |
 | 19 | Mentoring | 2 | **Built** | M038 | `/mentoring`, `/mentoring/[id]` | DB: mentoring [15]; UT: mentoring [6] | KI-49 |
 | 20 | Grievance Management | 3 | **Built** | M039 | `/grievances`, `/grievances/[id]` | DB: grievance [12]; UT: grievance [8] | KI-50 (no handler role exists) |
-| 21 | Student Finance and Fees | 31 | **Partial** | M008, M014, M021, M034 | `/finance`, `/finance/account/[id]` | DB: finance [14], finance-read [7]; UT: finance [10] | KI-16, KI-40, KI-41, KI-42: no UI or RPC for fee structures, concessions, scholarships, instalments, late fees, penalties, holds, adjustments, receipts |
+| 21 | Student Finance and Fees | 31 | **Partial** | M008, M014, M021, M034, M046, M047 | `/finance`, `/finance/account/[id]`, `/finance/receipt/[id]`, `/admin/reference/<fee list>` | DB: finance [14], finance-read [7], finance-receipts [6]; UT: finance [10], finance-extras | KI-16, KI-40, KI-41, KI-42, KI-59: no RPC or UI to apply concessions, scholarships or sponsorships to an assessment, no instalments, late fees, penalties or adjustments, no fee-structure approval screens |
 | 22 | Staff Profile and Research | 55 | **Built (gaps)** | M010, M011, M012 (schema), M044 | `/staff-profile` (list, summary), `/staff-profile/new`, `/staff-profile/[id]` (details, contributors, evidence, submit, verify, approve) | DB: staff-profile [18]; UT: staff | KI-55: 12 detail kinds covered; no screens for research supervision, journal metrics, project financial utilisation, indexing rows or the 25 lookup tables |
 | 23 | Student Activity and Evidence | 7 | **Built (gaps)** | M011, M013 (schema), M043 | `/activities` (list, summary report), `/activities/new`, `/activities/[id]` (details, team, evidence, submit, verify, approve) | DB: student-activities [14]; UT: activities | KI-54: no requirement-matrix or type management screens, no external-organisation lookup, no export |
 | - | Dashboards (cross-cutting) | n/a | **Built (gaps)** | M036 | `/dashboard` | DB: dashboard [10]; UT: dashboard [9] | KI-45 |
 | - | Lesson Plan | 22 | **Backlog** | none | none | none | Needs a source-of-truth decision (KI-11) |
 
-Counts: **Built or Built (gaps): 16 modules (3, 4, 5, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23); Partial: 7 modules (1, 2, 6, 7, 8, 9, 21); Not started: 0 modules.** That is 23 in total. Dashboards are cross-cutting and not counted. Student Finance is Partial because most of its 31 tables have no workflow.
+Counts: **Built or Built (gaps): 20 modules (1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23); Partial: 3 modules (2, 8, 21); Not started: 0 modules.** That is 23 in total. Dashboards are cross-cutting and not counted. Student Finance is Partial because most of its 31 tables have no workflow.
 
 ### 7.2 Per-module feature matrix
 
@@ -314,8 +314,8 @@ One page serves every role. It shows a count tile for each readable module and t
 | R-DASH-2 | Institution Administrator | Partial | Same page, scoped to the institution |
 | R-DASH-3 | Head of Department | Partial | Same page, scoped to the department |
 | R-DASH-4 | Programme Coordinator | Partial | Same page, scoped to the programme |
-| R-DASH-5 | Faculty | Partial | Same page; no "my classes" view (KI-37) |
-| R-DASH-6 | Student | Partial | "My results" card only; no attendance or fees view (KI-41) |
+| R-DASH-5 | Faculty | Partial | Dashboard card "My teaching" (`my_dashboard`, M048): active sections, sessions of the next 7 days with links to marking, past sessions still unmarked; no timetable grid |
+| R-DASH-6 | Student | Partial | Cards "My results", "Today's classes" and "My attendance" (per course, low under 75% marked; M048); no fees view until students are given a FEES permission (KI-41, D-5) |
 | R-DASH-7 | Finance Officer | Partial | Fee totals and monthly collection chart |
 | R-DASH-8 | Examination Staff | Partial | Term results chart |
 | R-DASH-9 | HR Staff | Partial | Employee counts only |
@@ -339,7 +339,7 @@ One page serves every role. It shows a count tile for each readable module and t
 | R-BL-9 | Fee calculations | Net amount computed in `fin_create_fee_assessment`; header totals through the source triggers | M014, M021; DB: finance [14] | Done |
 | R-BL-10 | Payment allocations | `fin_allocate_payment` with row locks and source triggers | M021; DB: finance | Done (concurrency not tested) |
 | R-BL-11 | Refund calculations | `fin_request_refund`, `fin_decide_refund`, `fin_process_refund` | M021; DB: finance | Done (concurrency not tested) |
-| R-BL-12 | Fee benefits | Source triggers exist; no RPC or UI | M014 | Partial (KI-42) |
+| R-BL-12 | Fee benefits | Source triggers exist (M014). Concession types, scholarship schemes, instalment plans and late-fee rules can now be maintained as reference data (M046, needs a GLOBAL FEES grant); there is still no RPC or screen that applies a concession, scholarship or sponsorship to a student assessment | M014, M046 | Partial (KI-42, KI-59) |
 | R-BL-13 | Student and employee document verification | Student: `student_document_review` (M042) over the M020 guard, PENDING to VERIFIED or REJECTED, remarks required to reject. Employee: guard only | M020, M042; DB: student-documents [12] | Partial | Employee documents have no workflow |
 | R-BL-14 | Student activity approvals | `student_activity_submit` / `_review` (M043): DRAFT -> SUBMITTED -> VERIFIED (UNDER_REVIEW) -> APPROVED or REJECTED; NEEDS_CORRECTION returns to draft; separate VERIFY and APPROVE permissions; mandatory evidence checked at submission | DB: student-activities [14]; UT: activities | Done | Rules are inferences (KI-54) |
 
@@ -354,7 +354,7 @@ One page serves every role. It shows a count tile for each readable module and t
 | R-FIN-5 | No unauthorised change to financial records | Clients hold no write grants on money tables; RPCs authorise per student scope | DB: finance, rls | Done | |
 | R-FIN-6 | Idempotency where appropriate | Keys on assessment, payment, refund request and refund numbers | DB: finance | Done | |
 | R-FIN-7 | Never trust frontend totals | The form shows a live total, the server recomputes | UT: finance [10]; DB: finance | Done | |
-| R-FIN-8 | Receipts | `fee_receipt` numbering rule is undefined in the source | | Not started | KI-42 |
+| R-FIN-8 | Receipts | `fin_issue_receipt`, `fin_cancel_receipt` (cancel or replace), `fin_payment_receipts`, `fin_receipt_get` (M047); numbered `RCP-<year>-<6 digits>` (an assumed rule, decision D-9 can change it in one function); printable page `/finance/receipt/[id]` | DB: finance-receipts [6]; UT: finance-extras | Done | The numbering rule is my inference (KI-59) |
 
 ---
 
@@ -505,7 +505,7 @@ Known limits of this evidence: the database runs on embedded PostgreSQL (PGlite)
 | 11 | SECURITY_AUDIT.md | Done (self-review) |
 | 12 | DEPLOYMENT_GUIDE.md | Done (checklist; nothing deployed) |
 | 13 | ENVIRONMENT_SETUP.md | Done |
-| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-57) |
+| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-60) |
 | 15 | IMPLEMENTATION_STATUS.md | Done |
 
 Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLICY_MAP.md (generated), DEVELOPMENT_CHECKLIST.md, this RTM.
@@ -519,7 +519,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | R-DEP-3 | Seed scripts | Partial | Reference seed is in M011; no sample-data or per-role test-user seed (and no fabricated records, by the rules) |
 | R-DEP-4 | Test scripts | Done | `npm test`, `npm run test:db`, `npm run test:unit` |
 | R-DEP-5 | Deployment configuration | `vercel.json` (framework, install and build commands, HSTS) and `supabase/config.toml` | Done | Neither has been used for a real deployment |
-| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M043 are applied to the Supabase project; M044 and M045 are not) |
+| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M043 are applied to the Supabase project; M044 to M048 are not) |
 | R-DEP-7 | Never commit secrets; never run a destructive production migration without approval and backup | Done | |
 
 ---
@@ -625,6 +625,9 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | M043 | Student activities and evidence | hand-written |
 | M044 | Staff profile and research (generic detail forms) | hand-written |
 | M045 | Account features: MFA enforcement, sign-in log, profile, notifications, global search | hand-written |
+| M046 | Record sections (student and employee sub-tables) and reference-data administration | hand-written |
+| M047 | Fee receipts and financial holds | hand-written |
+| M048 | Personal dashboard (`my_dashboard`) | hand-written |
 
 ## 19. Screen inventory
 
@@ -652,6 +655,8 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | Student activities | `/activities`, `/activities/new`, `/activities/[id]` |
 | Staff profile and research | `/staff-profile`, `/staff-profile/new`, `/staff-profile/[id]` |
 | Account | `/settings`, `/mfa`, `/notifications`, `/search` |
+| Records and reference data | `/students/[id]/records`, `/employees/[id]/records`, `/admin/reference`, `/admin/reference/[table]` |
+| Fee receipts | `/finance/receipt/[id]` |
 
 ## 20. Open decisions and blockers (owner actions)
 

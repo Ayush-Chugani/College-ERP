@@ -2,7 +2,7 @@
 
 Next.js 15 (App Router, strict TypeScript, Tailwind 4) on Supabase (PostgreSQL, Auth, RLS). The database was migrated from the MySQL schema in `SIMS-DatabaseWithoutLessonPlan.sql`.
 
-**Status: in progress.** Database, identity/RBAC, RLS and most application modules (students, employees, admissions, registration, attendance, assessment, finance, feedback, mentoring, grievances, announcements, student documents, student activities, staff profile and research, notifications, search, two-step verification, users and roles, audit log) are implemented and tested on an embedded database. Nothing has been exercised signed in against a real Supabase project, and migrations 044 and 045 are not applied to the live project. See `docs/IMPLEMENTATION_STATUS.md` and `docs/KNOWN_ISSUES.md` for the honest picture.
+**Status: in progress.** Database, identity/RBAC, RLS and most application modules (students, employees, admissions, registration, attendance, assessment, finance, feedback, mentoring, grievances, announcements, student documents, student activities, staff profile and research, notifications, search, two-step verification, users and roles, audit log) are implemented and tested on an embedded database. Nothing has been exercised signed in against a real Supabase project, and migrations 044 to 048 are not applied to the live project. See `docs/IMPLEMENTATION_STATUS.md` and `docs/KNOWN_ISSUES.md` for the honest picture.
 
 ## Quick start
 ```bash
@@ -24,7 +24,7 @@ First administrator: see `tools/bootstrap_admin.py` (needs an Auth user created 
 | `npm run migrate:apply-check` / `migrate:catalogue` | apply migrations to a fresh embedded Postgres / compare catalogue with source |
 
 ## Layout
-`supabase/migrations` (001–016 generated from MySQL; 017–019 identity, RLS helpers/policies, `my_context`; 020–045 workflow guards, module RPCs, announcements, IAM administration, student documents) · `src/app` (routes) · `src/lib` (clients, validation, nav) · `src/features` (data access per feature) · `tools` (translator, RLS generator, bootstrap) · `tests` · `docs`.
+`supabase/migrations` (001–016 generated from MySQL; 017–019 identity, RLS helpers/policies, `my_context`; 020–048 workflow guards, module RPCs, announcements, IAM administration, student documents) · `src/app` (routes) · `src/lib` (clients, validation, nav) · `src/features` (data access per feature) · `tools` (translator, RLS generator, bootstrap) · `tests` · `docs`.
 
 ## Security notes
 Never put the service-role key or the database password in `NEXT_PUBLIC_*` variables or client code. The browser only ever uses the publishable key; all access is constrained by RLS (see `docs/RLS_SECURITY_MODEL.md`).

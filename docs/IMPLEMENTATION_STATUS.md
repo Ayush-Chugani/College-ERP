@@ -31,12 +31,15 @@ Date: 2026-11-04
 | Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 38 smoke tests pass; nothing deployed |
 | Student activities and evidence: drafting, team members, evidence with versions and logged downloads, submission gate on mandatory evidence, verification and approval, summary report (migration 043; `/activities`) | Built; 14 DB tests + 9 unit tests. M043 applied live. Gaps in KI-54 |
 | Account features: two-step verification (TOTP) enforced by the database, sign-in log, self-service contact details, notifications with a header bell, global search (migration 045; `/settings`, `/mfa`, `/notifications`, `/search`, `/audit/logins`) | Built; 14 DB tests + 9 unit tests. **M045 not applied to the live project; the MFA screens have never run against real Supabase Auth.** Gaps in KI-57 |
+| Record sections and reference data: student and employee sub-records (addresses, guardians, previous education, entrance exams, residence, qualifications, previous employment) and 32 maintainable reference lists (migration 046; `/students/[id]/records`, `/employees/[id]/records`, `/admin/reference`) | Built; 12 DB tests + 8 unit tests. **M046 not applied to the live project.** Gaps in KI-58 (PAN / Aadhaar / bank accounts / HR documents not covered) |
+| Fee receipts and holds (migration 047; `/finance/receipt/[id]`, holds card on the account page) | Built; 6 DB tests. **M047 not applied to the live project.** Numbering rule assumed (KI-59) |
+| Personal dashboard: students see today's classes and attendance per course, faculty see upcoming sessions and unmarked ones (migration 048; `/dashboard`) | Built; 5 DB tests. **M048 not applied to the live project.** KI-60 |
 | Policy anchor lookups (029) | Fixes a flaw in 018/020: multi-hop anchors read intermediate tables as the caller, so writers without read access to another module were silently denied. 63 tables now resolve through SECURITY DEFINER lookups; regression-tested |
 | Workflow guards (020) and finance RPCs (021) | Implemented, tested, applied to live project. UI built (see Finance UI row) |
-| Admin RPCs for permission overrides and user linking; MFA recovery codes and a "require MFA" policy | Not started |
+| Admin RPCs for permission overrides and user linking; MFA recovery codes and a "require MFA" policy; concessions, scholarships, instalments, late fees, adjustments; employee identity numbers, bank accounts and HR documents | Not started |
 | Storage buckets/policies | Student documents only (M042); other document kinds not started |
 | Module services/CRUD | Not started |
-| Tests | 519 passing (342 database + 177 unit) plus 38 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
+| Tests | 551 passing (365 database + 186 unit) plus 38 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
 | Security audit | Done as a self-review (SECURITY_AUDIT.md). Performance report: not started |
 
 Pending modules: none unstarted; see listed per module in RTM.md.

@@ -55,6 +55,9 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <Link href={`/students/${id}/documents`} className="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm hover:bg-muted">
             Documents
           </Link>
+          <Link href={`/students/${id}/records`} className="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm hover:bg-muted">
+            Records
+          </Link>
           <Link href="/students" className="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm hover:bg-muted">
             Back to list
           </Link>

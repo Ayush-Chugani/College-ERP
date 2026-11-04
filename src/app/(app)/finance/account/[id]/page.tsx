@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getAccount, loadAccountLedger, parseFinId } from '@/features/finance-data';
+import { getAccount, loadAccountLedger, loadReceiptsAndHolds, parseFinId } from '@/features/finance-data';
+import { HoldsPanel, ReceiptCell } from '@/features/finance-extras';
 import { AllocateForm, AssessmentForm, PaymentForm, RefundActions, RefundRequestForm } from '@/features/finance-forms';
 import { can } from '@/lib/context';
 import { money } from '@/lib/finance-validation';
@@ -18,7 +19,8 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
   const { supabase, ctx } = await requireContext();
   const acct = await getAccount(supabase, id);
   if (!acct) notFound(); // missing or out of scope: same response
-  const L = await loadAccountLedger(supabase, id);
+  const [L, RH] = await Promise.all([loadAccountLedger(supabase, id), loadReceiptsAndHolds(supabase, id)]);
+  const receiptOf = new Map(RH.receipts.map((r) => [r.payment_transaction_id, r]));
 
   const yearOf = new Map(L.years.map((y) => [y.id, y.label]));
   const modeOf = new Map(L.modes.map((m) => [m.payment_mode_id, m.mode_name]));
@@ -81,12 +83,18 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
                   <span><span className="font-medium">{p.transaction_number}</span> · {modeOf.get(p.payment_mode_id) ?? `mode ${p.payment_mode_id}`} · {p.transaction_date.slice(0, 10)}{p.bank_reference_number ? ` · ref ${p.bank_reference_number}` : ''}{p.payer_name ? ` · ${p.payer_name}` : ''}</span>
                   <span><span className="font-medium">{p.payment_status}</span> · {money(p.amount)} · unallocated {money(unalloc)}</span>
                 </div>
+                <div className="mt-2"><ReceiptCell receipt={receiptOf.get(p.payment_transaction_id)} paymentId={p.payment_transaction_id} canIssue={can(ctx, 'FEES.FEE_PAYMENT.CREATE')} payable={p.payment_status === 'SUCCESS' || p.payment_status === 'PARTIALLY_REFUNDED'} /></div>
                 {can(ctx, 'FEES.FEE_PAYMENT.CREATE') && <div className="mt-2"><AllocateForm key={`${p.payment_transaction_id}-${unalloc}-${L.items.map((i) => i.balance_amount).join(',')}`} payment={p} unallocated={unalloc} items={L.items} /></div>}
               </div>
             );
           })}
           {can(ctx, 'FEES.FEE_PAYMENT.CREATE') && <PaymentForm accountId={id} modes={L.modes} blocked={blocked} />}
         </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Holds</CardTitle></CardHeader>
+        <CardContent><HoldsPanel accountId={id} holds={RH.holds} canManage={can(ctx, 'FEES.FEE_ASSESSMENT.UPDATE')} /></CardContent>
       </Card>
 
       <Card>

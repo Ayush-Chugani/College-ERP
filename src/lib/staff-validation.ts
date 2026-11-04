@@ -7,6 +7,12 @@ export const OPTION_TABLES = [
   'funding_agency', 'funding_type', 'industry_sector', 'journal', 'journal_type', 'membership_type', 'organizer', 'participation_level', 'professional_contribution_type', 'programme', 'publication_type',
   'publisher', 'research_status', 'role_type', 'state', 'training_program_type',
 ] as const;
+/** Mirrors sims_private.ref_tables / section_option_tables (migration 046); drift-tested. */
+export const REF_TABLES = [
+  'blood_group', 'caste', 'country', 'gender', 'religion', 'social_category', 'state', 'sub_caste', 'document_type', 'publication_type', 'journal_type', 'indexing_agency', 'funding_type', 'award_category',
+  'membership_type', 'qualification_level', 'education_institution', 'awarding_body', 'study_mode', 'previous_organization', 'staff_category', 'staff_type', 'designation',
+  'fee_category', 'financial_ledger_account', 'fee_type', 'late_fee_rule', 'late_fee_slab', 'concession_type', 'scholarship_scheme', 'installment_plan', 'payment_mode',
+] as const;
 export const LOOKUP_TABLES = ['journal', 'publisher', 'conference_event', 'organizer', 'external_organization', 'funding_agency'] as const;
 export const APPROVAL_STATUSES = ['DRAFT', 'SUBMITTED', 'UNDER_REVIEW', 'APPROVED', 'REJECTED'] as const;
 
@@ -68,7 +74,7 @@ export type FieldKind = 'boolean' | 'date' | 'datetime' | 'integer' | 'decimal' 
 
 export function fieldKind(c: DetailColumn): FieldKind {
   if (c.choices && c.choices.length > 0) return 'choice';
-  if (c.ref_table) return (OPTION_TABLES as readonly string[]).includes(c.ref_table) ? 'ref' : 'number-id';
+  if (c.ref_table) return (OPTION_TABLES as readonly string[]).includes(c.ref_table) || (REF_TABLES as readonly string[]).includes(c.ref_table) ? 'ref' : 'number-id';
   if (c.type === 'boolean') return 'boolean';
   if (c.type === 'date') return 'date';
   if (c.type.startsWith('timestamp')) return 'datetime';
@@ -79,7 +85,8 @@ export function fieldKind(c: DetailColumn): FieldKind {
 }
 
 export function humanize(name: string): string {
-  const s = name.replace(/_id$/, '').replace(/_/g, ' ').trim();
+  const raw = name.replace(/_id$/, '').replace(/_/g, ' ').trim();
+  const s = /[a-z]/.test(raw) ? raw : raw.toLowerCase(); // ALL_CAPS enum values read as sentences
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 

@@ -4,7 +4,7 @@ Nothing has been deployed by this repository's tooling. This guide is the checkl
 
 ## 1. Supabase project
 1. Create (or pick) the project. Note the project URL and the **publishable** key (Settings > API). Never copy the service-role key or the database password into the web app.
-2. Apply migrations `001` to `045` **in order**. Either `supabase link --project-ref <ref>` then `supabase db push` (uses `supabase/config.toml`), or the operator scripts in `tools/` (see DATABASE_MIGRATION.md). Migration 042 creates the `sims-documents` bucket and its policies.
+2. Apply migrations `001` to `048` **in order**. Either `supabase link --project-ref <ref>` then `supabase db push` (uses `supabase/config.toml`), or the operator scripts in `tools/` (see DATABASE_MIGRATION.md). Migration 042 creates the `sims-documents` bucket and its policies.
 3. Authentication > URL configuration: Site URL = the production origin; redirect URLs = `<origin>/auth/callback` and `<origin>/reset-password`.
 4. Authentication > Multi-factor: enable TOTP (enrol and verify) so the screens in `/settings` and `/mfa` work (matches `config.toml`). Authentication > Providers > Email: sign-ups **disabled** (accounts are provisioned), confirmation on, minimum password length 12 (matches `config.toml`). Configure a real SMTP provider or password-reset mails will not arrive.
 5. Create the first user in Authentication > Users, then run `tools/bootstrap_admin.py` (one transaction; verifies identity resolution). After that, manage accounts and roles from `/admin/users`.

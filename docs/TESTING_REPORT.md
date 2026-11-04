@@ -4,9 +4,9 @@ Run on 2026-11-04 on the development container. Everything below was executed; n
 
 | Suite | Command | Result |
 |---|---|---|
-| Database (embedded Postgres, all migrations, RLS, triggers, RPCs) | `npm run test:db` | 24 files, 342 test cases |
-| Unit (validation, payload builders, navigation, drift tests against migrations) | `npm run test:unit` | 22 files, 177 test cases |
-| **Vitest total** | `npm test` | **519 passed, 0 failed** (46 files) |
+| Database (embedded Postgres, all migrations, RLS, triggers, RPCs) | `npm run test:db` | 27 files, 365 test cases |
+| Unit (validation, payload builders, navigation, drift tests against migrations) | `npm run test:unit` | 24 files, 186 test cases |
+| **Vitest total** | `npm test` | **551 passed, 0 failed** (51 files) |
 | Type check | `npm run typecheck` | clean |
 | Lint | `npm run lint` | clean |
 | Production build | `npm run build` (placeholder Supabase variables) | passes |

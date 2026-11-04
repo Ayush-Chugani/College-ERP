@@ -216,5 +216,26 @@ Employees act on their own records by identity; staff need `STAFF_PROFILE.STAFF_
 | `my_notifications(limit)` / `my_notification_count()` / `notification_dismiss(key)` / `notification_dismiss_all()` | signed in | Computed from live data; keys such as `doc:12:REJECTED` identify an item and its state, so a new state is a new notification. |
 | `global_search(q, limit)` | signed in (SECURITY INVOKER) | At least two characters, wildcards literal; RLS decides what is found. |
 
+## Record sections and reference data (migration 046)
+Same catalogue-driven mechanism as staff records: forms are described from the catalogue, rows are written with `jsonb_populate_record`, unknown or audit/user columns are rejected, constraint errors become readable messages, and every write is audited by the RPC.
+| RPC | Permission | Notes |
+|---|---|---|
+| `record_sections(kind)` / `section_schema(kind, section)` | active member | Sections: student `address`, `guardian`, `previous_education`, `entrance_exam`, `residence`; employee `address`, `qualification`, `experience`. |
+| `section_rows(kind, parent_id, section)` | `STUDENT.ALL.READ`, `EMPLOYEE.ALL.READ`, `EMPLOYEE.QUALIFICATION.READ` or `EMPLOYEE.EXPERIENCE.READ` at the parent's scope | Rows as JSON plus `can_create`, `can_update`, `can_delete`. |
+| `section_save(kind, parent_id, section, id?, p)` / `section_delete(kind, parent_id, section, id)` | the matching CREATE / UPDATE / DELETE | The parent key is forced; a row of another parent is "Unknown row". |
+| `section_lookup_options(table)` | active member | id / label pairs for the reference tables only. |
+| `ref_list()` / `ref_schema(t)` / `ref_rows(t)` / `ref_save(t, id?, p)` / `ref_delete(t, id)` | `IAM.ALL.CONFIGURE`, `EMPLOYEE.ALL.CONFIGURE`, `STAFF_PROFILE.ALL.CONFIGURE` or `FEES.FEE_STRUCTURE.CONFIGURE` (global) | 32 tables; the list shows only what the caller may configure; deleting a row in use fails with "still in use". |
+
+## Fee receipts and holds (migration 047)
+| RPC | Permission | Notes |
+|---|---|---|
+| `fin_issue_receipt(payment_id)` -> id | `FEE_PAYMENT.CREATE` | SUCCESS or PARTIALLY_REFUNDED student payments; idempotent (returns the issued receipt). |
+| `fin_cancel_receipt(receipt_id, reason, replace?)` -> new id | `FEE_PAYMENT.UPDATE` | Cancels, or replaces with a new numbered receipt that points back; reason required. |
+| `fin_payment_receipts(account_id)` / `fin_receipt_get(receipt_id)` | `FEE_PAYMENT.READ` | Payments with their latest receipt; one receipt with allocations and `can_cancel`. |
+| `fin_hold_place(account_id, type, reason)` / `fin_hold_release(hold_id, reason)` / `fin_holds(account_id)` | `FEE_ASSESSMENT.UPDATE` / `READ` | One active hold per type (idempotent); the account is ON_HOLD while any hold is active. |
+
+## Personal dashboard (migration 048)
+`my_dashboard()` takes no argument and describes the caller: students get `attendance` (per course: conducted, present, percentage) and `today` (classes); employees get `upcoming` (sessions of the next seven days), `unmarked` (past planned sessions of the last 30 days) and `sections`. `null` without an identity.
+
 ## Workflow guards (migration 020)
 Not an API, but visible to clients: updates that set approval/verification/publication state or actor columns raise `42501` ("Not authorised to APPROVE/VERIFY/PUBLISH …" or "… must be the acting user") unless the caller holds the matching permission at the row's scope.

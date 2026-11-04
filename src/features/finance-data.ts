@@ -74,3 +74,22 @@ export function parseFinId(raw: string): number | null {
   const n = Number(raw);
   return Number.isSafeInteger(n) && n > 0 ? n : null;
 }
+
+export type PaymentReceiptRow = { payment_transaction_id: number; fee_receipt_id: number | null; receipt_number: string | null; receipt_status: string | null };
+export type HoldRow = { financial_hold_id: number; hold_type: string; hold_reason: string; hold_status: string; placed_at: string; released_at: string | null; release_reason: string | null };
+export type ReceiptDetail = {
+  fee_receipt_id: number; receipt_number: string; receipt_date: string; receipt_amount: number; receipt_status: string; cancellation_reason: string | null; original_receipt_id: number | null;
+  transaction_number: string; transaction_date: string; payment_mode: string; bank_reference: string | null; payer_name: string | null; account_number: string; student_account_id: number;
+  student_number: string; student_name: string; allocations: { fee: string; amount: number }[]; can_cancel: boolean;
+};
+export const HOLD_TYPES = ['REGISTRATION', 'EXAMINATION', 'HALL_TICKET', 'RESULT', 'CERTIFICATE', 'HOSTEL_CHECKOUT', 'GRADUATION', 'OTHER'] as const;
+
+/** Receipts per payment and holds of an account; a failure shows as "none" rather than breaking the page (the reader may lack FEE_PAYMENT.READ). */
+export async function loadReceiptsAndHolds(supabase: SupabaseClient, accountId: number) {
+  const [rc, hd] = await Promise.all([supabase.rpc('fin_payment_receipts', { p_student_account_id: accountId }), supabase.rpc('fin_holds', { p_student_account_id: accountId })]);
+  return { receipts: (rc.data ?? []) as PaymentReceiptRow[], holds: (hd.data ?? []) as HoldRow[] };
+}
+export async function getReceipt(supabase: SupabaseClient, id: number): Promise<ReceiptDetail | null> {
+  const { data, error } = await supabase.rpc('fin_receipt_get', { p_receipt_id: id });
+  return error || !data ? null : (data as ReceiptDetail);
+}

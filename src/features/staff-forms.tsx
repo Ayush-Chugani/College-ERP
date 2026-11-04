@@ -24,21 +24,21 @@ function dbMessage(e: DbError, fallback: string): string {
 const sel = 'flex h-9 w-full rounded-md border border-border bg-card px-3 text-sm';
 const area = 'w-full rounded-md border border-border bg-card p-2 text-sm';
 
-type OptionMap = Record<string, Opt[]>;
+export type OptionMap = Record<string, Opt[]>;
 
 /** Loads id/label options for the referenced tables of a column list (only the ones the forms may list). */
-function useOptions(columns: DetailColumn[], reloadKey: number): OptionMap {
+export function useOptions(columns: DetailColumn[], reloadKey: number, rpc = 'staff_lookup_options'): OptionMap {
   const [map, setMap] = useState<OptionMap>({});
   useEffect(() => {
     let alive = true;
     const tables = [...new Set(columns.filter((c) => fieldKind(c) === 'ref').map((c) => c.ref_table as string))];
     const supabase = createClient();
     Promise.all(tables.map(async (t) => {
-      const { data } = await supabase.rpc('staff_lookup_options', { p_table: t });
+      const { data } = await supabase.rpc(rpc, { p_table: t });
       return [t, ((data ?? []) as { id: number; label: string }[]).map((r) => ({ id: Number(r.id), label: r.label }))] as const;
     })).then((entries) => { if (alive) setMap(Object.fromEntries(entries)); });
     return () => { alive = false; };
-  }, [columns, reloadKey]);
+  }, [columns, reloadKey, rpc]);
   return map;
 }
 

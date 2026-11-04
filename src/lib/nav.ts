@@ -36,6 +36,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/curriculum', label: 'Curriculum', module: 'CURRICULUM' },
   { href: '/courses', label: 'Courses', module: 'CURRICULUM' },
   { href: '/admin/users', label: 'Users and roles', module: 'IAM' },
+  { href: '/admin/reference', label: 'Reference data', module: 'IAM' },
   { href: '/audit', label: 'Audit log', module: 'AUDIT' },
   { href: '/settings', label: 'Settings' },
 ];

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getMyResults } from '@/features/assessment-data';
 import { FEE_WINDOW_MONTHS, loadDashboard, SESSION_WINDOW_DAYS } from '@/features/dashboard-data';
 import { loadStats } from '@/features/dashboard-stats';
+import { hhmm, isLow, loadPersonalDashboard } from '@/features/personal-dashboard';
 import { percent, rupees } from '@/lib/dashboard-model';
 import { requireContext } from '@/lib/server-context';
 
@@ -28,10 +29,11 @@ export default async function DashboardPage() {
   const { supabase, ctx } = await requireContext();
   const mods = ctx.readable_modules;
   const has = (m: string) => mods.includes(m);
-  const [stats, d, myTerms] = await Promise.all([
+  const [stats, d, myTerms, mine] = await Promise.all([
     loadStats(supabase, mods),
     loadDashboard(supabase, mods),
     ctx.student_id !== null ? getMyResults(supabase) : Promise.resolve([]),
+    ctx.student_id !== null || ctx.employee_id !== null ? loadPersonalDashboard(supabase) : Promise.resolve(null),
   ]);
   const latest = myTerms[0];
   const hasCharts = has('STUDENT') || has('ADMISSION') || has('REGISTRATION') || has('EMPLOYEE') || has('ATTENDANCE') || has('RESULT') || has('FEES');
@@ -44,6 +46,40 @@ export default async function DashboardPage() {
           {ctx.roles.length ? ctx.roles.map((r) => `${r.role_name} (${r.scope_type.toLowerCase()})`).join(' · ') : 'No active role assignments.'}
         </p>
       </div>
+
+      {ctx.student_id !== null && mine && (
+        <>
+          <Panel title="Today's classes" note="Your registered courses.">
+            {!mine.today || mine.today.length === 0 ? <p className="text-sm text-muted-foreground">No classes are scheduled for you today.</p> : (
+              <ul className="divide-y divide-border text-sm">
+                {mine.today.map((c, i) => <li key={i} className="flex flex-wrap justify-between gap-2 py-2"><span>{hhmm(c.start)}–{hhmm(c.end)} · <span className="font-medium">{c.course}</span></span><span className="text-muted-foreground">{c.type.toLowerCase()}{c.room ? ` · ${c.room}` : ''} · {c.status.toLowerCase()}</span></li>)}
+              </ul>
+            )}
+          </Panel>
+          <Panel title="My attendance" note="Conducted classes only. Courses under 75% are marked.">
+            {!mine.attendance || mine.attendance.length === 0 ? <p className="text-sm text-muted-foreground">You are not on any class roster yet.</p> : (
+              <table className="w-full text-sm">
+                <thead className="border-b border-border text-left"><tr><th scope="col" className="py-2 pr-4 font-medium">Course</th><th scope="col" className="py-2 pr-4 text-right font-medium">Attended</th><th scope="col" className="py-2 text-right font-medium">Percentage</th></tr></thead>
+                <tbody>{mine.attendance.map((a) => (
+                  <tr key={a.section_id} className="border-b border-border last:border-0"><td className="py-2 pr-4">{a.course}</td><td className="py-2 pr-4 text-right tabular-nums">{Number(a.present)} / {Number(a.conducted)}</td>
+                    <td className={`py-2 text-right tabular-nums ${isLow(a.percentage === null ? null : Number(a.percentage)) ? 'font-medium text-destructive' : ''}`}>{a.percentage === null ? '—' : `${Number(a.percentage)}%`}{isLow(a.percentage === null ? null : Number(a.percentage)) ? ' (low)' : ''}</td></tr>
+                ))}</tbody>
+              </table>
+            )}
+          </Panel>
+        </>
+      )}
+
+      {ctx.employee_id !== null && mine && (
+        <Panel title="My teaching" note={`${Number(mine.sections ?? 0)} active section${Number(mine.sections ?? 0) === 1 ? '' : 's'} · next 7 days`}>
+          {Number(mine.unmarked ?? 0) > 0 && <p role="status" className="mb-2 rounded-md border border-border bg-muted p-2 text-sm">{Number(mine.unmarked)} past session{Number(mine.unmarked) === 1 ? ' is' : 's are'} still not marked. <Link href="/attendance" className="text-primary underline-offset-4 hover:underline">Open attendance</Link></p>}
+          {!mine.upcoming || mine.upcoming.length === 0 ? <p className="text-sm text-muted-foreground">No sessions are planned for you in the next 7 days.</p> : (
+            <ul className="divide-y divide-border text-sm">
+              {mine.upcoming.map((u) => <li key={u.session_id} className="flex flex-wrap justify-between gap-2 py-2"><span>{u.date} {hhmm(u.start)}–{hhmm(u.end)} · <Link href={`/attendance/session/${u.session_id}`} className="font-medium text-primary underline-offset-4 hover:underline">{u.course}</Link> ({u.section})</span><span className="text-muted-foreground">{u.type.toLowerCase()} · {u.status.toLowerCase()}</span></li>)}
+            </ul>
+          )}
+        </Panel>
+      )}
 
       {ctx.student_id !== null && (
         <Panel title="My results" note="Published results only.">
