@@ -442,9 +442,9 @@ None has an end-to-end browser test. The right-hand column shows what is covered
 | R-PERF-3 | Avoid retrieving whole tables | Same | Done | |
 | R-PERF-4 | Avoid N+1 queries | List helpers return joined rows from one RPC; ledgers batch with `IN` lists | Done | Not measured |
 | R-PERF-5 | Efficient dashboard aggregation | `dash_*` functions aggregate in the database | Done | |
-| R-PERF-6 | `EXPLAIN ANALYZE` of important queries | Not run | Not started | KI-10 |
+| R-PERF-6 | `EXPLAIN ANALYZE` of important queries | Run on synthetic data (20,000 students) in the embedded database: `tests/perf/explain.perf.ts` | Done | Found a P1 scaling problem in the RLS helpers (KI-61); fix not done |
 | R-PERF-7 | Caching that cannot leak across users | No caching is used | Done | |
-| R-PERF-8 | **Performance report** | Not written | Not started | |
+| R-PERF-8 | **Performance report** | [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md) | Done | Reports the finding; the optimisation is outstanding |
 
 ---
 
