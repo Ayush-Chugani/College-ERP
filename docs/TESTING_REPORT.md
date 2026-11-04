@@ -4,8 +4,8 @@ Run on 2026-11-04 on the development container. Everything below was executed; n
 
 | Suite | Command | Result |
 |---|---|---|
-| Database (embedded Postgres, all migrations, RLS, triggers, RPCs) | `npm run test:db` | 22 files, 300 test cases |
-| Unit (validation, payload builders, navigation, drift tests against migrations) | `npm run test:unit` | 20 files, 159 test cases |
+| Database (embedded Postgres, all migrations, RLS, triggers, RPCs) | `npm run test:db` | 22 files, 310 test cases |
+| Unit (validation, payload builders, navigation, drift tests against migrations) | `npm run test:unit` | 20 files, 160 test cases |
 | **Vitest total** | `npm test` | **470 passed, 0 failed** (42 files) |
 | Type check | `npm run typecheck` | clean |
 | Lint | `npm run lint` | clean |
