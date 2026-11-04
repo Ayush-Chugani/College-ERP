@@ -1,6 +1,6 @@
 # Storage documentation
 
-Scope today: **student documents** (migration 042). Employee documents, certificate requests, announcement attachments and activity evidence have schema (`file_object` and link tables) but no upload workflow yet (KI-53).
+Scope today: **student documents** (migration 042) and **student activity evidence** (migration 043, same bucket, same key prefix and policies, plus versions: `student_activity_evidence_version` keeps every uploaded file and downloads are written to `student_activity_evidence_audit`). Employee documents, certificate requests and announcement attachments have schema (`file_object` and link tables) but no upload workflow yet (KI-53, KI-54).
 
 ## Bucket
 | Item | Value |

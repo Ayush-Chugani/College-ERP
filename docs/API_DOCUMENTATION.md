@@ -175,5 +175,18 @@ Private bucket `sims-documents`, keys `student/<student_id>/<random>-<name>` (se
 | `student_document_review(id, decision, remarks?)` | VERIFY | PENDING -> VERIFIED or REJECTED; remarks required to reject. |
 | `student_document_delete(id)` -> storage key | owner or DELETE | Never a VERIFIED document; the caller then removes the orphaned object. |
 
+## Student activities (migration 043)
+Students act on their own activities by identity; staff need `STUDENT.STUDENT_ACTIVITY[_EVIDENCE|_REPORT].*` at the student's scope. Direct writes to the five activity tables are closed.
+| RPC | Permission | Notes |
+|---|---|---|
+| `student_activity_save(activity_id?, student_id?, p jsonb)` -> id | owner or CREATE / UPDATE | `p` holds type, title, dates, achievement, rank, award, link, texts, year, level, mode; scope is taken from the latest enrolment; only DRAFT can be edited. |
+| `student_activity_submit(id)` | owner or UPDATE | Needs start date, team name for team types, mandatory evidence; sets SUBMITTED / PENDING. Replay returns quietly. |
+| `student_activity_review(id, step, decision, remarks?)` | VERIFY or APPROVE | VERIFY: VERIFIED, NEEDS_CORRECTION, REJECTED; APPROVE: APPROVED, REJECTED. Remarks required unless the decision is VERIFIED / APPROVED. |
+| `student_activity_delete(id, reason?)` | owner or DELETE | Soft delete of a DRAFT or REJECTED activity. |
+| `student_activity_team_add(...)` / `student_activity_team_remove(member_id)` | owner or UPDATE | Draft only; a member is either a student or an external person. |
+| `student_activity_evidence_add(...)` / `_replace(...)` / `_download_info(id)` / `_delete(id, reason?)` | owner or EVIDENCE.CREATE / UPDATE / READ / DELETE | Same file rules as student documents; replace adds a version; every action writes `student_activity_evidence_audit`; delete is soft. |
+| `student_activity_list(student_id?, search?, approval?, limit, offset)` / `student_activity_get(id)` | owner or READ | The list returns the caller's own plus every activity they may read. `get` includes team, current evidence and `can_*` flags. |
+| `student_activity_report(year?)` | REPORT.READ | Counts per type and approval status, and how many carry an award. |
+
 ## Workflow guards (migration 020)
 Not an API, but visible to clients: updates that set approval/verification/publication state or actor columns raise `42501` ("Not authorised to APPROVE/VERIFY/PUBLISH …" or "… must be the acting user") unless the caller holds the matching permission at the row's scope.

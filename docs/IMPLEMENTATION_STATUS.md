@@ -29,15 +29,16 @@ Date: 2026-11-04
 | Audit viewer: filters, paging, before / after detail (migration 041; `/audit`) | Built; shares the M041 tests. Shows writes only |
 | Student documents on private Storage: upload, register, list, signed-URL open (logged), verify / reject, delete (migration 042; `/my-documents`, `/students/[id]/documents`) | Built; 12 DB tests + 8 unit tests. **M042 not applied to the live project; the bucket has never been created on a real Supabase project.** Student documents only (KI-53) |
 | Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 24 smoke tests pass; nothing deployed |
+| Student activities and evidence: drafting, team members, evidence with versions and logged downloads, submission gate on mandatory evidence, verification and approval, summary report (migration 043; `/activities`) | Built; 14 DB tests + 9 unit tests. **M043 not applied to the live project.** Gaps in KI-54 |
 | Policy anchor lookups (029) | Fixes a flaw in 018/020: multi-hop anchors read intermediate tables as the caller, so writers without read access to another module were silently denied. 63 tables now resolve through SECURITY DEFINER lookups; regression-tested |
 | Workflow guards (020) and finance RPCs (021) | Implemented, tested, applied to live project. UI built (see Finance UI row) |
-| Admin RPCs for permission overrides and user linking; staff profile and research (22) and student activity evidence (23) modules | Not started |
+| Admin RPCs for permission overrides and user linking; staff profile and research (22) module | Not started |
 | Storage buckets/policies | Student documents only (M042); other document kinds not started |
 | Module services/CRUD | Not started |
-| Tests | 436 passing (286 database + 150 unit) plus 24 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
+| Tests | 459 passing (300 database + 159 unit) plus 24 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
 | Security audit | Done as a self-review (SECURITY_AUDIT.md). Performance report: not started |
 
-Pending modules: 22 (Staff Profile and Research) and 23 (Student Activity and Evidence), plus the gaps listed per module in RTM.md.
+Pending modules: 22 (Staff Profile and Research), plus the gaps listed per module in RTM.md.
 Known issues: see `docs/DATABASE_MIGRATION.md` (divergences, SD-1, collation).
 
 See also [RTM.md](RTM.md), the full requirements traceability matrix (requirement to implementation, tests and status).

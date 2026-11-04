@@ -44,7 +44,7 @@ describe('schema creation', () => {
       "select count(*) filter (where tgname like 'trg\_%\_workflow\_guard')::int guard, count(*) filter (where tgname like 'trg\_%\_touch\_updated\_at')::int touch, count(*) filter (where tgname like 'trg\_%\_audit')::int audit, count(*) filter (where tgname not like '%\_audit' and tgname not like '%workflow\_guard' and tgname not like '%touch\_updated\_at')::int ported from pg_trigger where not tgisinternal",
     );
     // "ported" bucket = the 16 MySQL triggers + trg_employee_institution_immutable + 2 registration integrity guards + 1 class-session guard + 4 assessment/result guards
-    expect(t).toEqual({ guard: 20, touch: 37, audit: 51, ported: 28 });
+    expect(t).toEqual({ guard: 20, touch: 37, audit: 52, ported: 28 });
   });
 
   it('has RLS enabled on every public table (deny by default)', async () => {

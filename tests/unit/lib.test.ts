@@ -50,7 +50,7 @@ describe('redirect safety and routing', () => {
 describe('navigation visibility', () => {
   it('hides module pages the user cannot read, keeps universal pages', () => {
     expect(visibleNav(ctx([])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/settings']);
-    expect(visibleNav(ctx(['STUDENT'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/students', '/settings']);
+    expect(visibleNav(ctx(['STUDENT'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/students', '/activities', '/settings']);
     expect(visibleNav(ctx(['EMPLOYEE'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/employees', '/settings']);
     expect(visibleNav(ctx(['ACADEMIC_CALENDAR', 'CURRICULUM'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/calendar', '/curriculum', '/courses', '/settings']);
     expect(visibleNav(ctx(['ATTENDANCE'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/attendance', '/settings']);
@@ -66,7 +66,7 @@ describe('navigation visibility', () => {
     expect(visibleNav(ctx(['FEES'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/finance', '/settings']);
     expect(visibleNav(ctx(['RESULT'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/results/grades', '/settings']);
     // "My results" is for linked students only, whatever modules they can read
-    expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/my-results', '/my-documents', '/grievances', '/settings']);
+    expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/my-results', '/my-documents', '/activities', '/grievances', '/settings']);
     expect(visibleNav({ ...ctx(['STUDENT', 'ADMISSION', 'REGISTRATION', 'ATTENDANCE', 'TIMETABLE', 'ASSESSMENT', 'RESULT', 'GRIEVANCE', 'MENTORING', 'FEEDBACK', 'FEES', 'EMPLOYEE', 'INSTITUTION', 'ACADEMIC_CALENDAR', 'CURRICULUM', 'IAM', 'AUDIT']), student_id: 5 }).map((i) => i.href)).toEqual(NAV_ITEMS.map((i) => i.href));
   });
   it('parseContext rejects malformed payloads', () => {
