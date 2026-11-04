@@ -8,3 +8,5 @@ supabase/.branches/
 tools/work/
 __pycache__/
 tsconfig.tsbuildinfo
+test-results/
+playwright-report/
