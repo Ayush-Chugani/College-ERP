@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LinkAuthUserForm } from '@/features/iam-links';
 import { UserProvisioningForm } from '@/features/user-provisioning-form';
 import { serviceRoleConfigured } from '@/lib/supabase/admin';
 import { requireContext } from '@/lib/server-context';
@@ -26,6 +27,7 @@ export default async function NewUserPage() {
         </p>
       )}
       <Card><CardHeader><CardTitle>New user</CardTitle></CardHeader><CardContent><UserProvisioningForm /></CardContent></Card>
+      <Card><CardHeader><CardTitle>Link a sign-in account that already exists</CardTitle></CardHeader><CardContent><p className="mb-3 text-sm text-muted-foreground">For a user you created in the Supabase Authentication dashboard. Needs no service key.</p><LinkAuthUserForm /></CardContent></Card>
     </div>
   );
 }

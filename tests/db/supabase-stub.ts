@@ -1,7 +1,7 @@
 /** Minimal stand-in for the Supabase pieces the migrations depend on (auth schema, roles, default privileges). */
 export const SUPABASE_STUB = `
   CREATE SCHEMA auth;
-  CREATE TABLE auth.users (id uuid PRIMARY KEY);
+  CREATE TABLE auth.users (id uuid PRIMARY KEY, email text);
   CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
   CREATE ROLE anon NOLOGIN; CREATE ROLE authenticated NOLOGIN; CREATE ROLE service_role NOLOGIN BYPASSRLS;
   CREATE TABLE auth.mfa_factors (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid NOT NULL, factor_type text DEFAULT 'totp', status text NOT NULL DEFAULT 'unverified');

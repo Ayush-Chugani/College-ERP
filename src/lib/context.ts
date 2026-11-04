@@ -16,6 +16,8 @@ export const contextSchema = z.object({
   email: z.string().nullable(),
   student_id: z.number().nullable(),
   employee_id: z.number().nullable(),
+  /** True when the person holds a role that requires two-step verification and has not enrolled yet (migration 058). */
+  mfa_setup_required: z.boolean().default(false),
   roles: z.array(roleSchema),
   readable_modules: z.array(z.string()),
   /** ALLOW permission codes at non-SELF scopes. Used only to hide actions; the database enforces access. */

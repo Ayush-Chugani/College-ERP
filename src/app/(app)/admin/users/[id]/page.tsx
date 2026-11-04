@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getUser, listRoles, listScopes, parseId } from '@/features/iam-data';
 import { AccountStatusForm, AssignRoleForm, RevokeButton } from '@/features/iam-forms';
+import { LinkPersonForm } from '@/features/iam-links';
 import { OverridePanel, type Override } from '@/features/override-panel';
 import { label } from '@/lib/iam-validation';
 import { requireContext } from '@/lib/server-context';
@@ -45,6 +46,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
           </table>
         </CardContent>
       </Card>
+      {u.can_update && <Card><CardHeader><CardTitle>Link to a person</CardTitle></CardHeader><CardContent><LinkPersonForm userId={u.user_id} disabled={u.is_self} /></CardContent></Card>}
       {u.can_update && <Card><CardHeader><CardTitle>Permission overrides</CardTitle></CardHeader><CardContent><OverridePanel userId={u.user_id} overrides={overrides} scopes={scopes} disabled={u.is_self} /></CardContent></Card>}
       {u.can_update && <Card><CardHeader><CardTitle>Assign a role</CardTitle></CardHeader><CardContent><AssignRoleForm userId={u.user_id} roles={roles} scopes={scopes} disabled={u.is_self} /></CardContent></Card>}
     </div>
