@@ -30,15 +30,16 @@ Date: 2026-11-04
 | Student documents on private Storage: upload, register, list, signed-URL open (logged), verify / reject, delete (migration 042; `/my-documents`, `/students/[id]/documents`) | Built; 12 DB tests + 8 unit tests. **M042 not applied to the live project; the bucket has never been created on a real Supabase project.** Student documents only (KI-53) |
 | Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 24 smoke tests pass; nothing deployed |
 | Student activities and evidence: drafting, team members, evidence with versions and logged downloads, submission gate on mandatory evidence, verification and approval, summary report (migration 043; `/activities`) | Built; 14 DB tests + 9 unit tests. **M043 not applied to the live project.** Gaps in KI-54 |
+| Staff profile and research: 12 kinds of record (journal publications, conferences, training, internships, proposals, funded projects, consultancy, co-/extra-curricular, awards, memberships, contributions) through one generic, catalogue-driven form, contributors, evidence with versions, verification and approval, summary (migration 044; `/staff-profile`) | Built; 18 DB tests + 9 unit tests. **M044 not applied to the live project.** Gaps in KI-55 |
 | Policy anchor lookups (029) | Fixes a flaw in 018/020: multi-hop anchors read intermediate tables as the caller, so writers without read access to another module were silently denied. 63 tables now resolve through SECURITY DEFINER lookups; regression-tested |
 | Workflow guards (020) and finance RPCs (021) | Implemented, tested, applied to live project. UI built (see Finance UI row) |
-| Admin RPCs for permission overrides and user linking; staff profile and research (22) module | Not started |
+| Admin RPCs for permission overrides and user linking | Not started |
 | Storage buckets/policies | Student documents only (M042); other document kinds not started |
 | Module services/CRUD | Not started |
-| Tests | 459 passing (300 database + 159 unit) plus 24 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
+| Tests | 486 passing (318 database + 168 unit) plus 24 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
 | Security audit | Done as a self-review (SECURITY_AUDIT.md). Performance report: not started |
 
-Pending modules: 22 (Staff Profile and Research), plus the gaps listed per module in RTM.md.
+Pending modules: none unstarted; see listed per module in RTM.md.
 Known issues: see `docs/DATABASE_MIGRATION.md` (divergences, SD-1, collation).
 
 See also [RTM.md](RTM.md), the full requirements traceability matrix (requirement to implementation, tests and status).

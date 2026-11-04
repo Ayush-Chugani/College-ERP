@@ -188,5 +188,18 @@ Students act on their own activities by identity; staff need `STUDENT.STUDENT_AC
 | `student_activity_list(student_id?, search?, approval?, limit, offset)` / `student_activity_get(id)` | owner or READ | The list returns the caller's own plus every activity they may read. `get` includes team, current evidence and `can_*` flags. |
 | `student_activity_report(year?)` | REPORT.READ | Counts per type and approval status, and how many carry an award. |
 
+## Staff profile and research (migration 044)
+Employees act on their own records by identity; staff need `STAFF_PROFILE.STAFF_ACTIVITY|STAFF_EVIDENCE|STAFF_REPORT.*` at the employee's scope. Nobody may verify or approve their own record. Direct writes to the activity, contributor, evidence and 12 detail tables are closed.
+| RPC | Permission | Notes |
+|---|---|---|
+| `staff_detail_schema(activity_type_id)` / `staff_lookup_schema(table)` | any active member | Column description (type, required, max length, referenced table, CHECK choices) used to render the generic forms. |
+| `staff_lookup_options(table)` | any active member | id / label pairs for the 26 listed reference tables only (never people tables). |
+| `staff_lookup_add(table, p jsonb)` -> id | an employee, or global CREATE | Adds a journal, publisher, conference event, organiser, external organisation or funding agency; errors are readable ("The field \"x\" is required"). |
+| `staff_activity_save(activity_id?, employee_id?, p jsonb, detail jsonb?)` -> id | owner or CREATE / UPDATE | Common record plus the detail row of the type in one transaction; DRAFT only; changing the type swaps the detail row. |
+| `staff_activity_submit(id)` / `staff_activity_review(id, step, decision, remarks?)` / `staff_activity_delete(id, reason?)` | owner or UPDATE; VERIFY / APPROVE; owner or DELETE | Same lifecycle and rules as student activities. |
+| `staff_contributor_add(...)` / `staff_contributor_remove(id)` | owner or UPDATE | Draft only; an employee or an external person. |
+| `staff_evidence_add(...)` / `_replace(...)` / `_download_info(id)` / `_delete(id, reason?)` | owner or EVIDENCE.* | Keys under `employee/<id>/`; versions kept; every action audited in `evidence_document_audit`. |
+| `staff_activity_list(employee_id?, search?, approval?, group?, limit, offset)` / `staff_activity_get(id)` / `staff_activity_report(year?)` | owner or READ; REPORT.READ | `get` returns the detail row as JSON, contributors, evidence and `can_*` flags. |
+
 ## Workflow guards (migration 020)
 Not an API, but visible to clients: updates that set approval/verification/publication state or actor columns raise `42501` ("Not authorised to APPROVE/VERIFY/PUBLISH …" or "… must be the acting user") unless the caller holds the matching permission at the row's scope.

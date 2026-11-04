@@ -2,18 +2,15 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { SelectField, TextField } from '@/components/form-fields';
 import { Button } from '@/components/ui/button';
-import type { ActivityDetail, Evidence, Opt, TeamMember } from '@/features/activity-data';
-import {
-  ACHIEVEMENTS, activityPayload, activitySchema, APPROVE_DECISIONS, evidenceSchema, label, reviewSchema, teamSchema, VERIFY_DECISIONS,
-  type ActivityInput, type ActivityValues, type EvidenceInput, type EvidenceValues, type ReviewInput, type ReviewValues, type TeamInput, type TeamValues,
-} from '@/lib/activity-validation';
-import { BUCKET, checkFile, storageKey } from '@/lib/document-validation';
+import type { ActivityDetail, Opt, TeamMember } from '@/features/activity-data';
+import { ACHIEVEMENTS, activityPayload, activitySchema, label, teamSchema, type ActivityInput, type ActivityValues, type TeamInput, type TeamValues } from '@/lib/activity-validation';
 import { createClient } from '@/lib/supabase/client';
+import { EvidencePanel as GenericEvidence } from '@/features/evidence-panel';
+import { WorkflowActions as GenericWorkflow } from '@/features/workflow-actions';
 
 type DbError = { code?: string; message: string };
 function dbMessage(e: DbError, fallback: string): string {
@@ -23,15 +20,6 @@ function dbMessage(e: DbError, fallback: string): string {
 }
 const sel = 'flex h-9 w-full rounded-md border border-border bg-card px-3 text-sm';
 const area = 'w-full rounded-md border border-border bg-card p-2 text-sm';
-async function sha256Hex(file: File): Promise<string | null> {
-  try {
-    const d = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
-    return Array.from(new Uint8Array(d), (b) => b.toString(16).padStart(2, '0')).join('');
-  } catch {
-    return null;
-  }
-}
-
 export type Lookups = { types: Opt[]; years: Opt[]; levels: Opt[]; modes: Opt[] };
 
 export function ActivityForm({ lookups, initial }: { lookups: Lookups; initial?: ActivityDetail }) {
@@ -90,49 +78,6 @@ export function ActivityForm({ lookups, initial }: { lookups: Lookups; initial?:
   );
 }
 
-export function WorkflowActions({ a }: { a: ActivityDetail }) {
-  const router = useRouter();
-  const [busy, setBusy] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const step = a.can_verify ? 'VERIFY' : 'APPROVE';
-  const form = useForm<ReviewInput, unknown, ReviewValues>({ resolver: zodResolver(reviewSchema), defaultValues: { step, decision: '', remarks: '' } });
-  const e = form.formState.errors;
-  const decisions = step === 'VERIFY' ? VERIFY_DECISIONS : APPROVE_DECISIONS;
-  async function call<T>(fn: () => PromiseLike<{ data: T | null; error: DbError | null }>, ok: string, fallback: string, after?: () => void) {
-    setBusy(true);
-    const { error } = await fn();
-    setBusy(false);
-    if (error) return void toast.error(dbMessage(error, fallback));
-    toast.success(ok);
-    after?.();
-    router.refresh();
-  }
-  const supabase = createClient();
-  return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-2">
-        {a.can_edit && <Button type="button" disabled={busy} onClick={() => call(() => supabase.rpc('student_activity_submit', { p_activity_id: a.student_activity_id }), 'Submitted for verification.', 'It could not be submitted.')}>Submit for verification</Button>}
-        {a.can_delete && (confirmDelete
-          ? <><span className="text-sm">Delete this activity?</span><Button type="button" variant="outline" disabled={busy} onClick={() => call(() => supabase.rpc('student_activity_delete', { p_activity_id: a.student_activity_id, p_reason: null }), 'Deleted.', 'It could not be deleted.', () => router.push('/activities'))}>Yes, delete</Button><Button type="button" variant="outline" onClick={() => setConfirmDelete(false)}>Cancel</Button></>
-          : <Button type="button" variant="outline" onClick={() => setConfirmDelete(true)}>Delete</Button>)}
-      </div>
-      {(a.can_verify || a.can_approve) && (
-        <form onSubmit={form.handleSubmit((v) => call(() => supabase.rpc('student_activity_review', { p_activity_id: a.student_activity_id, p_step: v.step, p_decision: v.decision, p_remarks: v.remarks ?? null }), 'Decision recorded.', 'The decision could not be saved.', () => form.reset({ step, decision: '', remarks: '' })))}
-          className="space-y-2 rounded-md border border-border bg-muted p-3" noValidate aria-label={step === 'VERIFY' ? 'Verify the activity' : 'Approve the activity'}>
-          <input type="hidden" {...form.register('step')} />
-          <div className="flex flex-wrap items-start gap-3">
-            <div className="w-56"><label htmlFor="rv-d" className="text-sm font-medium">{step === 'VERIFY' ? 'Verification' : 'Approval'} decision</label>
-              <select id="rv-d" className={sel} {...form.register('decision')}><option value="">— select —</option>{decisions.map((d) => <option key={d} value={d}>{label(d)}</option>)}</select>
-              {e.decision?.message && <p role="alert" className="text-sm text-destructive">{e.decision.message}</p>}</div>
-            <div className="w-96 max-w-full"><label htmlFor="rv-r" className="text-sm font-medium">Remarks</label><input id="rv-r" maxLength={1000} className={sel} {...form.register('remarks')} />{e.remarks?.message && <p role="alert" className="text-sm text-destructive">{e.remarks.message}</p>}</div>
-          </div>
-          <Button type="submit" disabled={busy}>Save decision</Button>
-        </form>
-      )}
-    </div>
-  );
-}
-
 export function TeamPanel({ a }: { a: ActivityDetail }) {
   const router = useRouter();
   const form = useForm<TeamInput, unknown, TeamValues>({ resolver: zodResolver(teamSchema), defaultValues: { kind: 'EXTERNAL' } });
@@ -183,99 +128,10 @@ export function TeamPanel({ a }: { a: ActivityDetail }) {
   );
 }
 
-export function EvidencePanel({ a, documentTypes, evidenceTypes }: { a: ActivityDetail; documentTypes: Opt[]; evidenceTypes: Opt[] }) {
-  const router = useRouter();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [fileError, setFileError] = useState<string | undefined>();
-  const [busy, setBusy] = useState(false);
-  const form = useForm<EvidenceInput, unknown, EvidenceValues>({ resolver: zodResolver(evidenceSchema), defaultValues: { title: '', issue_date: '', issuing_authority: '', certificate_number: '' } });
-  const e = form.formState.errors;
-  const supabase = createClient();
+export function WorkflowActions({ a }: { a: ActivityDetail }) {
+  return <GenericWorkflow id={a.student_activity_id} flags={a} rpcPrefix="student_activity" afterDeleteHref="/activities" />;
+}
 
-  async function upload(file: File) {
-    const key = storageKey(a.student_id, file.name, crypto.randomUUID());
-    const up = await supabase.storage.from(BUCKET).upload(key, file, { contentType: file.type, upsert: false });
-    return up.error ? null : key;
-  }
-  async function add(v: EvidenceValues) {
-    const file = fileRef.current?.files?.[0];
-    if (!file) return void setFileError('Choose a file');
-    const problem = checkFile(file);
-    if (problem) return void setFileError(problem);
-    setFileError(undefined);
-    const key = await upload(file);
-    if (!key) return void toast.error('The file could not be uploaded.');
-    const { error } = await supabase.rpc('student_activity_evidence_add', {
-      p_activity_id: a.student_activity_id, p_document_type_id: v.document_type_id, p_evidence_type_id: v.evidence_type_id ?? null, p_title: v.title, p_issue_date: v.issue_date ?? null,
-      p_issuing_authority: v.issuing_authority ?? null, p_certificate_number: v.certificate_number ?? null, p_storage_key: key, p_file_name: file.name, p_mime: file.type, p_size: file.size, p_checksum: await sha256Hex(file),
-    });
-    if (error) { await supabase.storage.from(BUCKET).remove([key]); return void toast.error(dbMessage(error, 'The evidence could not be saved.')); }
-    toast.success('Evidence added.');
-    form.reset();
-    if (fileRef.current) fileRef.current.value = '';
-    router.refresh();
-  }
-  async function open(ev: Evidence) {
-    setBusy(true);
-    const info = await supabase.rpc('student_activity_evidence_download_info', { p_evidence_id: ev.evidence_id });
-    if (info.error) { setBusy(false); return void toast.error(dbMessage(info.error, 'The file could not be opened.')); }
-    const signed = await supabase.storage.from(BUCKET).createSignedUrl((info.data as { storage_key: string }).storage_key, 60);
-    setBusy(false);
-    if (signed.error || !signed.data) return void toast.error('The file could not be opened.');
-    window.open(signed.data.signedUrl, '_blank', 'noopener,noreferrer');
-  }
-  async function replace(ev: Evidence, file: File | undefined) {
-    if (!file) return;
-    const problem = checkFile(file);
-    if (problem) return void toast.error(problem);
-    setBusy(true);
-    const key = await upload(file);
-    if (!key) { setBusy(false); return void toast.error('The file could not be uploaded.'); }
-    const { error } = await supabase.rpc('student_activity_evidence_replace', { p_evidence_id: ev.evidence_id, p_reason: null, p_storage_key: key, p_file_name: file.name, p_mime: file.type, p_size: file.size, p_checksum: await sha256Hex(file) });
-    setBusy(false);
-    if (error) { await supabase.storage.from(BUCKET).remove([key]); return void toast.error(dbMessage(error, 'The file could not be replaced.')); }
-    toast.success('New version saved.');
-    router.refresh();
-  }
-  async function remove(ev: Evidence) {
-    const { error } = await supabase.rpc('student_activity_evidence_delete', { p_evidence_id: ev.evidence_id, p_reason: null });
-    if (error) return void toast.error(dbMessage(error, 'The evidence could not be removed.'));
-    router.refresh();
-  }
-  return (
-    <div className="space-y-4">
-      {a.evidence.length === 0 ? <p className="text-sm text-muted-foreground">No evidence uploaded.</p> : (
-        <ul className="divide-y divide-border text-sm">
-          {a.evidence.map((ev) => (
-            <li key={ev.evidence_id} className="flex flex-wrap items-center justify-between gap-2 py-2">
-              <span><span className="font-medium">{ev.title}</span><span className="text-muted-foreground"> · {ev.evidence_type ?? 'Evidence'} · {ev.file_name} · version {ev.version}{ev.certificate_number ? ` · No. ${ev.certificate_number}` : ''}</span></span>
-              <span className="flex flex-wrap items-center gap-2">
-                <Button type="button" variant="outline" disabled={busy} onClick={() => open(ev)}>Open</Button>
-                {a.can_edit && <><label className="inline-flex h-9 cursor-pointer items-center rounded-md border border-border bg-card px-3 text-sm hover:bg-muted">Replace<input type="file" className="sr-only" accept="application/pdf,image/jpeg,image/png" aria-label={`Replace ${ev.title}`} onChange={(x) => replace(ev, x.target.files?.[0])} /></label>
-                  <Button type="button" variant="outline" onClick={() => remove(ev)} aria-label={`Remove ${ev.title}`}>Remove</Button></>}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-      {a.can_edit && (
-        <form onSubmit={form.handleSubmit(add)} className="space-y-3" noValidate aria-label="Add evidence">
-          <div className="flex flex-wrap items-start gap-3">
-            <SelectField id="ev-dt" label="Document type *" className="w-56" options={documentTypes} {...form.register('document_type_id')} error={e.document_type_id?.message} />
-            <SelectField id="ev-et" label="Evidence type" className="w-56" options={evidenceTypes} {...form.register('evidence_type_id')} error={e.evidence_type_id?.message} />
-            <TextField id="ev-t" label="Title *" className="w-72" maxLength={500} {...form.register('title')} error={e.title?.message} />
-          </div>
-          <div className="flex flex-wrap items-start gap-3">
-            <TextField id="ev-i" type="date" label="Issue date" className="w-44" {...form.register('issue_date')} error={e.issue_date?.message} />
-            <TextField id="ev-a" label="Issued by" className="w-64" maxLength={300} {...form.register('issuing_authority')} />
-            <TextField id="ev-c" label="Certificate number" className="w-52" maxLength={150} {...form.register('certificate_number')} />
-          </div>
-          <div><label htmlFor="ev-f" className="text-sm font-medium">File * (PDF, JPEG or PNG, up to 10 MB)</label>
-            <input id="ev-f" ref={fileRef} type="file" accept="application/pdf,image/jpeg,image/png" onChange={() => setFileError(undefined)} className="block text-sm" aria-invalid={!!fileError} />
-            {fileError && <p role="alert" className="text-sm text-destructive">{fileError}</p>}</div>
-          <Button type="submit" disabled={form.formState.isSubmitting}>{form.formState.isSubmitting ? 'Uploading…' : 'Add evidence'}</Button>
-        </form>
-      )}
-    </div>
-  );
+export function EvidencePanel({ a, documentTypes, evidenceTypes }: { a: ActivityDetail; documentTypes: Opt[]; evidenceTypes: Opt[] }) {
+  return <GenericEvidence a={{ activityId: a.student_activity_id, ownerId: a.student_id, ownerKind: 'student', canEdit: a.can_edit, evidence: a.evidence }} documentTypes={documentTypes} evidenceTypes={evidenceTypes} />;
 }

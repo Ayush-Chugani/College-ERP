@@ -20,7 +20,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 **Evidence conventions**
 
-- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M039 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`. **M040 to M043 are not applied to it**; they are tested on the embedded database only.
+- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M039 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`. **M040 to M044 are not applied to it**; they are tested on the embedded database only.
 - `DB:` and `UT:` name the Vitest files in `tests/db/` and `tests/unit/`, with the number of tests in brackets.
 - `KI-n` is an entry in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - Routes are paths under `src/app/(app)/`.
@@ -29,11 +29,11 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 | Check | Result |
 |---|---|
-| `npx vitest run` | **459 passed, 0 failed** (42 files: 22 database files with 300 tests, 20 unit files with 159 tests) |
+| `npx vitest run` | **486 passed, 0 failed** (44 files: 23 database files with 318 tests, 21 unit files with 168 tests) |
 | `npx tsc --noEmit` | clean (strict mode, `noUncheckedIndexedAccess`) |
 | `npm run lint` | clean |
 | `npm run build` | succeeds |
-| Migrations applied to the live project | 39 of 43 (M040 to M043 pending) |
+| Migrations applied to the live project | 39 of 44 (M040 to M044 pending) |
 | Signed-in manual or browser verification of any screen | **not done** (no Auth user exists yet, see R-AUTH-9 and KI-3, KI-14) |
 | Playwright end-to-end tests | **24 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
 | Multi-connection (concurrent) tests | **not run** (the test database is single-connection embedded PostgreSQL) |
@@ -46,7 +46,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 |---|---|
 | Schema migration (213 tables, 500 FKs, 16 triggers, 10 views) | **Done**, catalogue comparison shows no differences, applied live |
 | RLS on all tables, RBAC resolution, identity mapping | **Done**, tested on embedded PostgreSQL; sampled rather than exhaustive per table (KI-2) |
-| Modules with working screens, RPCs and tests | 14 of 23 are built (some with gaps), 8 are partial, 1 is not started |
+| Modules with working screens, RPCs and tests | 15 of 23 are built (some with gaps), 8 are partial, none is unstarted |
 | Supabase Storage / document workflows | **Partial**: student documents (private bucket, policies, signed URLs, review); other document kinds not started |
 | Supabase Auth flows in the app | Built; **never exercised signed in** |
 | Edge Functions | **Not started** (not needed so far; RPCs were used) |
@@ -233,12 +233,12 @@ Table counts come from the dictionary map in `tools/rls/table_module.json` (265 
 | 19 | Mentoring | 2 | **Built** | M038 | `/mentoring`, `/mentoring/[id]` | DB: mentoring [15]; UT: mentoring [6] | KI-49 |
 | 20 | Grievance Management | 3 | **Built** | M039 | `/grievances`, `/grievances/[id]` | DB: grievance [12]; UT: grievance [8] | KI-50 (no handler role exists) |
 | 21 | Student Finance and Fees | 31 | **Partial** | M008, M014, M021, M034 | `/finance`, `/finance/account/[id]` | DB: finance [14], finance-read [7]; UT: finance [10] | KI-16, KI-40, KI-41, KI-42: no UI or RPC for fee structures, concessions, scholarships, instalments, late fees, penalties, holds, adjustments, receipts |
-| 22 | Staff Profile and Research | 55 | **Not started** | schema only (M007, M010, M012) | none | none | |
+| 22 | Staff Profile and Research | 55 | **Built (gaps)** | M010, M011, M012 (schema), M044 | `/staff-profile` (list, summary), `/staff-profile/new`, `/staff-profile/[id]` (details, contributors, evidence, submit, verify, approve) | DB: staff-profile [18]; UT: staff | KI-55: 12 detail kinds covered; no screens for research supervision, journal metrics, project financial utilisation, indexing rows or the 25 lookup tables |
 | 23 | Student Activity and Evidence | 7 | **Built (gaps)** | M011, M013 (schema), M043 | `/activities` (list, summary report), `/activities/new`, `/activities/[id]` (details, team, evidence, submit, verify, approve) | DB: student-activities [14]; UT: activities | KI-54: no requirement-matrix or type management screens, no external-organisation lookup, no export |
 | - | Dashboards (cross-cutting) | n/a | **Built (gaps)** | M036 | `/dashboard` | DB: dashboard [10]; UT: dashboard [9] | KI-45 |
 | - | Lesson Plan | 22 | **Backlog** | none | none | none | Needs a source-of-truth decision (KI-11) |
 
-Counts: **Built or Built (gaps): 14 modules (3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23); Partial: 8 modules (1, 2, 6, 7, 8, 9, 10, 21); Not started: 1 module (22).** That is 23 in total. Dashboards are cross-cutting and not counted. Student Finance is Partial because most of its 31 tables have no workflow.
+Counts: **Built or Built (gaps): 15 modules (3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23); Partial: 8 modules (1, 2, 6, 7, 8, 9, 10, 21); Not started: 0 modules.** That is 23 in total. Dashboards are cross-cutting and not counted. Student Finance is Partial because most of its 31 tables have no workflow.
 
 ### 7.2 Per-module feature matrix
 
@@ -273,7 +273,7 @@ Reading the matrix: server-side sorting is mostly fixed (not user-selectable); o
 
 | ID | Requirement | Status |
 |---|---|---|
-| R-DOC-1 | Secure workflows for student documents, employee documents, qualification and experience certificates, identity evidence, student activity evidence, achievement certificates, other document types | Partial: **student documents** (M042, `/my-documents`, `/students/[id]/documents`). Student activity evidence: done (M043, same bucket and rules, versioned, downloads logged). Employee documents, certificates, announcement attachments: not started (KI-53, KI-54) |
+| R-DOC-1 | Secure workflows for student documents, employee documents, qualification and experience certificates, identity evidence, student activity evidence, achievement certificates, other document types | Partial: **student documents** (M042, `/my-documents`, `/students/[id]/documents`). Student activity evidence (M043) and staff evidence (M044, `employee/<id>/` prefix): done, same bucket and rules, versioned, downloads logged. Employee documents, certificates, announcement attachments: not started (KI-53, KI-54) |
 | R-DOC-2 | Private buckets by default | Done: `sims-documents` is private (M042); asserted in DB: student-documents |
 | R-DOC-3 | Signed URLs for controlled downloads | Done: 60-second signed URL after `student_document_download_info` authorises and logs; signed URL creation itself is not exercised in tests (needs real Storage) |
 | R-DOC-4 | File type and size validation, secure upload and download | Done for student documents: PDF, JPEG, PNG, 10 MB, name must match type, checked in the browser, the RPC and the bucket (UT: documents; DB: student-documents). No virus scanning (KI-53) |
@@ -501,7 +501,7 @@ Known limits of this evidence: the database runs on embedded PostgreSQL (PGlite)
 | 11 | SECURITY_AUDIT.md | Done (self-review) |
 | 12 | DEPLOYMENT_GUIDE.md | Done (checklist; nothing deployed) |
 | 13 | ENVIRONMENT_SETUP.md | Done |
-| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-54) |
+| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-55) |
 | 15 | IMPLEMENTATION_STATUS.md | Done |
 
 Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLICY_MAP.md (generated), DEVELOPMENT_CHECKLIST.md, this RTM.
@@ -515,7 +515,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | R-DEP-3 | Seed scripts | Partial | Reference seed is in M011; no sample-data or per-role test-user seed (and no fabricated records, by the rules) |
 | R-DEP-4 | Test scripts | Done | `npm test`, `npm run test:db`, `npm run test:unit` |
 | R-DEP-5 | Deployment configuration | `vercel.json` (framework, install and build commands, HSTS) and `supabase/config.toml` | Done | Neither has been used for a real deployment |
-| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed; M040 to M043 are not applied to the live project |
+| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed; M040 to M044 are not applied to the live project |
 | R-DEP-7 | Never commit secrets; never run a destructive production migration without approval and backup | Done | |
 
 ---

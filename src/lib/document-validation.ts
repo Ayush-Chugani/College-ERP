@@ -27,11 +27,12 @@ export function checkFile(f: { name: string; type: string; size: number }): stri
   return null;
 }
 
-/** student/<id>/<random>-<safe name>; the random part keeps names unique and unguessable. */
-export function storageKey(studentId: number, fileName: string, random: string): string {
+/** <student|employee>/<id>/<random>-<safe name>; the random part keeps names unique and unguessable. */
+export function ownerStorageKey(kind: 'student' | 'employee', ownerId: number, fileName: string, random: string): string {
   const safe = fileName.normalize('NFKD').replace(/[^A-Za-z0-9._-]+/g, '_').replace(/^[._]+/, '').slice(-120) || 'file';
-  return `student/${studentId}/${random}-${safe}`;
+  return `${kind}/${ownerId}/${random}-${safe}`;
 }
+export const storageKey = (studentId: number, fileName: string, random: string): string => ownerStorageKey('student', studentId, fileName, random);
 
 const optDate = z.string().optional().transform((v) => (v ? v : undefined)).refine((v) => v === undefined || /^\d{4}-\d{2}-\d{2}$/.test(v), 'Enter a valid date');
 export const uploadSchema = z

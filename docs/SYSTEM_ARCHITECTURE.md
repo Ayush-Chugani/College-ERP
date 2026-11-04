@@ -17,7 +17,7 @@ Browser ──(publishable key + user JWT)──> Supabase
 | Features | `src/features/*-data.ts`, `*-forms.tsx` | data access (server), mutations (client) |
 | Validation | `src/lib/*-validation.ts` | Zod schemas shared by forms and tests; drift-tested against migrations |
 | Identity | `src/lib/server-context.ts`, `context.ts`, `nav.ts` | `my_context()` once per request; navigation is a convenience, RLS is the enforcement |
-| Database | `supabase/migrations/001-043` | schema, RLS, workflow guards, audit triggers, RPCs |
+| Database | `supabase/migrations/001-044` | schema, RLS, workflow guards, audit triggers, RPCs |
 
 ## Decisions
 - Server components load data, so TanStack Query is not used (KI/RTM R-STK-6).

@@ -25,6 +25,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/my-results', label: 'My results', studentOnly: true },
   { href: '/my-documents', label: 'My documents', studentOnly: true },
   { href: '/activities', label: 'Activities', module: 'STUDENT', alsoStudent: true },
+  { href: '/staff-profile', label: 'Staff profile', module: 'STAFF_PROFILE' },
   { href: '/grievances', label: 'Grievances', module: 'GRIEVANCE', alsoStudent: true },
   { href: '/mentoring', label: 'Mentoring', module: 'MENTORING' },
   { href: '/feedback', label: 'Feedback', module: 'FEEDBACK' },
