@@ -1,5 +1,5 @@
 # Implementation Status (honest report)
-Date: 2026-11-03
+Date: 2026-11-04
 
 | Area | Status |
 |---|---|
@@ -24,15 +24,20 @@ Date: 2026-11-03
 | Feedback: question bank, questionnaires, cycles (global configuration), student feedback tasks and submission (RPC-only, anonymous by design), aggregated results with visibility levels and a minimum-respondent rule (migration 037) | Built; migration 037 applied live; 19 DB tests + 12 unit tests (350 total); typecheck, lint, build pass. **Not exercised signed in.** Rules are my inference (KI-46); anonymity design needs your review (KI-47); gaps in KI-48 |
 | Mentoring: mentor assignments, confidential counselling sessions with four visibility rules, end assignment (migration 038; assignment writes and all session access are RPC-only) | Built; migration 038 applied live; 15 DB tests + 7 unit tests (371 total); typecheck, lint, build pass. **Not exercised signed in.** Rules are my inference (KI-49) |
 | Grievance: student filing and follow-up, staff handling with history, internal notes, category management (migration 039; writes RPC-only) | Built; migration 039 applied live; 12 DB tests + 8 unit tests (391 total); typecheck, lint, build pass. **Not exercised signed in.** Rules are my inference and no handler role exists yet (KI-50) |
+| Announcements: feed for every member, staff drafting, approval workflow, archive (migration 040; `/announcements`) | Built; 8 DB tests + 7 unit tests. **M040 not applied to the live project.** Not exercised signed in. No attachments or delivery channels (KI-51) |
+| Identity administration: user list, account activation / deactivation, role assignment and revocation with safeguards (migration 041; `/admin/users`) | Built; 8 DB tests + unit tests. **M041 not applied to the live project.** No override or user-linking screens, no MFA (KI-52) |
+| Audit viewer: filters, paging, before / after detail (migration 041; `/audit`) | Built; shares the M041 tests. Shows writes only |
+| Student documents on private Storage: upload, register, list, signed-URL open (logged), verify / reject, delete (migration 042; `/my-documents`, `/students/[id]/documents`) | Built; 12 DB tests + 8 unit tests. **M042 not applied to the live project; the bucket has never been created on a real Supabase project.** Student documents only (KI-53) |
+| Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 24 smoke tests pass; nothing deployed |
 | Policy anchor lookups (029) | Fixes a flaw in 018/020: multi-hop anchors read intermediate tables as the caller, so writers without read access to another module were silently denied. 63 tables now resolve through SECURITY DEFINER lookups; regression-tested |
 | Workflow guards (020) and finance RPCs (021) | Implemented, tested, applied to live project. UI built (see Finance UI row) |
-| Admin RPCs, create/edit/detail screens, other 22 modules | Not started |
-| Storage buckets/policies | Not started |
+| Admin RPCs for permission overrides and user linking; staff profile and research (22) and student activity evidence (23) modules | Not started |
+| Storage buckets/policies | Student documents only (M042); other document kinds not started |
 | Module services/CRUD | Not started |
-| Tests | 231 tests passing (DB + unit) (schema/triggers, RLS, guards, finance RPCs). No Playwright/e2e, signed-in UI tests or concurrency tests |
-| Security audit, performance report | Not started |
+| Tests | 436 passing (286 database + 150 unit) plus 24 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
+| Security audit | Done as a self-review (SECURITY_AUDIT.md). Performance report: not started |
 
-Pending modules: all 23 application modules (database layer exists for each; no application layer).
+Pending modules: 22 (Staff Profile and Research) and 23 (Student Activity and Evidence), plus the gaps listed per module in RTM.md.
 Known issues: see `docs/DATABASE_MIGRATION.md` (divergences, SD-1, collation).
 
 See also [RTM.md](RTM.md), the full requirements traceability matrix (requirement to implementation, tests and status).

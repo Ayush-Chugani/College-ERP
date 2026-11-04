@@ -144,5 +144,36 @@ Error codes: `42501` not authorised / unknown; `22023` invalid input; `23505` ke
 ### Not covered
 Admission-application (`application_id`) payments, fee receipts (the numbering rule is not defined in the source), online-gateway confirmation, late-fee/installment automation, ledger postings. Concurrent interleavings are protected by row locks and unique keys but **have not been load-tested** (tests ran on a single connection).
 
+## Announcements (migration 040)
+Authorised with `COMMUNICATION.ALL.*` at the announcement's department (no department = institution-wide, needs a GLOBAL grant). The generated direct-write policies remain (KI-51).
+| RPC | Permission | Notes |
+|---|---|---|
+| `announcement_save(p_id?, type_id, department_id?, title, description, publish_from, publish_to?, audience)` -> id | CREATE (new) / UPDATE (edit) | Edits only DRAFT or REJECTED. Audience ALL, STUDENTS, STAFF, DEPARTMENT, PROGRAMME, CUSTOM; DEPARTMENT and PROGRAMME need a department. |
+| `announcement_set_status(id, status)` | UPDATE (PENDING, ARCHIVED, DRAFT), APPROVE (APPROVED, REJECTED) | DRAFT -> PENDING -> APPROVED / REJECTED, APPROVED -> ARCHIVED, REJECTED -> DRAFT; identical replay returns quietly. |
+| `announcement_delete(id)` | DELETE | DRAFT only. |
+| `announcement_manage_list(search?, status?, limit, offset)` / `announcement_get(id)` | READ | Staff list with `total_count`; `announcement_get` also returns `can_update`, `can_approve`, `can_delete`. |
+| `announcement_feed(limit)` | any active member | APPROVED, inside the publish window, matching the caller's audience (student, employee, department member). CUSTOM is never shown. |
+
+## Identity administration and audit viewer (migration 041)
+Everything needs a GLOBAL grant: `IAM.ALL.READ` to read, `IAM.ALL.UPDATE` to change, `AUDIT.ALL.READ` for the audit viewer. Without it the list functions return no rows and the others raise `42501`.
+| RPC | Notes |
+|---|---|
+| `iam_user_list(search?, status?, limit, offset)` / `iam_user_detail(user_id)` / `iam_roles()` | Users with roles and the student or employee they are linked to; detail includes every role assignment and `is_self`. |
+| `iam_set_account_status(user_id, status, reason?)` | ACTIVE, DISABLED or LOCKED; a reason is required to disable or lock; not for your own account; the last active GLOBAL SUPER_ADMIN is protected; writes an `activity_audit` row (`IAM` / `ACCOUNT_STATUS`). |
+| `iam_assign_role(user_id, role_id, scope_type, scope_entity_id?, reason?)` -> assignment id | Scope must equal the role's level; role active and assignable; only a super administrator grants SUPER_ADMIN; not for your own account; an identical active assignment is returned, not duplicated. |
+| `iam_revoke_role(assignment_id, reason?)` | Sets REVOKED and ends validity; same protections; identical replay returns quietly. |
+| `audit_list(module?, action?, search?, from?, to?, limit, offset)` / `audit_get(id)` / `audit_modules()` | Newest first with `total_count`; `audit_get` returns the before, after and details JSON. |
+Role assignments and permission overrides are row-audited, so permission changes appear in the audit log.
+
+## Student documents (migration 042)
+Private bucket `sims-documents`, keys `student/<student_id>/<random>-<name>` (see [STORAGE_DOCUMENTATION.md](STORAGE_DOCUMENTATION.md)). Owners act by identity; staff need `DOCUMENT.ALL.*` at the student's scope.
+| RPC | Permission | Notes |
+|---|---|---|
+| `student_document_register(student_id, document_type_id, storage_key, file_name, mime_type, size, checksum?, number?, issue_date?, expiry_date?)` -> id | owner or CREATE | Validates type, size, extension, key shape, that the object exists and its size matches; creates `file_object` and a PENDING `student_document`. |
+| `student_document_list(student_id)` | owner or READ | Includes `effective_status` (VERIFIED past its expiry shows EXPIRED). |
+| `student_document_download_info(id)` | owner or READ | Logs a DOWNLOAD audit row and returns the key to sign. |
+| `student_document_review(id, decision, remarks?)` | VERIFY | PENDING -> VERIFIED or REJECTED; remarks required to reject. |
+| `student_document_delete(id)` -> storage key | owner or DELETE | Never a VERIFIED document; the caller then removes the orphaned object. |
+
 ## Workflow guards (migration 020)
 Not an API, but visible to clients: updates that set approval/verification/publication state or actor columns raise `42501` ("Not authorised to APPROVE/VERIFY/PUBLISH …" or "… must be the acting user") unless the caller holds the matching permission at the row's scope.

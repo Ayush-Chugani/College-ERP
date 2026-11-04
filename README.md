@@ -2,7 +2,7 @@
 
 Next.js 15 (App Router, strict TypeScript, Tailwind 4) on Supabase (PostgreSQL, Auth, RLS). The database was migrated from the MySQL schema in `SIMS-DatabaseWithoutLessonPlan.sql`.
 
-**Status: early.** Database, identity/RBAC and RLS are implemented and tested; the web app has auth, a role-aware shell, a dashboard and a read-only Students list. Most modules have no UI yet. See `docs/IMPLEMENTATION_STATUS.md` and `docs/KNOWN_ISSUES.md` for the honest picture.
+**Status: in progress.** Database, identity/RBAC, RLS and most application modules (students, employees, admissions, registration, attendance, assessment, finance, feedback, mentoring, grievances, announcements, student documents, users and roles, audit log) are implemented and tested on an embedded database. Nothing has been exercised signed in against a real Supabase project, and migrations 040 to 042 are not applied to the live project. See `docs/IMPLEMENTATION_STATUS.md` and `docs/KNOWN_ISSUES.md` for the honest picture.
 
 ## Quick start
 ```bash
@@ -18,14 +18,15 @@ First administrator: see `tools/bootstrap_admin.py` (needs an Auth user created 
 | `npm run typecheck` / `npm run lint` | TypeScript (strict) / ESLint |
 | `npm run test:unit` | app unit tests |
 | `npm run test:db` | schema, trigger and RLS tests on embedded Postgres (no Docker needed) |
+| `npm run test:e2e` | Playwright smoke tests (set `E2E_CHROMIUM_PATH` to use an installed Chromium) |
 | `npm run build` | production build |
 | `npm run migrate:build` | regenerate migrations 001–016 from the MySQL source |
 | `npm run migrate:apply-check` / `migrate:catalogue` | apply migrations to a fresh embedded Postgres / compare catalogue with source |
 
 ## Layout
-`supabase/migrations` (001–016 generated from MySQL; 017–019 identity, RLS helpers/policies, `my_context`) · `src/app` (routes) · `src/lib` (clients, validation, nav) · `src/features` (data access per feature) · `tools` (translator, RLS generator, bootstrap) · `tests` · `docs`.
+`supabase/migrations` (001–016 generated from MySQL; 017–019 identity, RLS helpers/policies, `my_context`; 020–042 workflow guards, module RPCs, announcements, IAM administration, student documents) · `src/app` (routes) · `src/lib` (clients, validation, nav) · `src/features` (data access per feature) · `tools` (translator, RLS generator, bootstrap) · `tests` · `docs`.
 
 ## Security notes
 Never put the service-role key or the database password in `NEXT_PUBLIC_*` variables or client code. The browser only ever uses the publishable key; all access is constrained by RLS (see `docs/RLS_SECURITY_MODEL.md`).
 
-Requirements traceability: [docs/RTM.md](docs/RTM.md).
+Requirements traceability: [docs/RTM.md](docs/RTM.md). Also: [PROJECT_OVERVIEW](docs/PROJECT_OVERVIEW.md), [SYSTEM_ARCHITECTURE](docs/SYSTEM_ARCHITECTURE.md), [STORAGE_DOCUMENTATION](docs/STORAGE_DOCUMENTATION.md), [DEPLOYMENT_GUIDE](docs/DEPLOYMENT_GUIDE.md), [TESTING_REPORT](docs/TESTING_REPORT.md), [SECURITY_AUDIT](docs/SECURITY_AUDIT.md).
