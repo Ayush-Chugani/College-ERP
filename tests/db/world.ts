@@ -1,4 +1,5 @@
 import { PGlite } from '@electric-sql/pglite';
+import { pgcrypto } from '@electric-sql/pglite/contrib/pgcrypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { SUPABASE_STUB } from './supabase-stub';
@@ -44,7 +45,7 @@ export const role = (code: string) => `(select role_id from role where role_code
 export type SqlRunner = { exec(sql: string): Promise<unknown>; query<T = Record<string, unknown>>(sql: string, params?: unknown[]): Promise<{ rows: T[] }> };
 
 export async function createWorld() {
-  db = new PGlite();
+  db = new PGlite({ extensions: { pgcrypto } });
   await buildWorld(db);
 }
 

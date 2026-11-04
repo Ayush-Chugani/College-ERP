@@ -35,8 +35,8 @@ describe('fin_accounts / fin_account_info', () => {
     expect(mine.map((r) => r.student_account_id).filter((i) => other.map((o) => o.student_account_id).includes(i))).toEqual([]); // disjoint institutions
     expect(ids.size).toBe(mine.length + other.length);
   });
-  it('students and staff without FEES permissions see none (no student fee permission is seeded)', async () => {
-    expect(await asUser(U.student1, 'select * from public.fin_accounts()')).toEqual([]);
+  it('a student sees only their own account; staff without FEES permissions see none (M052)', async () => {
+    expect((await asUser<{ student_account_id: number }>(U.student1, 'select * from public.fin_accounts()')).map((r) => Number(r.student_account_id))).toEqual([1]);
     expect(await asUser(U.registrar1, 'select * from public.fin_accounts()')).toEqual([]);
   });
   it('search matches student number, name or account number without treating input as a pattern', async () => {
@@ -48,7 +48,9 @@ describe('fin_accounts / fin_account_info', () => {
     await expect(asUser(FIN2, 'select * from public.fin_account_info(1)')).rejects.toThrow(/Not authorised/);
     const r = (await asUser<{ total_payable: string; total_balance: string }>(U.finance1, 'select * from public.fin_account_info(1)'))[0];
     expect(Number(r?.total_payable)).toBe(Number(await val("select coalesce(sum(net_payable_amount),0) from student_fee_assessment where student_account_id=1")));
-    await expect(asUser(U.student1, 'select * from public.fin_account_info(1)')).rejects.toThrow(/Not authorised/);
+    expect((await asUser(U.student1, 'select * from public.fin_account_info(1)')).length).toBe(1); // their own account
+    await expect(asUser(U.student1, 'select * from public.fin_account_info(2)')).rejects.toThrow(/Not authorised/); // someone else's
+    await expect(asUser(U.registrar1, 'select * from public.fin_account_info(1)')).rejects.toThrow(/Not authorised/);
   });
 });
 

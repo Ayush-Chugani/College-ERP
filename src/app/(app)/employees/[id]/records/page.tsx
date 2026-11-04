@@ -20,7 +20,7 @@ export default async function EmployeeRecordsPage({ params }: { params: Promise<
         <div><h1 className="text-xl font-semibold">Records</h1><p className="text-sm text-muted-foreground">{String(emp.display_name)} · {String(emp.employee_number)}</p></div>
         <Link href={`/employees/${id}`} className="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm hover:bg-muted">Employee record</Link>
       </div>
-      <p className="text-xs text-muted-foreground">Identity numbers (PAN, Aadhaar) and bank accounts are not edited here; they wait for a decision on who holds the encryption keys.</p>
+      <p className="text-xs text-muted-foreground">Identity numbers (PAN, Aadhaar), bank accounts and HR documents are on the HR records page; they are stored encrypted.</p>
       <SectionTabs kind="employee" parentId={id} sections={SECTIONS} />
     </div>
   );

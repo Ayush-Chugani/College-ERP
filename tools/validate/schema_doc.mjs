@@ -1,10 +1,11 @@
 // Generates docs/DATABASE_SCHEMA.md from the migrated catalogue (embedded PostgreSQL): every table with its module, columns, keys, foreign keys, checks and policies count, plus views and functions.
 //   node tools/validate/schema_doc.mjs [--check]     (--check fails when the committed file is out of date)
 import { PGlite } from '@electric-sql/pglite';
+import { pgcrypto } from '@electric-sql/pglite/contrib/pgcrypto';
 import fs from 'node:fs';
 
 const modules = JSON.parse(fs.readFileSync('tools/rls/table_module.json', 'utf8'));
-const db = new PGlite();
+const db = new PGlite({ extensions: { pgcrypto } });
 await db.exec(fs.readFileSync('tests/db/supabase-stub.ts', 'utf8').split('`')[1]);
 const files = fs.readdirSync('supabase/migrations').filter((x) => x.endsWith('.sql')).sort();
 for (const f of files) await db.exec(fs.readFileSync(`supabase/migrations/${f}`, 'utf8'));

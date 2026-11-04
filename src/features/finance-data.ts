@@ -93,3 +93,35 @@ export async function getReceipt(supabase: SupabaseClient, id: number): Promise<
   const { data, error } = await supabase.rpc('fin_receipt_get', { p_receipt_id: id });
   return error || !data ? null : (data as ReceiptDetail);
 }
+
+// ---- benefits, adjustments, instalments, penalties (migration 053) ----
+export type BenefitRow = { kind: 'CONCESSION' | 'SCHOLARSHIP' | 'SPONSORSHIP'; id: number; name: string; status: string; percentage: number | null; amount: number | null; applied: number; requested: string | null; remarks: string | null };
+export type AdjustmentRow = { id: number; number: string; type: string; amount: number; status: string; reason: string; item_id: number | null; date: string };
+export type InstalmentRow = { id: number; assessment_id: number; number: number; due: string; amount: number; paid: number; status: string };
+export type PenaltyRow = { id: number; date: string; reason: string; amount: number; waived: number; net: number; status: string };
+export type AccountExtras = {
+  benefits: BenefitRow[]; adjustments: AdjustmentRow[]; instalments: InstalmentRow[]; penalties: PenaltyRow[];
+  can: { benefit_create: boolean; benefit_approve: boolean; benefit_apply: boolean; adjust_create: boolean; adjust_approve: boolean; assess_create: boolean; assess_update: boolean };
+};
+export type ExtrasLookups = { concessionTypes: Opt[]; schemes: Opt[]; plans: Opt[]; lateRules: Opt[] };
+const NO_EXTRAS: AccountExtras = { benefits: [], adjustments: [], instalments: [], penalties: [], can: { benefit_create: false, benefit_approve: false, benefit_apply: false, adjust_create: false, adjust_approve: false, assess_create: false, assess_update: false } };
+
+export async function loadExtras(supabase: SupabaseClient, accountId: number): Promise<{ extras: AccountExtras; lookups: ExtrasLookups }> {
+  const [ex, ct, sc, pl, lr] = await Promise.all([
+    supabase.rpc('fin_account_extras', { p_student_account_id: accountId }),
+    supabase.from('concession_type').select('concession_type_id, concession_name, concession_basis').eq('is_active', true).order('concession_name'),
+    supabase.from('scholarship_scheme').select('scholarship_scheme_id, scheme_name').eq('is_active', true).order('scheme_name'),
+    supabase.from('installment_plan').select('installment_plan_id, plan_name, number_of_installments').eq('is_active', true).order('plan_name'),
+    supabase.from('late_fee_rule').select('late_fee_rule_id, rule_name').eq('is_active', true).order('rule_name'),
+  ]);
+  const rows = <T,>(r: { data: unknown }) => (r.data ?? []) as T[];
+  return {
+    extras: ex.error || !ex.data ? NO_EXTRAS : (ex.data as AccountExtras),
+    lookups: {
+      concessionTypes: rows<{ concession_type_id: number; concession_name: string; concession_basis: string }>(ct).map((t) => ({ id: t.concession_type_id, label: `${t.concession_name} (${t.concession_basis === 'PERCENTAGE' ? '%' : 'fixed'})` })),
+      schemes: rows<{ scholarship_scheme_id: number; scheme_name: string }>(sc).map((t) => ({ id: t.scholarship_scheme_id, label: t.scheme_name })),
+      plans: rows<{ installment_plan_id: number; plan_name: string; number_of_installments: number }>(pl).map((t) => ({ id: t.installment_plan_id, label: `${t.plan_name} (${t.number_of_installments})` })),
+      lateRules: rows<{ late_fee_rule_id: number; rule_name: string }>(lr).map((t) => ({ id: t.late_fee_rule_id, label: t.rule_name })),
+    },
+  };
+}

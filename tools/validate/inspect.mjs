@@ -1,8 +1,9 @@
 // Inspect the schema as built by the local migrations (embedded Postgres; no network). Usage: node tools/validate/inspect.mjs "<module codes comma separated>" 
 import { PGlite } from '@electric-sql/pglite';
+import { pgcrypto } from '@electric-sql/pglite/contrib/pgcrypto';
 import fs from 'fs';
 const stub = fs.readFileSync('tests/db/supabase-stub.ts', 'utf8').split('`')[1];
-const db = new PGlite();
+const db = new PGlite({ extensions: { pgcrypto } });
 await db.exec(stub);
 for (const f of fs.readdirSync('supabase/migrations').filter((x) => x.endsWith('.sql')).sort()) await db.exec(fs.readFileSync('supabase/migrations/' + f, 'utf8'));
 const mods = (process.argv[2] || '').split(',');

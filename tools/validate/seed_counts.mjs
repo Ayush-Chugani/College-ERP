@@ -2,6 +2,7 @@
 // embedded PostgreSQL and compares row counts per table. Statements of the form INSERT ... SELECT are reported, not counted.
 //   node tools/validate/seed_counts.mjs [--json]
 import { PGlite } from '@electric-sql/pglite';
+import { pgcrypto } from '@electric-sql/pglite/contrib/pgcrypto';
 import fs from 'node:fs';
 
 const source = fs.readFileSync('SIMS-DatabaseWithoutLessonPlan.sql', 'utf8');
@@ -35,7 +36,7 @@ for (let m; (m = re.exec(source)); ) {
   re.lastIndex = end;
 }
 
-const db = new PGlite();
+const db = new PGlite({ extensions: { pgcrypto } });
 await db.exec(fs.readFileSync('tests/db/supabase-stub.ts', 'utf8').split('`')[1]);
 for (const f of fs.readdirSync('supabase/migrations').filter((x) => x.endsWith('.sql')).sort()) await db.exec(fs.readFileSync(`supabase/migrations/${f}`, 'utf8'));
 

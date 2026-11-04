@@ -20,7 +20,7 @@ describe('receipt numbering', () => {
   it('the rule lives in one function (D-9 can change it in one place)', () => {
     const sql = read('047_finance_receipts_and_holds.sql');
     expect(sql.match(/fin_next_receipt_number\(\)/g)?.length).toBeGreaterThanOrEqual(3);
-    expect(sql).toContain("'RCP-' || to_char(now(), 'YYYY')");
+    expect(read('052_role_access_and_receipt_format.sql')).toContain("'REC/' || ay || '/'");
   });
 });
 

@@ -31,7 +31,7 @@ describe('receipts', () => {
     RC = Number((await one<{ id: string }>(U.finance1, `select public.fin_issue_receipt(${PAY}) id`)).id);
     expect(Number((await one<{ id: string }>(U.finance1, `select public.fin_issue_receipt(${PAY}) id`)).id)).toBe(RC); // idempotent
     const r = (await db.query<{ receipt_number: string; receipt_amount: string; receipt_status: string; issued_by: string }>(`select receipt_number, receipt_amount, receipt_status, issued_by from fee_receipt where fee_receipt_id = ${RC}`)).rows[0];
-    expect(r?.receipt_number).toMatch(/^RCP-\d{4}-\d{6}$/);
+    expect(r?.receipt_number).toMatch(/^REC\/\d{4}-\d{2}\/\d{6}$/);
     expect([r?.receipt_amount, r?.receipt_status]).toEqual(['1000.00', 'ISSUED']);
     expect(Number(await val('select count(*) from fee_activity_audit where action_code = \'ISSUE_RECEIPT\''))).toBe(1);
     await expect(asUser(U.finance1, "insert into fee_receipt (receipt_number, payment_transaction_id, receipt_date, receipt_amount) values ('X', 1, now(), 1)")).rejects.toThrow(/permission denied|row-level/);
@@ -95,5 +95,20 @@ describe('holds', () => {
   it('a closed account takes no new hold', async () => {
     await db.exec("UPDATE student_financial_account SET account_status = 'CLOSED' WHERE student_account_id = 1");
     await expect(asUser(U.finance1, "select public.fin_hold_place(1, 'OTHER', 'x')")).rejects.toThrow(/CLOSED/);
+  });
+});
+
+describe('role-based fee access (M052)', () => {
+  it('students read their own fees only; super admin reads but cannot move money', async () => {
+    const own = Number((await one<{ n: string }>(U.student1, 'select count(*) n from student_fee_assessment')).n);
+    const all = Number((await one<{ n: string }>(U.finance1, 'select count(*) n from student_fee_assessment')).n);
+    expect([own, all]).toEqual([1, 1]);
+    expect(Number((await one<{ n: string }>(U.superAdmin, 'select count(*) n from student_fee_assessment')).n)).toBe(all);
+    await expect(asUser(U.student1, `select public.fin_issue_receipt(${PAY})`)).rejects.toThrow(/Not authorised/);
+    await expect(asUser(U.superAdmin, `select public.fin_issue_receipt(${PAY})`)).rejects.toThrow(/Not authorised/);
+  });
+  it('the numbering restarts per academic year', async () => {
+    const n = await val("select sims_private.fin_next_receipt_number()");
+    expect(n).toMatch(/^REC\/\d{4}-\d{2}\/\d{6}$/);
   });
 });

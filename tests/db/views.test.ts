@@ -52,7 +52,7 @@ describe('what the views return', () => {
   });
   it('v_student_fee_balance shows one row per account, to those who may read fees', async () => {
     expect((await rows(U.finance1, 'select account_number, total_outstanding from v_student_fee_balance')).map((r) => r.account_number)).toEqual(['ACC1']); // institution 1 only
-    expect(await rows(U.student1, 'select * from v_student_fee_balance')).toEqual([]); // students hold no FEES permission (KI-41)
+    expect((await rows(U.student1, 'select account_number from v_student_fee_balance')).map((r) => r.account_number)).toEqual(['ACC1']); // a student sees their own account (M052)
     expect(await rows(U.registrar2, 'select * from v_student_fee_balance')).toEqual([]);
     expect(Number(await val('select count(*) from v_student_fee_balance'))).toBe(2); // the owner role sees both
   });

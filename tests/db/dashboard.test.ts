@@ -62,11 +62,11 @@ describe('fees', () => {
     expect((await rows(U.finance1, 'select * from public.dash_fee_collection(0)')).length).toBe(1);
     expect((await rows(U.finance1, 'select * from public.dash_fee_collection(1000)')).length).toBe(36);
   });
-  it('finance staff see their institution only; students and registrars see nothing', async () => {
+  it('finance staff see their institution; a student sees only their own account; registrars see nothing', async () => {
     const mine = await rows<{ collected: string }>(U.finance1, 'select * from public.dash_fee_collection(12)');
     expect(mine.reduce((s, r) => s + Number(r.collected), 0)).toBe(800); // account 1 only: P-NOW + P-OLD
     expect((await rows<{ collected: string }>(U.registrar1, 'select * from public.dash_fee_collection(12)')).reduce((s, r) => s + Number(r.collected), 0)).toBe(0);
-    expect((await rows<{ collected: string }>(U.student1, 'select * from public.dash_fee_collection(12)')).reduce((s, r) => s + Number(r.collected), 0)).toBe(0);
+    expect((await rows<{ collected: string }>(U.student1, 'select * from public.dash_fee_collection(12)')).reduce((s, r) => s + Number(r.collected), 0)).toBe(800); // M052: students read their own fees (account 1 is theirs)
   });
   it('outstanding balances exclude cancelled, waived and draft assessments', async () => {
     await db.exec(`
@@ -77,7 +77,8 @@ describe('fees', () => {
         ('A4', 2, 1, 'ACADEMIC', '2025-01-01', 200, 200, 0, 200, '2999-01-01', 'ASSESSED');`);
     const f1 = (await rows<{ payable: string; paid: string; balance: string; overdue_assessments: string }>(U.finance1, 'select * from public.dash_fee_outstanding()'))[0];
     expect(f1).toMatchObject({ payable: '1000.00', paid: '400.00', balance: '600.00', overdue_assessments: 1 });
-    expect((await rows<{ balance: string }>(U.student1, 'select * from public.dash_fee_outstanding()'))[0]?.balance).toBe('0');
+    expect((await rows<{ balance: string }>(U.student1, 'select * from public.dash_fee_outstanding()'))[0]?.balance).toBe('600.00'); // only their own account; account 2 (another student) is not included
+    expect((await rows<{ balance: string }>(U.registrar1, 'select * from public.dash_fee_outstanding()'))[0]?.balance).toBe('0');
   });
 });
 

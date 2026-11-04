@@ -1,7 +1,8 @@
 import { PGlite } from '@electric-sql/pglite';
+import { pgcrypto } from '@electric-sql/pglite/contrib/pgcrypto';
 import fs from 'fs';
 const dir = './supabase/migrations';
-const db = new PGlite();
+const db = new PGlite({ extensions: { pgcrypto } });
 await db.exec(fs.readFileSync('tests/db/supabase-stub.ts', 'utf8').split('`')[1]); // Supabase auth schema / roles the migrations expect
 for (const f of fs.readdirSync(dir).filter(x => x.endsWith('.sql')).sort()) await db.exec(fs.readFileSync(`${dir}/${f}`, 'utf8'));
 const q = async (s) => (await db.query(s)).rows;

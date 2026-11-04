@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getAccount, loadAccountLedger, loadReceiptsAndHolds, parseFinId } from '@/features/finance-data';
+import { BenefitsPanel, AdjustmentsPanel, InstalmentsPanel, PenaltiesPanel } from '@/features/finance-benefits';
+import { getAccount, loadAccountLedger, loadExtras, loadReceiptsAndHolds, parseFinId } from '@/features/finance-data';
 import { HoldsPanel, ReceiptCell } from '@/features/finance-extras';
 import { AllocateForm, AssessmentForm, PaymentForm, RefundActions, RefundRequestForm } from '@/features/finance-forms';
 import { can } from '@/lib/context';
@@ -19,7 +20,7 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
   const { supabase, ctx } = await requireContext();
   const acct = await getAccount(supabase, id);
   if (!acct) notFound(); // missing or out of scope: same response
-  const [L, RH] = await Promise.all([loadAccountLedger(supabase, id), loadReceiptsAndHolds(supabase, id)]);
+  const [L, RH, X] = await Promise.all([loadAccountLedger(supabase, id), loadReceiptsAndHolds(supabase, id), loadExtras(supabase, id)]);
   const receiptOf = new Map(RH.receipts.map((r) => [r.payment_transaction_id, r]));
 
   const yearOf = new Map(L.years.map((y) => [y.id, y.label]));
@@ -90,6 +91,26 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
           })}
           {can(ctx, 'FEES.FEE_PAYMENT.CREATE') && <PaymentForm accountId={id} modes={L.modes} blocked={blocked} />}
         </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Concessions, scholarships and sponsorships</CardTitle></CardHeader>
+        <CardContent><BenefitsPanel extras={X.extras} lookups={X.lookups} items={L.items} studentId={acct.student_id} years={L.years} /></CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Instalments</CardTitle></CardHeader>
+        <CardContent><InstalmentsPanel extras={X.extras} lookups={X.lookups} assessments={L.assessments} /></CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Late fees and penalties</CardTitle></CardHeader>
+        <CardContent><PenaltiesPanel accountId={id} extras={X.extras} lookups={X.lookups} assessments={L.assessments} years={L.years} feeTypes={L.feeTypes} /></CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Adjustments and waivers</CardTitle></CardHeader>
+        <CardContent><AdjustmentsPanel accountId={id} extras={X.extras} items={L.items} /></CardContent>
       </Card>
 
       <Card>

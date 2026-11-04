@@ -7,6 +7,8 @@ export type NavItem = {
   module?: string;
   /** shown only to a signed-in student (linked student record) */
   studentOnly?: boolean;
+  /** shown only to a signed-in employee (linked employee record) */
+  employeeOnly?: boolean;
   /** also shown to a linked student even without the module (the feature authorises students by identity) */
   alsoStudent?: boolean;
 };
@@ -26,6 +28,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/my-documents', label: 'My documents', studentOnly: true },
   { href: '/activities', label: 'Activities', module: 'STUDENT', alsoStudent: true },
   { href: '/staff-profile', label: 'Staff profile', module: 'STAFF_PROFILE' },
+  { href: '/my-hr', label: 'My HR records', employeeOnly: true },
   { href: '/grievances', label: 'Grievances', module: 'GRIEVANCE', alsoStudent: true },
   { href: '/mentoring', label: 'Mentoring', module: 'MENTORING' },
   { href: '/feedback', label: 'Feedback', module: 'FEEDBACK' },
@@ -43,7 +46,7 @@ export const NAV_ITEMS: NavItem[] = [
 
 export function visibleNav(ctx: SimsContext): NavItem[] {
   const mods = new Set(ctx.readable_modules);
-  return NAV_ITEMS.filter((i) => (i.studentOnly ? ctx.student_id !== null : !i.module || mods.has(i.module) || (i.alsoStudent === true && ctx.student_id !== null)));
+  return NAV_ITEMS.filter((i) => (i.studentOnly ? ctx.student_id !== null : i.employeeOnly ? ctx.employee_id !== null : !i.module || mods.has(i.module) || (i.alsoStudent === true && ctx.student_id !== null)));
 }
 
 export function primaryRoleLabel(ctx: SimsContext): string {

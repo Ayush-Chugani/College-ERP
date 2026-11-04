@@ -115,10 +115,7 @@ describe('employee sections', () => {
 
 describe('reference data', () => {
   it('lists only what the caller may configure', async () => {
-    // The seeded SUPER_ADMIN holds no FEES permission (KI-45), so the fee configuration tables are not offered until that is decided.
-    expect((await asUser<{ tbl: string }>(U.superAdmin, 'select tbl from public.ref_list()')).length).toBe(23);
-    await expect(asUser(U.superAdmin, "select public.ref_rows('fee_category')")).rejects.toThrow(/FEES.FEE_STRUCTURE.CONFIGURE/);
-    await db.exec("INSERT INTO role_permission (role_id, permission_id) SELECT r.role_id, p.permission_id FROM role r CROSS JOIN permission p WHERE r.role_code = 'SUPER_ADMIN' AND p.permission_code LIKE 'FEES.%' ON CONFLICT DO NOTHING");
+    // SUPER_ADMIN holds FEES.FEE_STRUCTURE.CONFIGURE since M052, so all 32 lists are offered.
     expect((await asUser<{ tbl: string }>(U.superAdmin, 'select tbl from public.ref_list()')).length).toBe(32);
     expect(await asUser(U.student1, 'select * from public.ref_list()')).toEqual([]);
     expect(await asUser(U.registrar1, 'select * from public.ref_list()')).toEqual([]);
