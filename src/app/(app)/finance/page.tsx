@@ -32,6 +32,7 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
     <div className="space-y-4">
       <div>
         <h1 className="text-xl font-semibold">Fees</h1>
+        {can(ctx, 'FEES.FEE_STRUCTURE.READ') && <p className="text-sm"><Link href="/finance/structures" className="text-primary underline-offset-4 hover:underline">Fee structures</Link></p>}
         <p className="text-sm text-muted-foreground">{total.toLocaleString()} student account{total === 1 ? '' : 's'} you can see. Amounts are in rupees.</p>
       </div>
       <form method="get" action="/finance" className="flex flex-wrap gap-2" role="search">
