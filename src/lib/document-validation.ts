@@ -28,7 +28,7 @@ export function checkFile(f: { name: string; type: string; size: number }): stri
 }
 
 /** <student|employee>/<id>/<random>-<safe name>; the random part keeps names unique and unguessable. */
-export function ownerStorageKey(kind: 'student' | 'employee', ownerId: number, fileName: string, random: string): string {
+export function ownerStorageKey(kind: 'student' | 'employee' | 'announcement', ownerId: number, fileName: string, random: string): string {
   const safe = fileName.normalize('NFKD').replace(/[^A-Za-z0-9._-]+/g, '_').replace(/^[._]+/, '').slice(-120) || 'file';
   return `${kind}/${ownerId}/${random}-${safe}`;
 }
