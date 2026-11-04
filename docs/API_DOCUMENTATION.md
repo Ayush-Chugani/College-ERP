@@ -205,5 +205,16 @@ Employees act on their own records by identity; staff need `STAFF_PROFILE.STAFF_
 | `staff_evidence_add(...)` / `_replace(...)` / `_download_info(id)` / `_delete(id, reason?)` | owner or EVIDENCE.* | Keys under `employee/<id>/`; versions kept; every action audited in `evidence_document_audit`. |
 | `staff_activity_list(employee_id?, search?, approval?, group?, limit, offset)` / `staff_activity_get(id)` / `staff_activity_report(year?)` | owner or READ; REPORT.READ | `get` returns the detail row as JSON, contributors, evidence and `can_*` flags. |
 
+## Account features (migration 045)
+| RPC | Who | Notes |
+|---|---|---|
+| `mfa_sync()` -> boolean | signed in | Sets `user_account.multi_factor_enabled` from the verified TOTP factors in `auth.mfa_factors`. While it is true, `sims_private.current_user_id()` returns an identity only for sessions whose JWT has `aal = aal2`, so a password-only session gets `my_context() = null` and RLS shows nothing. |
+| `auth_login_record()` / `auth_logout_record()` | signed in | Write `login_audit` for the caller (address and browser from the request headers) and update `last_login_at`. |
+| `auth_failure_record(username, reason)` | anyone | Records a failed sign-in (reason mapped to INVALID_CREDENTIALS, EMAIL_NOT_CONFIRMED, MFA_FAILED or OTHER); at most 20 per name and 5000 in total per hour. |
+| `my_recent_logins(limit)` / `login_audit_list(search?, success?, from?, to?, limit, offset)` | self / `AUDIT.ALL.READ` global | Own history; the full sign-in log with `total_count`. |
+| `my_profile()` / `my_profile_update(p)` | student or employee | Reads the own record; edits `primary_email` and `primary_phone` only (`""` clears); other keys are rejected. |
+| `my_notifications(limit)` / `my_notification_count()` / `notification_dismiss(key)` / `notification_dismiss_all()` | signed in | Computed from live data; keys such as `doc:12:REJECTED` identify an item and its state, so a new state is a new notification. |
+| `global_search(q, limit)` | signed in (SECURITY INVOKER) | At least two characters, wildcards literal; RLS decides what is found. |
+
 ## Workflow guards (migration 020)
 Not an API, but visible to clients: updates that set approval/verification/publication state or actor columns raise `42501` ("Not authorised to APPROVE/VERIFY/PUBLISH …" or "… must be the acting user") unless the caller holds the matching permission at the row's scope.

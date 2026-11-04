@@ -4,13 +4,13 @@ Run on 2026-11-04 on the development container. Everything below was executed; n
 
 | Suite | Command | Result |
 |---|---|---|
-| Database (embedded Postgres, all migrations, RLS, triggers, RPCs) | `npm run test:db` | 23 files, 328 test cases |
-| Unit (validation, payload builders, navigation, drift tests against migrations) | `npm run test:unit` | 21 files, 169 test cases |
-| **Vitest total** | `npm test` | **497 passed, 0 failed** (44 files) |
+| Database (embedded Postgres, all migrations, RLS, triggers, RPCs) | `npm run test:db` | 24 files, 342 test cases |
+| Unit (validation, payload builders, navigation, drift tests against migrations) | `npm run test:unit` | 22 files, 177 test cases |
+| **Vitest total** | `npm test` | **519 passed, 0 failed** (46 files) |
 | Type check | `npm run typecheck` | clean |
 | Lint | `npm run lint` | clean |
 | Production build | `npm run build` (placeholder Supabase variables) | passes |
-| End-to-end smoke | `npm run test:e2e` | 24 passed, 4 skipped (desktop and phone projects; the 4 skipped need `E2E_EMAIL` / `E2E_PASSWORD`) |
+| End-to-end smoke | `npm run test:e2e` | 38 passed, 4 skipped (desktop and phone projects; the 4 skipped need `E2E_EMAIL` / `E2E_PASSWORD`) |
 
 ## What the suites prove
 - **Database:** schema counts (tables, views, triggers), RLS scope containment, workflow guards, every RPC's authorisation, validation, idempotent replays and audit rows; storage policies for documents (own folder only, orphan-only delete); IAM safeguards (no self-change, last super admin).

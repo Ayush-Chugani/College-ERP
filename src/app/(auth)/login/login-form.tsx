@@ -23,10 +23,19 @@ export function LoginForm({ next, expired }: { next?: string; expired: boolean }
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword(values);
     if (error) {
-      // Same message for unknown user / wrong password: no account enumeration.
+      // Same message for unknown user / wrong password: no account enumeration. The attempt is logged (throttled in the database).
+      void supabase.rpc('auth_failure_record', { p_username: values.email, p_reason: error.code === 'email_not_confirmed' ? 'EMAIL_NOT_CONFIRMED' : 'INVALID_CREDENTIALS' });
       toast.error('Invalid email or password.');
       return;
     }
+    // A user with a verified authenticator must pass the second step before the database gives them any identity.
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') {
+      router.replace(`/mfa?next=${encodeURIComponent(safeNextPath(next))}`);
+      router.refresh();
+      return;
+    }
+    await supabase.rpc('auth_login_record');
     router.replace(safeNextPath(next));
     router.refresh();
   }

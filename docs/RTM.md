@@ -20,7 +20,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 **Evidence conventions**
 
-- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M043 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`. **M044 (staff profile) is not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
+- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M043 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`. **M044 (staff profile) and M045 (account features) are not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
 - `DB:` and `UT:` name the Vitest files in `tests/db/` and `tests/unit/`, with the number of tests in brackets.
 - `KI-n` is an entry in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - Routes are paths under `src/app/(app)/`.
@@ -29,13 +29,13 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 | Check | Result |
 |---|---|
-| `npx vitest run` | **497 passed, 0 failed** (44 files: 23 database files with 328 tests, 21 unit files with 169 tests) |
+| `npx vitest run` | **519 passed, 0 failed** (46 files: 24 database files with 342 tests, 22 unit files with 177 tests) |
 | `npx tsc --noEmit` | clean (strict mode, `noUncheckedIndexedAccess`) |
 | `npm run lint` | clean |
 | `npm run build` | succeeds |
-| Migrations applied to the live project | 43 of 44 (M044 pending) |
+| Migrations applied to the live project | 43 of 45 (M044 and M045 pending) |
 | Signed-in manual or browser verification of any screen | **not done** (no Auth user exists yet, see R-AUTH-9 and KI-3, KI-14) |
-| Playwright end-to-end tests | **24 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
+| Playwright end-to-end tests | **38 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
 | Multi-connection (concurrent) tests | **not run** (the test database is single-connection embedded PostgreSQL) |
 
 ---
@@ -88,7 +88,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | R-STK-12 | Git | Repository initialised and pushed to `Ayush-Chugani/College-ERP` | Done | |
 | R-STK-13 | ESLint and Prettier | `eslint.config.mjs` (flat config), `.prettierrc.json`, `npm run lint`, `npm run format` | Done | |
 | R-STK-14 | Vitest | 391 tests | Done | |
-| R-STK-15 | Playwright | `playwright.config.ts`; `tests/e2e/smoke.spec.ts` (public pages, route protection, phone-width check) and `tests/e2e/auth.spec.ts` (sign-in flow, skipped without `E2E_EMAIL` / `E2E_PASSWORD`); `npm run test:e2e` | Partial | 24 smoke tests pass on desktop and phone projects; the signed-in flow has never run against a real project |
+| R-STK-15 | Playwright | `playwright.config.ts`; `tests/e2e/smoke.spec.ts` (public pages, route protection, phone-width check) and `tests/e2e/auth.spec.ts` (sign-in flow, skipped without `E2E_EMAIL` / `E2E_PASSWORD`); `npm run test:e2e` | Partial | 38 smoke tests pass on desktop and phone projects; the signed-in flow has never run against a real project |
 | R-STK-16 | Supabase CLI and migration-based version control | Migrations are versioned SQL files in `supabase/migrations/`; `supabase/config.toml` now exists (auth redirect URLs, sign-up off, password length 12). M001 to M039 were applied to the live project with a Python script; M040 to M042 have **not** been applied anywhere except the embedded test database | Partial | Run `supabase link` and `supabase db push` (DEPLOYMENT_GUIDE.md); the CLI itself was not run here |
 | R-STK-17 | No unnecessary backend frameworks; PostgreSQL authoritative | No separate backend server exists | Done | |
 
@@ -161,7 +161,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | R-AUTH-5 | Password reset | `src/app/(auth)/reset-password`, `src/app/auth/callback/route.ts` | Build | Partial | Same |
 | R-AUTH-6 | Email verification | Callback route handles Supabase email links | Build | Partial | Not exercised; SMTP not configured (KI-15) |
 | R-AUTH-7 | Session management, protected routes, session-expiry handling | `src/middleware.ts` and `src/lib/supabase/middleware.ts` refresh the session and redirect; `requireContext()` in `src/lib/server-context.ts`; `/no-access` | UT: lib [8] covers `safeNextPath` and navigation | Partial | No automated route-protection test |
-| R-AUTH-8 | User profile management | `/settings` shows profile and has a change-password form | | Partial | No editing of profile fields |
+| R-AUTH-8 | User profile management | `/settings`: profile, contact details form (`my_profile`, `my_profile_update`, M045: own email and phone only, audited), change password, recent sign-ins | DB: account-features [14]; UT: account | Done | Name, roles and scopes stay administrator-managed; never used signed in |
 | R-AUTH-9 | Account activation and deactivation | `iam_set_account_status` (M041) and `/admin/users/[id]`: ACTIVE / DISABLED / LOCKED with a reason, confirmation step, own-account and last-super-admin protection, audit row; a disabled account resolves to no identity | DB: iam-admin [8], rls [30]; UT: iam | Done | Not exercised signed in (no Auth user yet); KI-52 |
 | R-AUTH-10 | Auth dashboard configuration (redirect URLs, SMTP, sign-up policy) | Documented steps | KI-15 | **Blocked** | Needs you in the Supabase dashboard |
 | R-AUTH-11 | First administrator | `tools/bootstrap_admin.py` (one transaction, verifies identity resolution) | Script tested logically only | **Blocked** | The live project has 0 Auth users; you must create the first user in the dashboard (KI-3) |
@@ -177,7 +177,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | R-RBAC-5 | Never trust frontend role or institution ids | Every RPC derives identity from `auth.uid()`; `my_context()` is read-only | M019, all RPC migrations | Done | |
 | R-RBAC-6 | Sensitive actions need explicit authorisation (delete, approve documents, change financials, export protected data) | Workflow guards on 20 tables / 63 columns; money RPC-only; sensitive resources need their specific grant | M020, M021; DB: rls [30], finance [14] | Partial | Guards cover a curated list (KI-1); export is not built |
 | R-RBAC-7 | Admin RPCs: assign roles, overrides, link users | `iam_assign_role`, `iam_revoke_role`, `iam_user_list`, `iam_user_detail`, `iam_roles` (M041) and `/admin/users`; SUPER_ADMIN grants restricted to super administrators; scope must match the role level | DB: iam-admin [8] | Partial | Permission overrides and linking Auth users to students or employees have no RPC or screen (KI-52) |
-| R-RBAC-8 | MFA | `multi_factor_enabled` is not consulted | | Not started | |
+| R-RBAC-8 | MFA | TOTP via Supabase Auth: enrol / turn off in `/settings`, code step in `/mfa` after the password (`requireContext` redirects there). The database enforces it: once a verified factor exists (`mfa_sync`, M045) `sims_private.current_user_id()` resolves an identity only for aal2 sessions | DB: account-features [14] (aal1 sees nothing, aal2 works, removal lifts it); UT: account | Partial | The enrolment and challenge screens have never run against a real Supabase Auth project; MFA must also be enabled in the dashboard; no "require MFA for role X" policy (KI-57) |
 
 ### 6.3 Row-level security
 
@@ -294,12 +294,12 @@ Reading the matrix: server-side sorting is mostly fixed (not user-selectable); o
 | R-FE-2 | Forgot password page | `(auth)/forgot-password` | Partial | Same |
 | R-FE-3 | Main layout, sidebar, top navigation | `src/components/app-shell.tsx`; `src/lib/nav.ts` shows items by readable module | Done | UT: lib [8] tests visibility |
 | R-FE-4 | User profile menu | Signed-in user and sign-out in the shell; `/settings` | Partial | |
-| R-FE-5 | Notifications | None | Not started | |
+| R-FE-5 | Notifications | Bell with count in the header, `/notifications`; `my_notifications`, `my_notification_count`, `notification_dismiss[_all]` (M045): announcements, decisions on own documents, activities, staff records and grievances, review queues for reviewers; links restricted to same-site paths | DB: account-features [14]; UT: account | Done | Computed on request (no push, no email); dismissal only (no read history) (KI-57) |
 | R-FE-6 | Breadcrumb navigation | `Breadcrumbs` in `app-shell.tsx` | Done | Built from the navigation list, not from deep routes |
-| R-FE-7 | Global search | None (each module has its own search) | Not started | |
+| R-FE-7 | Global search | Search box in the header, `/search`; `global_search` (M045, SECURITY INVOKER so RLS applies) over students, employees, courses, programmes, departments | DB: account-features [14]; UT: account | Done | Does not search admissions, grievances, activities, finance or documents (each has its own search) |
 | R-FE-8 | Dashboard | `/dashboard` | Partial | One dashboard that adapts to readable modules (section 9.2) |
 | R-FE-9 | Module navigation | `NAV_ITEMS` (20 entries) | Done | Only pages that exist are listed |
-| R-FE-10 | Settings page | `/settings` (profile, change password) | Partial | |
+| R-FE-10 | Settings page | `/settings` (profile, contact details, change password, two-step verification, recent sign-ins) | Done | |
 | R-FE-11 | Professional light theme, accessible forms, responsive layouts, consistent spacing | Light theme in `globals.css`; labels, `aria-*` and roles on forms and tables | Partial | Not visually reviewed in a browser beyond the login screen; no responsive test |
 | R-FE-12 | Loading and error states, confirmation dialogs, toasts | `sonner` toasts; confirm steps on destructive and status actions; error banners on lists; `(app)/loading.tsx` skeleton, `(app)/error.tsx` boundary with retry, root `not-found.tsx` | Done | Per-route skeletons are not written; one shared skeleton |
 | R-FE-13 | Every button performs its action, every form connects to a real service, every table shows real records, no hard-coded metrics or fabricated records | All data comes from the database through RLS or RPCs; empty states are written for each list | Done | Verified by code review and database tests, not by clicking |
@@ -365,7 +365,7 @@ One page serves every role. It shows a count tile for each readable module and t
 | ID | Requirement | Implementation | Evidence | Status | Gap or note |
 |---|---|---|---|---|---|
 | R-AUD-1 | User activity logs | `activity_audit` rows from `sims_private.audit_row()` triggers (about 46 audit triggers) | M022, M024 to M039; `schema.test.ts` counts them | Partial | Logs writes, not reads |
-| R-AUD-2 | Authentication event logs | `login_audit` table exists | M006 | Not started | Nothing writes to it; Supabase Auth keeps its own logs |
+| R-AUD-2 | Authentication event logs | `login_audit` written by `auth_login_record`, `auth_logout_record`, `auth_failure_record` (anonymous, throttled to 20 per name and 5000 per hour) with address and browser from the request headers (M045); viewer `/audit/logins`; own history in `/settings` | DB: account-features [14] | Done | Not exercised against real Auth; no automatic lockout (KI-57) |
 | R-AUD-3 | Creation and modification history | Audit triggers store before and after values | DB: module tests assert audit rows | Done | KI-19: some personal fields are copied into the audit log |
 | R-AUD-4 | Approval and verification history | Status changes are audited; grievance and refund have action histories | DB: grievance [12], finance [14] | Partial | |
 | R-AUD-5 | Financial audit history | `fee_activity_audit` written by `fin_audit()` | M021, M034 | Done | |
@@ -505,7 +505,7 @@ Known limits of this evidence: the database runs on embedded PostgreSQL (PGlite)
 | 11 | SECURITY_AUDIT.md | Done (self-review) |
 | 12 | DEPLOYMENT_GUIDE.md | Done (checklist; nothing deployed) |
 | 13 | ENVIRONMENT_SETUP.md | Done |
-| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-56) |
+| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-57) |
 | 15 | IMPLEMENTATION_STATUS.md | Done |
 
 Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLICY_MAP.md (generated), DEVELOPMENT_CHECKLIST.md, this RTM.
@@ -519,7 +519,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | R-DEP-3 | Seed scripts | Partial | Reference seed is in M011; no sample-data or per-role test-user seed (and no fabricated records, by the rules) |
 | R-DEP-4 | Test scripts | Done | `npm test`, `npm run test:db`, `npm run test:unit` |
 | R-DEP-5 | Deployment configuration | `vercel.json` (framework, install and build commands, HSTS) and `supabase/config.toml` | Done | Neither has been used for a real deployment |
-| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M043 are applied to the Supabase project; M044 is not) |
+| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M043 are applied to the Supabase project; M044 and M045 are not) |
 | R-DEP-7 | Never commit secrets; never run a destructive production migration without approval and backup | Done | |
 
 ---
@@ -619,6 +619,12 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | M037 | Feedback | hand-written |
 | M038 | Mentoring | hand-written |
 | M039 | Grievance | hand-written |
+| M040 | Communication (announcements, audiences, approval) | hand-written |
+| M041 | IAM administration, audit viewer | hand-written |
+| M042 | Student documents on private Storage | hand-written |
+| M043 | Student activities and evidence | hand-written |
+| M044 | Staff profile and research (generic detail forms) | hand-written |
+| M045 | Account features: MFA enforcement, sign-in log, profile, notifications, global search | hand-written |
 
 ## 19. Screen inventory
 
@@ -640,6 +646,12 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | Feedback | `/feedback`, `/feedback/give/[cycle]`, `/feedback/results/[cycle]`, `/feedback/results/[cycle]/[offering]`, `/feedback/setup` |
 | Mentoring | `/mentoring`, `/mentoring/[id]` |
 | Grievance | `/grievances`, `/grievances/[id]` |
+| Communication | `/announcements`, `/announcements/manage`, `/announcements/new`, `/announcements/[id]`, `/announcements/[id]/edit` |
+| Users and audit | `/admin/users`, `/admin/users/[id]`, `/audit`, `/audit/[id]`, `/audit/logins` |
+| Documents | `/my-documents`, `/students/[id]/documents` |
+| Student activities | `/activities`, `/activities/new`, `/activities/[id]` |
+| Staff profile and research | `/staff-profile`, `/staff-profile/new`, `/staff-profile/[id]` |
+| Account | `/settings`, `/mfa`, `/notifications`, `/search` |
 
 ## 20. Open decisions and blockers (owner actions)
 

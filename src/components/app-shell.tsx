@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpen, BookText, CalendarCheck, ClipboardCheck, ClipboardList, Briefcase, CalendarDays, Building2, ChevronRight, GraduationCap, LayoutDashboard, LogOut, Settings } from 'lucide-react';
+import { Bell, Search, BookOpen, BookText, CalendarCheck, ClipboardCheck, ClipboardList, Briefcase, CalendarDays, Building2, ChevronRight, GraduationCap, LayoutDashboard, LogOut, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -57,10 +57,12 @@ function Breadcrumbs({ items }: { items: NavItem[] }) {
 export function AppShell({
   nav,
   user,
+  notificationCount = 0,
   children,
 }: {
   nav: NavItem[];
   user: { name: string; role: string };
+  notificationCount?: number;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -93,6 +95,18 @@ export function AppShell({
         <header className="flex items-center justify-between gap-4 border-b border-border bg-card px-4 py-3 md:px-6">
           <Breadcrumbs items={nav} />
           <div className="flex items-center gap-3">
+            <form action="/search" method="get" role="search" className="hidden sm:block">
+              <label htmlFor="global-search" className="sr-only">Search</label>
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden />
+                <input id="global-search" name="q" type="search" placeholder="Search" maxLength={80} className="h-9 w-44 rounded-md border border-border bg-background pl-8 pr-2 text-sm" />
+              </div>
+            </form>
+            <Link href="/search" className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border sm:hidden" aria-label="Search"><Search className="h-4 w-4" aria-hidden /></Link>
+            <Link href="/notifications" className="relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-border hover:bg-muted" aria-label={notificationCount > 0 ? `Notifications, ${notificationCount} new` : 'Notifications'}>
+              <Bell className="h-4 w-4" aria-hidden />
+              {notificationCount > 0 && <span aria-hidden className="absolute -right-1.5 -top-1.5 min-w-[1.25rem] rounded-full bg-primary px-1 text-center text-[11px] leading-5 text-primary-foreground">{notificationCount > 99 ? '99+' : notificationCount}</span>}
+            </Link>
             <div className="hidden text-right text-sm leading-tight sm:block">
               <div className="font-medium">{user.name}</div>
               <div className="text-xs text-muted-foreground">{user.role}</div>

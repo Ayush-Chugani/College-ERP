@@ -27,7 +27,7 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
   const field = 'h-9 rounded-md border border-border bg-card px-3 text-sm';
   return (
     <div className="max-w-6xl space-y-4">
-      <div><h1 className="text-xl font-semibold">Audit log</h1><p className="text-sm text-muted-foreground">Recorded changes, newest first. Reads are not logged.</p></div>
+      <div className="flex flex-wrap items-start justify-between gap-3"><div><h1 className="text-xl font-semibold">Audit log</h1><p className="text-sm text-muted-foreground">Recorded changes, newest first. Reads are not logged.</p></div><Link href="/audit/logins" className="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm hover:bg-muted">Sign-in log</Link></div>
       <form method="get" action="/audit" className="flex flex-wrap items-end gap-2" role="search">
         <select name="module" defaultValue={params.module ?? ''} aria-label="Module" className={field}><option value="">Any module</option>{modules.map((m) => <option key={m} value={m}>{m}</option>)}</select>
         <select name="action" defaultValue={params.action ?? ''} aria-label="Action" className={field}><option value="">Any action</option>{['INSERT', 'UPDATE', 'DELETE', 'ACCOUNT_STATUS'].map((a) => <option key={a} value={a}>{a}</option>)}</select>

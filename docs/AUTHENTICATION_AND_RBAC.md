@@ -30,4 +30,4 @@ Resolved by `sims_private.eff()` from the source view `v_effective_user_permissi
 - Login, logout, forgot / reset password, protected routes and session-expiry handling are built, but have **never been exercised signed in** against a real project (no Auth user exists yet).
 - **Bootstrap**: there is no first administrator. Needed: create an Auth user, a `user_account`, a SUPER_ADMIN assignment and the identity link (admin script using the DB connection).
 - Role assignment, revocation and account activation / deactivation are built (migration 041, `/admin/users`). Still missing: RPCs and screens for permission overrides and for linking Auth users to students or employees (those writes are still server-only).
-- MFA enforcement (`multi_factor_enabled` is not consulted).
+- MFA is built (migration 045): the database consults `multi_factor_enabled` and demands an aal2 session; see KI-57 for what is not covered (recovery codes, a policy that forces MFA for privileged roles, a real-project run).

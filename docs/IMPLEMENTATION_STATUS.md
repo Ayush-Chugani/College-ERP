@@ -28,14 +28,15 @@ Date: 2026-11-04
 | Identity administration: user list, account activation / deactivation, role assignment and revocation with safeguards (migration 041; `/admin/users`) | Built; 8 DB tests + unit tests. M041 applied live. No override or user-linking screens, no MFA (KI-52) |
 | Audit viewer: filters, paging, before / after detail (migration 041; `/audit`) | Built; shares the M041 tests. Shows writes only |
 | Student documents on private Storage: upload, register, list, signed-URL open (logged), verify / reject, delete (migration 042; `/my-documents`, `/students/[id]/documents`) | Built; 12 DB tests + 8 unit tests. M042 applied live 2026-11-04: the private bucket exists on the real project (verified); the upload and signed-URL flow has not been run against it. Student documents only (KI-53) |
-| Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 24 smoke tests pass; nothing deployed |
+| Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 38 smoke tests pass; nothing deployed |
 | Student activities and evidence: drafting, team members, evidence with versions and logged downloads, submission gate on mandatory evidence, verification and approval, summary report (migration 043; `/activities`) | Built; 14 DB tests + 9 unit tests. M043 applied live. Gaps in KI-54 |
+| Account features: two-step verification (TOTP) enforced by the database, sign-in log, self-service contact details, notifications with a header bell, global search (migration 045; `/settings`, `/mfa`, `/notifications`, `/search`, `/audit/logins`) | Built; 14 DB tests + 9 unit tests. **M045 not applied to the live project; the MFA screens have never run against real Supabase Auth.** Gaps in KI-57 |
 | Policy anchor lookups (029) | Fixes a flaw in 018/020: multi-hop anchors read intermediate tables as the caller, so writers without read access to another module were silently denied. 63 tables now resolve through SECURITY DEFINER lookups; regression-tested |
 | Workflow guards (020) and finance RPCs (021) | Implemented, tested, applied to live project. UI built (see Finance UI row) |
-| Admin RPCs for permission overrides and user linking | Not started |
+| Admin RPCs for permission overrides and user linking; MFA recovery codes and a "require MFA" policy | Not started |
 | Storage buckets/policies | Student documents only (M042); other document kinds not started |
 | Module services/CRUD | Not started |
-| Tests | 497 passing (328 database + 169 unit) plus 24 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
+| Tests | 519 passing (342 database + 177 unit) plus 38 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
 | Security audit | Done as a self-review (SECURITY_AUDIT.md). Performance report: not started |
 
 Pending modules: none unstarted; see listed per module in RTM.md.

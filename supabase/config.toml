@@ -37,5 +37,5 @@ enable_confirmations = true
 double_confirm_changes = true
 
 [auth.mfa.totp]
-enroll_enabled = false
-verify_enabled = false
+enroll_enabled = true
+verify_enabled = true

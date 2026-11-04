@@ -25,7 +25,7 @@ test.describe('public pages', () => {
 });
 
 test.describe('route protection', () => {
-  for (const path of ['/dashboard', '/students', '/announcements', '/grievances', '/admin/users', '/audit', '/settings']) {
+  for (const path of ['/dashboard', '/students', '/announcements', '/grievances', '/admin/users', '/audit', '/audit/logins', '/notifications', '/search', '/mfa', '/activities', '/staff-profile', '/my-documents', '/settings']) {
     test(`${path} redirects an anonymous visitor to /login`, async ({ page }) => {
       await page.goto(path);
       await expect(page).toHaveURL(/\/login/);
