@@ -26,6 +26,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/results/grades', label: 'Grading', module: 'RESULT' },
   { href: '/my-results', label: 'My results', studentOnly: true },
   { href: '/my-documents', label: 'My documents', studentOnly: true },
+  { href: '/certificates', label: 'Certificates', module: 'DOCUMENT', alsoStudent: true },
   { href: '/activities', label: 'Activities', module: 'STUDENT', alsoStudent: true },
   { href: '/staff-profile', label: 'Staff profile', module: 'STAFF_PROFILE' },
   { href: '/my-hr', label: 'My HR records', employeeOnly: true },

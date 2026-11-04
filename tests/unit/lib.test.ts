@@ -67,8 +67,8 @@ describe('navigation visibility', () => {
     expect(visibleNav(ctx(['RESULT'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/results/grades', '/settings']);
     expect(visibleNav({ ...ctx([]), employee_id: 7 }).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/my-hr', '/settings']); // employees reach their own HR records
     // "My results" is for linked students only, whatever modules they can read
-    expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/my-results', '/my-documents', '/activities', '/grievances', '/settings']);
-    expect(visibleNav({ ...ctx(['STUDENT', 'ADMISSION', 'REGISTRATION', 'ATTENDANCE', 'TIMETABLE', 'ASSESSMENT', 'RESULT', 'GRIEVANCE', 'MENTORING', 'FEEDBACK', 'FEES', 'EMPLOYEE', 'INSTITUTION', 'ACADEMIC_CALENDAR', 'CURRICULUM', 'IAM', 'AUDIT', 'STAFF_PROFILE']), student_id: 5, employee_id: 7 }).map((i) => i.href)).toEqual(NAV_ITEMS.map((i) => i.href));
+    expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/my-results', '/my-documents', '/certificates', '/activities', '/grievances', '/settings']);
+    expect(visibleNav({ ...ctx(['STUDENT', 'ADMISSION', 'REGISTRATION', 'ATTENDANCE', 'TIMETABLE', 'ASSESSMENT', 'RESULT', 'GRIEVANCE', 'MENTORING', 'FEEDBACK', 'FEES', 'EMPLOYEE', 'INSTITUTION', 'ACADEMIC_CALENDAR', 'CURRICULUM', 'IAM', 'AUDIT', 'STAFF_PROFILE', 'DOCUMENT']), student_id: 5, employee_id: 7 }).map((i) => i.href)).toEqual(NAV_ITEMS.map((i) => i.href));
   });
   it('parseContext rejects malformed payloads', () => {
     expect(parseContext(null)).toBeNull();
