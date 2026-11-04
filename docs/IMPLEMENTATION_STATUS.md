@@ -34,12 +34,14 @@ Date: 2026-11-04
 | Record sections and reference data: student and employee sub-records (addresses, guardians, previous education, entrance exams, residence, qualifications, previous employment) and 32 maintainable reference lists (migration 046; `/students/[id]/records`, `/employees/[id]/records`, `/admin/reference`) | Built; 12 DB tests + 8 unit tests. **M046 not applied to the live project.** Gaps in KI-58 (PAN / Aadhaar / bank accounts / HR documents not covered) |
 | Fee receipts and holds (migration 047; `/finance/receipt/[id]`, holds card on the account page) | Built; 6 DB tests. **M047 not applied to the live project.** Numbering rule assumed (KI-59) |
 | Personal dashboard: students see today's classes and attendance per course, faculty see upcoming sessions and unmarked ones (migration 048; `/dashboard`) | Built; 5 DB tests. **M048 not applied to the live project.** KI-60 |
+| Performance: per-transaction permission memo, flatter `can_student` / `can_employee`, cheaper lists, audit indexes (migration 049), found by running 21 queries at 20,000 students on a real PostgreSQL | Built; equivalence tested against the original functions. Student list: more than 20 s to under 1 s. **M049 not applied to the live project.** See PERFORMANCE_REPORT.md, KI-61 |
+| Quality tooling: concurrency suite on real PostgreSQL (`npm run test:concurrency`), view tests, seed-count check, generated DATABASE_SCHEMA.md, performance harness (`tools/perf`) | Built and run |
 | Policy anchor lookups (029) | Fixes a flaw in 018/020: multi-hop anchors read intermediate tables as the caller, so writers without read access to another module were silently denied. 63 tables now resolve through SECURITY DEFINER lookups; regression-tested |
 | Workflow guards (020) and finance RPCs (021) | Implemented, tested, applied to live project. UI built (see Finance UI row) |
 | Admin RPCs for permission overrides and user linking; MFA recovery codes and a "require MFA" policy; concessions, scholarships, instalments, late fees, adjustments; employee identity numbers, bank accounts and HR documents | Not started |
 | Storage buckets/policies | Student documents only (M042); other document kinds not started |
 | Module services/CRUD | Not started |
-| Tests | 551 passing (365 database + 186 unit) plus 38 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
+| Tests | 572 passing (376 database + 196 unit) plus 38 Playwright smoke tests. Plus 8 opt-in concurrency tests on a real PostgreSQL. No signed-in UI tests (see TESTING_REPORT.md) |
 | Security audit | Done as a self-review (SECURITY_AUDIT.md). Performance report: not started |
 
 Pending modules: none unstarted; see listed per module in RTM.md.

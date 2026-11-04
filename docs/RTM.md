@@ -20,7 +20,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 **Evidence conventions**
 
-- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M043 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`. **M044 to M048 (staff profile, account features, record sections and reference data, receipts and holds, personal dashboard) are not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
+- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M043 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`. **M044 to M049 (staff profile, account features, record sections and reference data, receipts and holds, personal dashboard, permission memo) are not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
 - `DB:` and `UT:` name the Vitest files in `tests/db/` and `tests/unit/`, with the number of tests in brackets.
 - `KI-n` is an entry in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - Routes are paths under `src/app/(app)/`.
@@ -29,11 +29,11 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 | Check | Result |
 |---|---|
-| `npx vitest run` | **551 passed, 0 failed** (51 files: 27 database files with 365 tests, 24 unit files with 186 tests) |
+| `npx vitest run` | **572 passed, 0 failed** (53 files: 29 database files with 376 tests, 24 unit files with 196 tests) |
 | `npx tsc --noEmit` | clean (strict mode, `noUncheckedIndexedAccess`) |
 | `npm run lint` | clean |
 | `npm run build` | succeeds |
-| Migrations applied to the live project | 43 of 48 (M044 to M048 pending) |
+| Migrations applied to the live project | 43 of 49 (M044 to M049 pending) |
 | Signed-in manual or browser verification of any screen | **not done** (no Auth user exists yet, see R-AUTH-9 and KI-3, KI-14) |
 | Playwright end-to-end tests | **38 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
 | Multi-connection (concurrent) tests | **not run** (the test database is single-connection embedded PostgreSQL) |
@@ -77,9 +77,9 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | R-STK-1 | Next.js App Router, React, strict TypeScript | `package.json` (Next 15.5, React 19, TS 5.9), `tsconfig.json` strict, `npx tsc --noEmit` clean | Done | |
 | R-STK-2 | Tailwind CSS | Tailwind 4, `src/app/globals.css` | Done | |
 | R-STK-3 | shadcn/ui | `src/components/ui/{button,card,input}.tsx` are hand-written components in the shadcn style (class-variance-authority, tailwind-merge); the shadcn CLI and its other components are not used | Partial | Say so plainly: the look follows shadcn, the library is not installed |
-| R-STK-4 | Lucide icons | `lucide-react` is a dependency | Partial | Installed; icons are used very little |
+| R-STK-4 | Lucide icons | `lucide-react`: every navigation item has an icon, plus the header bell, search and sign-out | Done | |
 | R-STK-5 | React Hook Form and Zod | Every create/edit form uses `useForm` with `zodResolver`; schemas in `src/lib/*-validation.ts` | Done | |
-| R-STK-6 | TanStack Query where it helps | `@tanstack/react-query` is installed but **not used**: data is loaded in server components and mutations call Supabase then `router.refresh()` | Not started | Deliberate, because server components removed the need; remove the dependency or adopt it |
+| R-STK-6 | TanStack Query where it helps | Not used, and the dependency was **removed**: data is loaded in server components and mutations call Supabase then `router.refresh()`, so there is no client cache to manage | Done (by decision) | Re-add it if a screen needs optimistic client-side data |
 | R-STK-7 | Recharts | `src/components/charts.tsx` used by `/dashboard` and `/feedback/results/*` | Done | |
 | R-STK-8 | Supabase, PostgreSQL, Auth, RLS | Live project `khqqfgqvwdxlqkncwtmh`, PostgreSQL 17 | Done | |
 | R-STK-9 | Supabase Storage | Nothing uses Storage | Not started | See section 8 |
@@ -100,7 +100,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 |---|---|---|---|---|
 | R-P0-1 | Inspect the complete repository and both sources | The repository was empty apart from the two source files | Done | |
 | R-P0-2 | `docs/PROJECT_AUDIT.md` with the 10 listed sections | [PROJECT_AUDIT.md](PROJECT_AUDIT.md) | Done | Written at the start; later phases are tracked in IMPLEMENTATION_STATUS |
-| R-P0-3 | Create and maintain a development checklist | [DEVELOPMENT_CHECKLIST.md](DEVELOPMENT_CHECKLIST.md) | Partial | The checklist is coarse and stale; [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) carries the real status and this RTM supersedes the checklist |
+| R-P0-3 | Create and maintain a development checklist | [DEVELOPMENT_CHECKLIST.md](DEVELOPMENT_CHECKLIST.md) (a short view of this RTM) | Done | The RTM is the source of truth |
 
 ---
 
@@ -139,7 +139,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 |---|---|---|---|---|
 | R-P1-18 | Clean `supabase/migrations/` with meaningful sequential names | 39 files (section 12) | Done | Names follow the real dependencies, not the prompt's suggested list |
 | R-P1-19 | Migration comparison report: tables, columns, PK, FK, unique, check, index, trigger, view | [DATABASE_MIGRATION.md](DATABASE_MIGRATION.md) "Equivalence report" | Done | |
-| R-P1-20 | Seed-data equivalence | M011 carries the source seed data | Partial | A row-by-row seed comparison was not run |
+| R-P1-20 | Seed-data equivalence | `npm run migrate:seed-check` (`tools/validate/seed_counts.mjs`) counts the rows of every plain INSERT ... VALUES of the MySQL source and compares them with the migrated database: 37 of 38 seeded tables identical, 1 explained (`role`: FINANCE_OFFICER is inserted twice in the source; the unique key keeps the first row) | Script | Done | Counts only, not values; the 51 INSERT ... SELECT statements (permissions and their grants) are built from the catalogue and are covered by the RBAC tests |
 | R-P1-21 | Trigger behaviour equivalence | Each ported trigger has a test | DB: finance [14], schema [17], employees [13] | Done | Not compared against a running MySQL |
 | R-P1-22 | Works on a fresh Supabase project | Applied to the empty live project; 16/16 then 39/39 migrations | DATABASE_MIGRATION.md; live `schema_migrations` | Done | |
 | R-P1-23 | No destructive migration against production | None executed; only additive migrations | | Done | |
@@ -350,7 +350,7 @@ One page serves every role. It shows a count tile for each readable module and t
 | R-FIN-1 | No duplicate payment processing | `fin_record_payment` is idempotent on `transaction_number`; the same number with different details is refused | DB: finance [14] | Done | |
 | R-FIN-2 | No over-allocation of payments | Row-locked triggers and RPC checks | DB: finance | Done | |
 | R-FIN-3 | No invalid refund | Refundable-balance check and approval state machine | DB: finance | Done | |
-| R-FIN-4 | No negative balances from concurrent operations | Row locks in a fixed order (payment, then item) | DB: finance | Partial | Proven on a single connection only; needs a multi-connection test (DATABASE_MIGRATION.md) |
+| R-FIN-4 | No negative balances from concurrent operations | Row locks in a fixed order (payment, then item); proven on a real multi-connection PostgreSQL 16 with 10 parallel connections: no over-allocation, no overpayment of an item, no over-refund, unique receipt numbers, idempotent duplicate payments, no deadlocks | `tests/concurrency/finance.concurrency.test.ts` [8] | Done | Opt-in suite (`PG_CONCURRENCY_URL`), not part of `npm test` |
 | R-FIN-5 | No unauthorised change to financial records | Clients hold no write grants on money tables; RPCs authorise per student scope | DB: finance, rls | Done | |
 | R-FIN-6 | Idempotency where appropriate | Keys on assessment, payment, refund request and refund numbers | DB: finance | Done | |
 | R-FIN-7 | Never trust frontend totals | The form shows a live total, the server recomputes | UT: finance [10]; DB: finance | Done | |
@@ -401,15 +401,15 @@ One page serves every role. It shows a count tile for each readable module and t
 | R-TST-1 | Schema creation | DB: schema [17] | Done | |
 | R-TST-2 | Foreign key integrity, unique and check constraints | DB: schema; each module test | Done | |
 | R-TST-3 | Trigger execution | DB: schema, finance, employees, registration, attendance, assessment, timetable, feedback | Done | |
-| R-TST-4 | View results | DB: schema (views exist, are security invoker) | Partial | Result rows of the 10 views are not asserted |
+| R-TST-4 | View results | DB: views [16] (the ten views exist, are security invoker, resolve for administrators, return nothing to outsiders, and return what the data says under each role) | Done | |
 | R-TST-5 | RPC functions | Every RPC family has authorised, unauthorised, invalid-input and replay cases | Done | |
 | R-TST-6 | Transaction rollback | Failed multi-step RPCs leave no rows (for example feedback submit validation, mentoring, grievance limits) | DB: feedback [19] and others | Done | |
-| R-TST-7 | Concurrent financial operations | Not run | | Not started | Needs real multi-connection PostgreSQL |
-| R-TST-8 | Authentication tests (login, logout, invalid credentials, expiry, reset, unauthorised routes) | None automated | | Not started | Blocked on the first Auth user for real flows |
+| R-TST-7 | Concurrent financial operations | `tests/concurrency/finance.concurrency.test.ts` on a real PostgreSQL 16 (see R-FIN-4) | `npm run test:concurrency` with `PG_CONCURRENCY_URL` | Done | Skipped unless a scratch server is configured; the migrations also apply cleanly on real PostgreSQL there |
+| R-TST-8 | Authentication tests (login, logout, invalid credentials, expiry, reset, unauthorised routes) | Automated: login page, validation, phone layout, redirect of every protected route (Playwright, 38 tests); database-level MFA, sign-in log and identity rules (DB: account-features [14], rls [30]). The sign-in, sign-out and invalid-credential browser flows are written (`tests/e2e/auth.spec.ts`) but skipped | | Partial | Needs a test user in a non-production Supabase project (D-1) |
 | R-TST-9 | RLS tests for every important role | DB: rls [30] plus module tests with registrar, faculty, finance, student and super-admin identities | Done | KI-2: representative, not every table |
 | R-TST-10 | Frontend tests (page load, validation, CRUD, search, pagination, filters, navigation, errors, responsive) | Unit tests of validation, payload builders and navigation only (133 tests) | Partial | No component or page tests |
 | R-TST-11 | End-to-end tests with Playwright | `tests/e2e/` (see R-STK-15) | Partial | Smoke only; signed-in flows blocked on a test user (KI-3) |
-| R-TST-12 | Do not mark tests passed unless executed | The 391 figure is from an executed run | Done | |
+| R-TST-12 | Do not mark tests passed unless executed | Every figure in this RTM and in TESTING_REPORT.md comes from an executed run; `counts.py`-style recounts are checked against the runner total | Done | |
 | R-TST-13 | `TESTING_REPORT.md` | [TESTING_REPORT.md](TESTING_REPORT.md) | Done | |
 
 ### 12.2 The twelve workflows the prompt lists
@@ -437,14 +437,14 @@ None has an end-to-end browser test. The right-hand column shows what is covered
 
 | ID | Requirement | Evidence | Status | Gap or note |
 |---|---|---|---|---|
-| R-PERF-1 | Proper indexes | 104 source indexes migrated; extra indexes in M009 and M012 | Done | No new indexes were added for the RLS helper lookups (KI-10) |
+| R-PERF-1 | Proper indexes | 104 source indexes migrated; extra indexes in M009, M012 and M049 (audit and sign-in logs, activity lists) | Done | RLS helper lookups are fast now that M049 caches the caller's permissions; `pg_trgm` indexes for substring search are a recommendation, not built |
 | R-PERF-2 | Pagination and server-side filtering | List screens page at 20 rows; filters run in the database or RPC | Done | Feedback and a few reference lists load up to 200 to 500 rows at once |
 | R-PERF-3 | Avoid retrieving whole tables | Same | Done | |
 | R-PERF-4 | Avoid N+1 queries | List helpers return joined rows from one RPC; ledgers batch with `IN` lists | Done | Not measured |
 | R-PERF-5 | Efficient dashboard aggregation | `dash_*` functions aggregate in the database | Done | |
-| R-PERF-6 | `EXPLAIN ANALYZE` of important queries | Not run | Not started | KI-10 |
-| R-PERF-7 | Caching that cannot leak across users | No caching is used | Done | |
-| R-PERF-8 | **Performance report** | Not written | Not started | |
+| R-PERF-6 | `EXPLAIN ANALYZE` of important queries | `tools/perf/run.ts` on a real PostgreSQL with 20,000 students and 100,000 audit rows, 21 queries as RLS-restricted users; it found three real problems, fixed in M049 | [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md) | Done | Single-user numbers; no load test |
+| R-PERF-7 | Caching that cannot leak across users | The only cache is a per-transaction memo of the caller's identity and permissions (M049): transaction-local, keyed by the auth user, MFA level and permission codes, discarded when the transaction ends; no cross-request or cross-user cache anywhere | DB: permission-equivalence [5] | Done | KI-61 |
+| R-PERF-8 | **Performance report** | [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md), regenerated by `node tools/perf/report.mjs` | | Done | |
 
 ---
 
@@ -495,8 +495,8 @@ Known limits of this evidence: the database runs on embedded PostgreSQL (PGlite)
 | 1 | PROJECT_OVERVIEW.md | Done |
 | 2 | SYSTEM_ARCHITECTURE.md | Done |
 | 3 | DATABASE_MIGRATION.md | Done |
-| 4 | DATABASE_SCHEMA.md | Not started (SCHEMA_RECONCILIATION.md and RLS_POLICY_MAP.md cover tables) |
-| 5 | MODULE_DOCUMENTATION.md | Partial (IMPLEMENTATION_STATUS.md, API_DOCUMENTATION.md, migration headers) |
+| 4 | DATABASE_SCHEMA.md | Done (generated from the catalogue by `npm run docs:schema`) |
+| 5 | MODULE_DOCUMENTATION.md | Done |
 | 6 | AUTHENTICATION_AND_RBAC.md | Done (its "Not done yet" section is partly stale: login screens now exist) |
 | 7 | RLS_SECURITY_MODEL.md | Done |
 | 8 | API_DOCUMENTATION.md | Done for the RPCs |
@@ -505,7 +505,7 @@ Known limits of this evidence: the database runs on embedded PostgreSQL (PGlite)
 | 11 | SECURITY_AUDIT.md | Done (self-review) |
 | 12 | DEPLOYMENT_GUIDE.md | Done (checklist; nothing deployed) |
 | 13 | ENVIRONMENT_SETUP.md | Done |
-| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-60) |
+| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-61) |
 | 15 | IMPLEMENTATION_STATUS.md | Done |
 
 Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLICY_MAP.md (generated), DEVELOPMENT_CHECKLIST.md, this RTM.
@@ -519,7 +519,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | R-DEP-3 | Seed scripts | Partial | Reference seed is in M011; no sample-data or per-role test-user seed (and no fabricated records, by the rules) |
 | R-DEP-4 | Test scripts | Done | `npm test`, `npm run test:db`, `npm run test:unit` |
 | R-DEP-5 | Deployment configuration | `vercel.json` (framework, install and build commands, HSTS) and `supabase/config.toml` | Done | Neither has been used for a real deployment |
-| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M043 are applied to the Supabase project; M044 to M048 are not) |
+| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M043 are applied to the Supabase project; M044 to M049 are not) |
 | R-DEP-7 | Never commit secrets; never run a destructive production migration without approval and backup | Done | |
 
 ---
@@ -628,6 +628,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | M046 | Record sections (student and employee sub-tables) and reference-data administration | hand-written |
 | M047 | Fee receipts and financial holds | hand-written |
 | M048 | Personal dashboard (`my_dashboard`) | hand-written |
+| M049 | Per-transaction permission memo, flatter `covers` / `can_student` / `can_employee`, cheaper lists, audit indexes (found by the performance run) | hand-written |
 
 ## 19. Screen inventory
 
@@ -671,14 +672,13 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | D-7 | Owner and key management for encrypting Aadhaar, PAN and bank data | You | KI-8 |
 | D-8 | Case-insensitive uniqueness for codes and emails | You | KI-7 |
 | D-9 | Fee receipt numbering rule | You | R-FIN-8 |
-| D-10 | Multi-connection PostgreSQL for concurrency tests | Infrastructure | R-TST-7, R-FIN-4 |
+| D-10 | ~~Multi-connection PostgreSQL for concurrency tests~~ | Resolved: a real PostgreSQL 16 was available in the build container and `tests/concurrency` runs against it | |
 
 ## 21. Remaining work in priority order
 
-1. **Unblock authentication** (D-1, D-2), then verify every built screen signed in and add Playwright tests for the 12 workflows.
-2. **Documents and Storage** (module 8, Phase 4), because student activity, staff profile and several modules depend on files.
-3. **Remaining modules:** Communication (3 tables), Student Activity and Evidence (7), Staff Profile and Research (55), then the unbuilt HR and student sub-tables.
-4. **Finance completion:** fee structures, concessions, scholarships, instalments, late fees, penalties, holds, receipts.
-5. **IAM administration:** role assignment, overrides, user linking, activation and deactivation, permission-change audit.
-6. **Global search, notifications, role-specific dashboards.**
-7. **Quality deliverables:** security audit, performance report with `EXPLAIN ANALYZE`, concurrency tests, testing report, deployment guide and Vercel configuration, and the missing documents in section 15.1.
+1. **Unblock authentication** (D-1, D-2): create the first Auth user, apply migrations 044-049 to the live project, then verify every built screen signed in and run the skipped Playwright flows.
+2. **Owner decisions** that block or shape work: fee permissions for students and the super admin (D-5), the receipt numbering rule (D-9), who holds the encryption keys for PAN, Aadhaar and bank data (D-7), Lesson Plan and the dictionary-only tables (D-6).
+3. **Finance completion:** applying concessions, scholarships and sponsorships to assessments, instalments, late fees, penalties, fee adjustments, fee-structure approval screens, enforcement of holds in other modules (KI-59).
+4. **Employee records:** identity numbers, bank accounts and HR documents (KI-8, KI-58); competencies.
+5. **Staff research leftovers:** research supervision, journal metrics, project utilisation, indexing rows (KI-56).
+6. **Quality:** a load test with many simultaneous users; `pg_trgm` indexes if substring search grows slow; set-based RLS policies if the institution grows far beyond a few thousand students (PERFORMANCE_REPORT.md); a Next.js upgrade to clear the PostCSS advisory (KI-13); MFA recovery codes and a "require MFA" policy (KI-57).

@@ -4,7 +4,7 @@ Nothing has been deployed by this repository's tooling. This guide is the checkl
 
 ## 1. Supabase project
 1. Create (or pick) the project. Note the project URL and the **publishable** key (Settings > API). Never copy the service-role key or the database password into the web app.
-2. Apply migrations `001` to `048` **in order**. Either `supabase link --project-ref <ref>` then `supabase db push` (uses `supabase/config.toml`), or the operator scripts in `tools/` (see DATABASE_MIGRATION.md). Migration 042 creates the `sims-documents` bucket and its policies.
+2. Apply migrations `001` to `049` **in order**. Either `supabase link --project-ref <ref>` then `supabase db push` (uses `supabase/config.toml`), or the operator scripts in `tools/` (see DATABASE_MIGRATION.md). Migration 042 creates the `sims-documents` bucket and its policies.
 3. Authentication > URL configuration: Site URL = the production origin; redirect URLs = `<origin>/auth/callback` and `<origin>/reset-password`.
 4. Authentication > Multi-factor: enable TOTP (enrol and verify) so the screens in `/settings` and `/mfa` work (matches `config.toml`). Authentication > Providers > Email: sign-ups **disabled** (accounts are provisioned), confirmation on, minimum password length 12 (matches `config.toml`). Configure a real SMTP provider or password-reset mails will not arrive.
 5. Create the first user in Authentication > Users, then run `tools/bootstrap_admin.py` (one transaction; verifies identity resolution). After that, manage accounts and roles from `/admin/users`.
@@ -20,6 +20,10 @@ Nothing has been deployed by this repository's tooling. This guide is the checkl
 - `npm run typecheck && npm run lint && npm test` (needs no Supabase account).
 - `npm run test:e2e` (needs Chromium; set `E2E_CHROMIUM_PATH` to use an installed one). With a **non-production** test user also set `E2E_EMAIL` and `E2E_PASSWORD` to run the sign-in flow.
 - Sign in as the first administrator: Dashboard loads, `/admin/users` lists users, `/audit` shows the bootstrap entries, a student can upload to `/my-documents`.
+
+## 3b. Optional checks against the real database server
+- `PG_CONCURRENCY_URL=postgres://... npm run test:concurrency` runs the finance concurrency suite on a scratch PostgreSQL 15+ (it creates and drops its own database).
+- `PG_PERF_URL=postgres://... npx vite-node tools/perf/run.ts` measures the main queries under row level security at realistic volumes (see PERFORMANCE_REPORT.md).
 
 ## 4. Rollback
 Migrations are forward-only SQL. Take a backup (Dashboard > Database > Backups, or `pg_dump`) before each `db push`; to roll back restore the backup, then redeploy the previous Vercel build.

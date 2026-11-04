@@ -4,9 +4,9 @@ Run on 2026-11-04 on the development container. Everything below was executed; n
 
 | Suite | Command | Result |
 |---|---|---|
-| Database (embedded Postgres, all migrations, RLS, triggers, RPCs) | `npm run test:db` | 27 files, 365 test cases |
-| Unit (validation, payload builders, navigation, drift tests against migrations) | `npm run test:unit` | 24 files, 186 test cases |
-| **Vitest total** | `npm test` | **551 passed, 0 failed** (51 files) |
+| Database (embedded Postgres, all migrations, RLS, triggers, RPCs) | `npm run test:db` | 29 files, 376 test cases |
+| Unit (validation, payload builders, navigation, drift tests against migrations) | `npm run test:unit` | 24 files, 196 test cases |
+| **Vitest total** | `npm test` | **572 passed, 0 failed, 8 skipped** (53 files; the 8 skipped are the opt-in concurrency suite) |
 | Type check | `npm run typecheck` | clean |
 | Lint | `npm run lint` | clean |
 | Production build | `npm run build` (placeholder Supabase variables) | passes |
@@ -21,3 +21,13 @@ Run on 2026-11-04 on the development container. Everything below was executed; n
 - Signed-in browser flows against a real Supabase project (login, logout, reset, upload to Storage). The e2e file exists but has never run against a real project because none was available.
 - Real Supabase Storage behaviour (the tests use a minimal stand-in for `storage.buckets` / `storage.objects`; signed URLs are not exercised).
 - Concurrent financial operations on multiple connections (R-TST-7), `EXPLAIN ANALYZE` performance runs, component-level frontend tests, accessibility audits with a tool, load tests.
+
+## Additional suites (added with the quality work)
+| Suite | Command | What it proves |
+|---|---|---|
+| Concurrency on real PostgreSQL 16 | `PG_CONCURRENCY_URL=postgres://... npm run test:concurrency` | 8 tests with 10 parallel connections: idempotent duplicate payments, no over-allocation of a payment, no overpayment of an item, no over-refund, unique receipt numbers, one active hold, no deadlock. Skipped when the variable is not set. The migrations also apply cleanly on real PostgreSQL there. |
+| Permission equivalence | part of `npm run test:db` | The rewritten `covers`, `can_student` and `can_employee` (M049) agree with the original definitions for every fixture user, permission set, target and mode. |
+| Views | part of `npm run test:db` | The ten views exist, are security invoker, resolve, and return the right rows under each role. |
+| Seed counts | `npm run migrate:seed-check` | 37 of 38 seeded tables have the same row count as the MySQL source; 1 explained difference. |
+| Schema document | `node tools/validate/schema_doc.mjs --check` | `docs/DATABASE_SCHEMA.md` matches the migrated catalogue. |
+| Performance run | `tools/perf/run.ts` (see PERFORMANCE_REPORT.md) | Timings and plans of 21 queries under row level security at 20,000 students. |
