@@ -33,7 +33,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | `npx tsc --noEmit` | clean (strict mode, `noUncheckedIndexedAccess`) |
 | `npm run lint` | clean |
 | `npm run build` | succeeds |
-| Migrations applied to the live project | 50 of 63 (M051 to M063 pending) |
+| Migrations applied to the live project | 51 of 63 (M052 to M063 pending; M051 reviewed and applied 2026-11-05, live identity and the signed-in dashboard re-verified) |
 | Signed-in manual or browser verification of any screen | **Partly done on 2026-11-04**: signed in as the first super administrator (Auth user created in the dashboard, linked with `tools/bootstrap_admin.py`), the dashboard, the Users page and the Staff profile page were opened and looked right, and 26 other list and form pages returned 200 with no error text. The database is empty, so only empty states were seen: no create, edit, approve or search flow was exercised, no other role (student, faculty, finance) was tried, and the Create user form was not submitted (no service-role key) |
 | Playwright end-to-end tests | **58 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
 | Multi-connection (concurrent) tests | **not run** (the test database is single-connection embedded PostgreSQL) |
