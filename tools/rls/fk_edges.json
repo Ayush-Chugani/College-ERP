@@ -1,0 +1,7776 @@
+{
+"tables": [
+"academic_term",
+"academic_year",
+"access_action",
+"access_module",
+"access_resource",
+"activity_audit",
+"activity_evidence_requirement",
+"activity_type",
+"admission_applicant",
+"admission_application",
+"admission_category",
+"admission_payment",
+"announcement",
+"announcement_attachment",
+"announcement_type",
+"approval_status",
+"assessment_component",
+"assessment_event",
+"attendance_correction_request",
+"attendance_status",
+"award_category",
+"awarding_body",
+"awarding_body_type",
+"blood_group",
+"building",
+"campus",
+"caste",
+"certificate_request",
+"certificate_type",
+"class_batch",
+"class_section",
+"class_session",
+"cocurricular_activity",
+"cocurricular_category",
+"concession_type",
+"conference_activity",
+"conference_activity_indexing",
+"conference_contribution_type",
+"conference_event",
+"confidentiality_level",
+"consultancy_project",
+"counselling_session",
+"country",
+"course_catalog",
+"course_category",
+"course_offering",
+"course_offering_section",
+"course_offering_section_student",
+"course_prerequisite",
+"curriculum_course",
+"curriculum_scheme",
+"department",
+"designation",
+"document_type",
+"education_institution",
+"education_institution_type",
+"employee",
+"employee_aadhaar",
+"employee_address",
+"employee_assignment",
+"employee_bank_account",
+"employee_competency",
+"employee_document",
+"employee_document_access_rule",
+"employee_document_category",
+"employee_pan",
+"employee_previous_employment",
+"employee_qualification",
+"employee_sensitive_access_audit",
+"employee_user_account",
+"employment_source",
+"enrolment_status_history",
+"event_mode",
+"evidence_document",
+"evidence_document_audit",
+"evidence_document_tag",
+"evidence_document_version",
+"evidence_tag",
+"evidence_type",
+"external_agency",
+"external_organization",
+"external_organization_type",
+"extracurricular_activity",
+"extracurricular_category",
+"faculty_course_assignment",
+"faculty_internship",
+"fee_activity_audit",
+"fee_adjustment",
+"fee_assessment_benefit",
+"fee_category",
+"fee_charge_source",
+"fee_receipt",
+"fee_refund",
+"fee_structure",
+"fee_structure_item",
+"fee_type",
+"feedback_choice",
+"feedback_cycle",
+"feedback_question",
+"feedback_question_category",
+"feedback_questionnaire",
+"feedback_questionnaire_item",
+"feedback_response",
+"feedback_response_item",
+"file_object",
+"financial_ledger_account",
+"funded_research_project",
+"funding_agency",
+"funding_type",
+"gender",
+"grade_rule",
+"grade_scale",
+"grievance",
+"grievance_action",
+"grievance_category",
+"indexing_agency",
+"industry_sector",
+"installment_plan",
+"institution",
+"journal",
+"journal_metric",
+"journal_publication",
+"journal_publication_indexing",
+"journal_type",
+"late_fee_rule",
+"late_fee_slab",
+"login_audit",
+"membership_type",
+"mentor_assignment",
+"metric_type",
+"organization_type",
+"organizer",
+"participation_level",
+"password_history",
+"payment_allocation",
+"payment_mode",
+"payment_transaction",
+"permission",
+"previous_organization",
+"previous_organization_type",
+"professional_contribution_type",
+"professional_development_activity",
+"programme",
+"programme_specialization",
+"programme_term_offering",
+"publication_type",
+"publisher",
+"qualification_level",
+"refund_request",
+"religion",
+"research_project_financial_utilization",
+"research_proposal",
+"research_status",
+"research_supervision",
+"role",
+"role_delegation",
+"role_permission",
+"role_type",
+"room",
+"scholarship_scheme",
+"semester",
+"service_fee_request",
+"social_category",
+"staff_activity",
+"staff_activity_contributor",
+"staff_award",
+"staff_category",
+"staff_professional_contribution",
+"staff_professional_membership",
+"staff_type",
+"state",
+"student",
+"student_activity",
+"student_activity_evidence",
+"student_activity_evidence_audit",
+"student_activity_evidence_requirement",
+"student_activity_evidence_version",
+"student_activity_team_member",
+"student_activity_type",
+"student_address",
+"student_assessment_mark",
+"student_attendance",
+"student_course_registration",
+"student_course_result",
+"student_document",
+"student_entrance_exam",
+"student_exit",
+"student_fee_assessment",
+"student_fee_assessment_item",
+"student_fee_concession",
+"student_fee_penalty",
+"student_financial_account",
+"student_financial_hold",
+"student_installment_schedule",
+"student_parent_guardian",
+"student_previous_education",
+"student_programme_enrolment",
+"student_residence",
+"student_scholarship",
+"student_sponsorship",
+"student_term_registration",
+"student_term_result",
+"student_user_account",
+"study_mode",
+"sub_caste",
+"time_slot",
+"timetable_session",
+"training_program_type",
+"university",
+"user_account",
+"user_permission_override",
+"user_role_assignment",
+"verification_status"
+],
+"edges": {
+"academic_term": [
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"access_resource": [
+{
+"cols": [
+"access_module_id"
+],
+"parent": "access_module",
+"pcols": [
+"access_module_id"
+]
+}
+],
+"activity_audit": [
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"activity_evidence_requirement": [
+{
+"cols": [
+"activity_type_id"
+],
+"parent": "activity_type",
+"pcols": [
+"activity_type_id"
+]
+},
+{
+"cols": [
+"document_type_id"
+],
+"parent": "document_type",
+"pcols": [
+"document_type_id"
+]
+},
+{
+"cols": [
+"evidence_type_id"
+],
+"parent": "evidence_type",
+"pcols": [
+"evidence_type_id"
+]
+}
+],
+"admission_applicant": [
+{
+"cols": [
+"caste_id"
+],
+"parent": "caste",
+"pcols": [
+"caste_id"
+]
+},
+{
+"cols": [
+"gender_id"
+],
+"parent": "gender",
+"pcols": [
+"gender_id"
+]
+},
+{
+"cols": [
+"nationality_country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"social_category_id"
+],
+"parent": "social_category",
+"pcols": [
+"social_category_id"
+]
+},
+{
+"cols": [
+"sub_caste_id"
+],
+"parent": "sub_caste",
+"pcols": [
+"sub_caste_id"
+]
+}
+],
+"admission_application": [
+{
+"cols": [
+"admitted_student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"admission_applicant_id"
+],
+"parent": "admission_applicant",
+"pcols": [
+"admission_applicant_id"
+]
+},
+{
+"cols": [
+"admission_category_id"
+],
+"parent": "admission_category",
+"pcols": [
+"admission_category_id"
+]
+},
+{
+"cols": [
+"programme_id"
+],
+"parent": "programme",
+"pcols": [
+"programme_id"
+]
+},
+{
+"cols": [
+"specialization_id",
+"programme_id"
+],
+"parent": "programme_specialization",
+"pcols": [
+"specialization_id",
+"programme_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"admission_payment": [
+{
+"cols": [
+"application_id"
+],
+"parent": "admission_application",
+"pcols": [
+"application_id"
+]
+},
+{
+"cols": [
+"payment_transaction_id",
+"application_id"
+],
+"parent": "payment_transaction",
+"pcols": [
+"payment_transaction_id",
+"application_id"
+]
+}
+],
+"announcement": [
+{
+"cols": [
+"department_id"
+],
+"parent": "department",
+"pcols": [
+"department_id"
+]
+},
+{
+"cols": [
+"announcement_type_id"
+],
+"parent": "announcement_type",
+"pcols": [
+"announcement_type_id"
+]
+}
+],
+"announcement_attachment": [
+{
+"cols": [
+"announcement_id"
+],
+"parent": "announcement",
+"pcols": [
+"announcement_id"
+]
+},
+{
+"cols": [
+"file_object_id"
+],
+"parent": "file_object",
+"pcols": [
+"file_object_id"
+]
+}
+],
+"assessment_component": [
+{
+"cols": [
+"course_offering_id"
+],
+"parent": "course_offering",
+"pcols": [
+"course_offering_id"
+]
+}
+],
+"assessment_event": [
+{
+"cols": [
+"assessment_component_id",
+"course_offering_id"
+],
+"parent": "assessment_component",
+"pcols": [
+"assessment_component_id",
+"course_offering_id"
+]
+}
+],
+"attendance_correction_request": [
+{
+"cols": [
+"class_session_id",
+"course_offering_section_student_id"
+],
+"parent": "student_attendance",
+"pcols": [
+"class_session_id",
+"course_offering_section_student_id"
+]
+},
+{
+"cols": [
+"old_status_id"
+],
+"parent": "attendance_status",
+"pcols": [
+"attendance_status_id"
+]
+},
+{
+"cols": [
+"requested_status_id"
+],
+"parent": "attendance_status",
+"pcols": [
+"attendance_status_id"
+]
+}
+],
+"awarding_body": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+},
+{
+"cols": [
+"awarding_body_type_id"
+],
+"parent": "awarding_body_type",
+"pcols": [
+"awarding_body_type_id"
+]
+}
+],
+"building": [
+{
+"cols": [
+"campus_id"
+],
+"parent": "campus",
+"pcols": [
+"campus_id"
+]
+}
+],
+"campus": [
+{
+"cols": [
+"institution_id"
+],
+"parent": "institution",
+"pcols": [
+"institution_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+}
+],
+"caste": [
+{
+"cols": [
+"social_category_id"
+],
+"parent": "social_category",
+"pcols": [
+"social_category_id"
+]
+}
+],
+"certificate_request": [
+{
+"cols": [
+"file_object_id"
+],
+"parent": "file_object",
+"pcols": [
+"file_object_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"certificate_type_id"
+],
+"parent": "certificate_type",
+"pcols": [
+"certificate_type_id"
+]
+}
+],
+"class_batch": [
+{
+"cols": [
+"class_section_id"
+],
+"parent": "class_section",
+"pcols": [
+"class_section_id"
+]
+}
+],
+"class_section": [
+{
+"cols": [
+"programme_term_offering_id"
+],
+"parent": "programme_term_offering",
+"pcols": [
+"programme_term_offering_id"
+]
+},
+{
+"cols": [
+"home_room_id"
+],
+"parent": "room",
+"pcols": [
+"room_id"
+]
+}
+],
+"class_session": [
+{
+"cols": [
+"faculty_assignment_id"
+],
+"parent": "faculty_course_assignment",
+"pcols": [
+"faculty_assignment_id"
+]
+},
+{
+"cols": [
+"room_id"
+],
+"parent": "room",
+"pcols": [
+"room_id"
+]
+},
+{
+"cols": [
+"course_offering_section_id"
+],
+"parent": "course_offering_section",
+"pcols": [
+"course_offering_section_id"
+]
+},
+{
+"cols": [
+"timetable_session_id"
+],
+"parent": "timetable_session",
+"pcols": [
+"timetable_session_id"
+]
+}
+],
+"cocurricular_activity": [
+{
+"cols": [
+"cocurricular_category_id"
+],
+"parent": "cocurricular_category",
+"pcols": [
+"cocurricular_category_id"
+]
+},
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"institution_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"organizer_id"
+],
+"parent": "organizer",
+"pcols": [
+"organizer_id"
+]
+},
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+}
+],
+"conference_activity": [
+{
+"cols": [
+"conference_contribution_type_id"
+],
+"parent": "conference_contribution_type",
+"pcols": [
+"conference_contribution_type_id"
+]
+},
+{
+"cols": [
+"conference_event_id"
+],
+"parent": "conference_event",
+"pcols": [
+"conference_event_id"
+]
+},
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"publication_type_id"
+],
+"parent": "publication_type",
+"pcols": [
+"publication_type_id"
+]
+}
+],
+"conference_activity_indexing": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "conference_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"indexing_agency_id"
+],
+"parent": "indexing_agency",
+"pcols": [
+"indexing_agency_id"
+]
+}
+],
+"conference_event": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"participation_level_id"
+],
+"parent": "participation_level",
+"pcols": [
+"participation_level_id"
+]
+},
+{
+"cols": [
+"event_mode_id"
+],
+"parent": "event_mode",
+"pcols": [
+"event_mode_id"
+]
+},
+{
+"cols": [
+"organizer_id"
+],
+"parent": "organizer",
+"pcols": [
+"organizer_id"
+]
+},
+{
+"cols": [
+"proceedings_publisher_id"
+],
+"parent": "publisher",
+"pcols": [
+"publisher_id"
+]
+},
+{
+"cols": [
+"sponsoring_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+}
+],
+"consultancy_project": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"client_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"principal_consultant_employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+}
+],
+"counselling_session": [
+{
+"cols": [
+"mentor_assignment_id"
+],
+"parent": "mentor_assignment",
+"pcols": [
+"mentor_assignment_id"
+]
+}
+],
+"course_catalog": [
+{
+"cols": [
+"course_category_id"
+],
+"parent": "course_category",
+"pcols": [
+"course_category_id"
+]
+},
+{
+"cols": [
+"owning_department_id"
+],
+"parent": "department",
+"pcols": [
+"department_id"
+]
+}
+],
+"course_offering": [
+{
+"cols": [
+"course_id"
+],
+"parent": "course_catalog",
+"pcols": [
+"course_id"
+]
+},
+{
+"cols": [
+"curriculum_course_id"
+],
+"parent": "curriculum_course",
+"pcols": [
+"curriculum_course_id"
+]
+},
+{
+"cols": [
+"programme_term_offering_id"
+],
+"parent": "programme_term_offering",
+"pcols": [
+"programme_term_offering_id"
+]
+}
+],
+"course_offering_section": [
+{
+"cols": [
+"class_batch_id",
+"class_section_id"
+],
+"parent": "class_batch",
+"pcols": [
+"class_batch_id",
+"class_section_id"
+]
+},
+{
+"cols": [
+"course_offering_id",
+"programme_term_offering_id"
+],
+"parent": "course_offering",
+"pcols": [
+"course_offering_id",
+"programme_term_offering_id"
+]
+},
+{
+"cols": [
+"class_section_id",
+"programme_term_offering_id"
+],
+"parent": "class_section",
+"pcols": [
+"class_section_id",
+"programme_term_offering_id"
+]
+}
+],
+"course_offering_section_student": [
+{
+"cols": [
+"course_registration_id",
+"course_offering_id"
+],
+"parent": "student_course_registration",
+"pcols": [
+"course_registration_id",
+"course_offering_id"
+]
+},
+{
+"cols": [
+"course_offering_section_id",
+"course_offering_id"
+],
+"parent": "course_offering_section",
+"pcols": [
+"course_offering_section_id",
+"course_offering_id"
+]
+}
+],
+"course_prerequisite": [
+{
+"cols": [
+"course_id"
+],
+"parent": "course_catalog",
+"pcols": [
+"course_id"
+]
+},
+{
+"cols": [
+"prerequisite_course_id"
+],
+"parent": "course_catalog",
+"pcols": [
+"course_id"
+]
+}
+],
+"curriculum_course": [
+{
+"cols": [
+"course_category_id"
+],
+"parent": "course_category",
+"pcols": [
+"course_category_id"
+]
+},
+{
+"cols": [
+"course_id"
+],
+"parent": "course_catalog",
+"pcols": [
+"course_id"
+]
+},
+{
+"cols": [
+"curriculum_scheme_id"
+],
+"parent": "curriculum_scheme",
+"pcols": [
+"curriculum_scheme_id"
+]
+},
+{
+"cols": [
+"semester_id"
+],
+"parent": "semester",
+"pcols": [
+"semester_id"
+]
+}
+],
+"curriculum_scheme": [
+{
+"cols": [
+"programme_id"
+],
+"parent": "programme",
+"pcols": [
+"programme_id"
+]
+},
+{
+"cols": [
+"specialization_id",
+"programme_id"
+],
+"parent": "programme_specialization",
+"pcols": [
+"specialization_id",
+"programme_id"
+]
+}
+],
+"department": [
+{
+"cols": [
+"campus_id"
+],
+"parent": "campus",
+"pcols": [
+"campus_id"
+]
+}
+],
+"designation": [
+{
+"cols": [
+"staff_category_id"
+],
+"parent": "staff_category",
+"pcols": [
+"staff_category_id"
+]
+}
+],
+"education_institution": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+},
+{
+"cols": [
+"education_institution_type_id"
+],
+"parent": "education_institution_type",
+"pcols": [
+"education_institution_type_id"
+]
+}
+],
+"employee": [
+{
+"cols": [
+"blood_group_id"
+],
+"parent": "blood_group",
+"pcols": [
+"blood_group_id"
+]
+},
+{
+"cols": [
+"caste_id"
+],
+"parent": "caste",
+"pcols": [
+"caste_id"
+]
+},
+{
+"cols": [
+"employment_source_id"
+],
+"parent": "employment_source",
+"pcols": [
+"employment_source_id"
+]
+},
+{
+"cols": [
+"external_agency_id"
+],
+"parent": "external_agency",
+"pcols": [
+"external_agency_id"
+]
+},
+{
+"cols": [
+"gender_id"
+],
+"parent": "gender",
+"pcols": [
+"gender_id"
+]
+},
+{
+"cols": [
+"institution_id"
+],
+"parent": "institution",
+"pcols": [
+"institution_id"
+]
+},
+{
+"cols": [
+"nationality_country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"religion_id"
+],
+"parent": "religion",
+"pcols": [
+"religion_id"
+]
+},
+{
+"cols": [
+"social_category_id"
+],
+"parent": "social_category",
+"pcols": [
+"social_category_id"
+]
+},
+{
+"cols": [
+"sub_caste_id"
+],
+"parent": "sub_caste",
+"pcols": [
+"sub_caste_id"
+]
+}
+],
+"employee_aadhaar": [
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"verified_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"employee_address": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+}
+],
+"employee_assignment": [
+{
+"cols": [
+"campus_id"
+],
+"parent": "campus",
+"pcols": [
+"campus_id"
+]
+},
+{
+"cols": [
+"department_id",
+"campus_id"
+],
+"parent": "department",
+"pcols": [
+"department_id",
+"campus_id"
+]
+},
+{
+"cols": [
+"designation_id"
+],
+"parent": "designation",
+"pcols": [
+"designation_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+}
+],
+"employee_bank_account": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"verified_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"employee_competency": [
+{
+"cols": [
+"course_id"
+],
+"parent": "course_catalog",
+"pcols": [
+"course_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+}
+],
+"employee_document": [
+{
+"cols": [
+"employee_aadhaar_id",
+"employee_id"
+],
+"parent": "employee_aadhaar",
+"pcols": [
+"employee_aadhaar_id",
+"employee_id"
+]
+},
+{
+"cols": [
+"approved_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"employee_bank_account_id",
+"employee_id"
+],
+"parent": "employee_bank_account",
+"pcols": [
+"employee_bank_account_id",
+"employee_id"
+]
+},
+{
+"cols": [
+"employee_document_category_id"
+],
+"parent": "employee_document_category",
+"pcols": [
+"employee_document_category_id"
+]
+},
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"deleted_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"employee_previous_employment_id",
+"employee_id"
+],
+"parent": "employee_previous_employment",
+"pcols": [
+"employee_previous_employment_id",
+"employee_id"
+]
+},
+{
+"cols": [
+"file_object_id"
+],
+"parent": "file_object",
+"pcols": [
+"file_object_id"
+]
+},
+{
+"cols": [
+"employee_pan_id",
+"employee_id"
+],
+"parent": "employee_pan",
+"pcols": [
+"employee_pan_id",
+"employee_id"
+]
+},
+{
+"cols": [
+"employee_qualification_id",
+"employee_id"
+],
+"parent": "employee_qualification",
+"pcols": [
+"employee_qualification_id",
+"employee_id"
+]
+},
+{
+"cols": [
+"supersedes_employee_document_id"
+],
+"parent": "employee_document",
+"pcols": [
+"employee_document_id"
+]
+},
+{
+"cols": [
+"document_type_id"
+],
+"parent": "document_type",
+"pcols": [
+"document_type_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"verified_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"employee_document_access_rule": [
+{
+"cols": [
+"employee_document_id"
+],
+"parent": "employee_document",
+"pcols": [
+"employee_document_id"
+]
+},
+{
+"cols": [
+"granted_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"role_id"
+],
+"parent": "role",
+"pcols": [
+"role_id"
+]
+},
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"employee_pan": [
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"verified_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"employee_previous_employment": [
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"previous_organization_id"
+],
+"parent": "previous_organization",
+"pcols": [
+"previous_organization_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"employee_qualification": [
+{
+"cols": [
+"awarding_body_id"
+],
+"parent": "awarding_body",
+"pcols": [
+"awarding_body_id"
+]
+},
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"education_institution_id"
+],
+"parent": "education_institution",
+"pcols": [
+"education_institution_id"
+]
+},
+{
+"cols": [
+"qualification_level_id"
+],
+"parent": "qualification_level",
+"pcols": [
+"qualification_level_id"
+]
+},
+{
+"cols": [
+"study_mode_id"
+],
+"parent": "study_mode",
+"pcols": [
+"study_mode_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"employee_sensitive_access_audit": [
+{
+"cols": [
+"employee_document_id"
+],
+"parent": "employee_document",
+"pcols": [
+"employee_document_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"employee_user_account": [
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+}
+],
+"enrolment_status_history": [
+{
+"cols": [
+"enrolment_id"
+],
+"parent": "student_programme_enrolment",
+"pcols": [
+"enrolment_id"
+]
+}
+],
+"evidence_document": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"approval_status_id"
+],
+"parent": "approval_status",
+"pcols": [
+"approval_status_id"
+]
+},
+{
+"cols": [
+"approved_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"confidentiality_level_id"
+],
+"parent": "confidentiality_level",
+"pcols": [
+"confidentiality_level_id"
+]
+},
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"deleted_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"document_type_id"
+],
+"parent": "document_type",
+"pcols": [
+"document_type_id"
+]
+},
+{
+"cols": [
+"evidence_type_id"
+],
+"parent": "evidence_type",
+"pcols": [
+"evidence_type_id"
+]
+},
+{
+"cols": [
+"issuing_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"verification_status_id"
+],
+"parent": "verification_status",
+"pcols": [
+"verification_status_id"
+]
+},
+{
+"cols": [
+"verified_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"evidence_document_audit": [
+{
+"cols": [
+"evidence_document_id"
+],
+"parent": "evidence_document",
+"pcols": [
+"evidence_document_id"
+]
+},
+{
+"cols": [
+"performed_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"evidence_document_version_id"
+],
+"parent": "evidence_document_version",
+"pcols": [
+"evidence_document_version_id"
+]
+}
+],
+"evidence_document_tag": [
+{
+"cols": [
+"evidence_document_id"
+],
+"parent": "evidence_document",
+"pcols": [
+"evidence_document_id"
+]
+},
+{
+"cols": [
+"evidence_tag_id"
+],
+"parent": "evidence_tag",
+"pcols": [
+"evidence_tag_id"
+]
+}
+],
+"evidence_document_version": [
+{
+"cols": [
+"evidence_document_id"
+],
+"parent": "evidence_document",
+"pcols": [
+"evidence_document_id"
+]
+},
+{
+"cols": [
+"file_object_id"
+],
+"parent": "file_object",
+"pcols": [
+"file_object_id"
+]
+},
+{
+"cols": [
+"uploaded_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"external_agency": [
+{
+"cols": [
+"institution_id"
+],
+"parent": "institution",
+"pcols": [
+"institution_id"
+]
+}
+],
+"external_organization": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+}
+],
+"external_organization_type": [
+{
+"cols": [
+"organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"organization_type_id"
+],
+"parent": "organization_type",
+"pcols": [
+"organization_type_id"
+]
+}
+],
+"extracurricular_activity": [
+{
+"cols": [
+"extracurricular_category_id"
+],
+"parent": "extracurricular_category",
+"pcols": [
+"extracurricular_category_id"
+]
+},
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"institution_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"organizer_id"
+],
+"parent": "organizer",
+"pcols": [
+"organizer_id"
+]
+},
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+}
+],
+"faculty_course_assignment": [
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"course_offering_section_id"
+],
+"parent": "course_offering_section",
+"pcols": [
+"course_offering_section_id"
+]
+}
+],
+"faculty_internship": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"industry_sector_id"
+],
+"parent": "industry_sector",
+"pcols": [
+"industry_sector_id"
+]
+}
+],
+"fee_activity_audit": [
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"fee_adjustment": [
+{
+"cols": [
+"student_account_id"
+],
+"parent": "student_financial_account",
+"pcols": [
+"student_account_id"
+]
+},
+{
+"cols": [
+"approved_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"assessment_item_id"
+],
+"parent": "student_fee_assessment_item",
+"pcols": [
+"assessment_item_id"
+]
+}
+],
+"fee_assessment_benefit": [
+{
+"cols": [
+"approved_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"student_concession_id"
+],
+"parent": "student_fee_concession",
+"pcols": [
+"student_concession_id"
+]
+},
+{
+"cols": [
+"assessment_item_id"
+],
+"parent": "student_fee_assessment_item",
+"pcols": [
+"assessment_item_id"
+]
+},
+{
+"cols": [
+"student_scholarship_id"
+],
+"parent": "student_scholarship",
+"pcols": [
+"student_scholarship_id"
+]
+},
+{
+"cols": [
+"student_sponsorship_id"
+],
+"parent": "student_sponsorship",
+"pcols": [
+"student_sponsorship_id"
+]
+}
+],
+"fee_charge_source": [
+{
+"cols": [
+"assessment_item_id"
+],
+"parent": "student_fee_assessment_item",
+"pcols": [
+"assessment_item_id"
+]
+}
+],
+"fee_receipt": [
+{
+"cols": [
+"cancelled_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"issued_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"original_receipt_id"
+],
+"parent": "fee_receipt",
+"pcols": [
+"fee_receipt_id"
+]
+},
+{
+"cols": [
+"payment_transaction_id"
+],
+"parent": "payment_transaction",
+"pcols": [
+"payment_transaction_id"
+]
+}
+],
+"fee_refund": [
+{
+"cols": [
+"refund_mode_id"
+],
+"parent": "payment_mode",
+"pcols": [
+"payment_mode_id"
+]
+},
+{
+"cols": [
+"processed_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"refund_request_id"
+],
+"parent": "refund_request",
+"pcols": [
+"refund_request_id"
+]
+}
+],
+"fee_structure": [
+{
+"cols": [
+"approved_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"campus_id"
+],
+"parent": "campus",
+"pcols": [
+"campus_id"
+]
+},
+{
+"cols": [
+"admission_category_id"
+],
+"parent": "admission_category",
+"pcols": [
+"admission_category_id"
+]
+},
+{
+"cols": [
+"institution_id"
+],
+"parent": "institution",
+"pcols": [
+"institution_id"
+]
+},
+{
+"cols": [
+"programme_id"
+],
+"parent": "programme",
+"pcols": [
+"programme_id"
+]
+},
+{
+"cols": [
+"specialization_id",
+"programme_id"
+],
+"parent": "programme_specialization",
+"pcols": [
+"specialization_id",
+"programme_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"fee_structure_item": [
+{
+"cols": [
+"fee_structure_id"
+],
+"parent": "fee_structure",
+"pcols": [
+"fee_structure_id"
+]
+},
+{
+"cols": [
+"late_fee_rule_id"
+],
+"parent": "late_fee_rule",
+"pcols": [
+"late_fee_rule_id"
+]
+},
+{
+"cols": [
+"semester_id"
+],
+"parent": "semester",
+"pcols": [
+"semester_id"
+]
+},
+{
+"cols": [
+"academic_term_id"
+],
+"parent": "academic_term",
+"pcols": [
+"academic_term_id"
+]
+},
+{
+"cols": [
+"fee_type_id"
+],
+"parent": "fee_type",
+"pcols": [
+"fee_type_id"
+]
+}
+],
+"fee_type": [
+{
+"cols": [
+"fee_category_id"
+],
+"parent": "fee_category",
+"pcols": [
+"fee_category_id"
+]
+},
+{
+"cols": [
+"ledger_account_id"
+],
+"parent": "financial_ledger_account",
+"pcols": [
+"ledger_account_id"
+]
+}
+],
+"feedback_choice": [
+{
+"cols": [
+"feedback_question_id"
+],
+"parent": "feedback_question",
+"pcols": [
+"feedback_question_id"
+]
+}
+],
+"feedback_cycle": [
+{
+"cols": [
+"questionnaire_id"
+],
+"parent": "feedback_questionnaire",
+"pcols": [
+"questionnaire_id"
+]
+},
+{
+"cols": [
+"academic_term_id"
+],
+"parent": "academic_term",
+"pcols": [
+"academic_term_id"
+]
+}
+],
+"feedback_question": [
+{
+"cols": [
+"feedback_category_id"
+],
+"parent": "feedback_question_category",
+"pcols": [
+"feedback_category_id"
+]
+}
+],
+"feedback_questionnaire_item": [
+{
+"cols": [
+"feedback_question_id"
+],
+"parent": "feedback_question",
+"pcols": [
+"feedback_question_id"
+]
+},
+{
+"cols": [
+"questionnaire_id"
+],
+"parent": "feedback_questionnaire",
+"pcols": [
+"questionnaire_id"
+]
+}
+],
+"feedback_response": [
+{
+"cols": [
+"course_offering_id"
+],
+"parent": "course_offering",
+"pcols": [
+"course_offering_id"
+]
+},
+{
+"cols": [
+"feedback_cycle_id"
+],
+"parent": "feedback_cycle",
+"pcols": [
+"feedback_cycle_id"
+]
+},
+{
+"cols": [
+"faculty_assignment_id"
+],
+"parent": "faculty_course_assignment",
+"pcols": [
+"faculty_assignment_id"
+]
+},
+{
+"cols": [
+"term_registration_id"
+],
+"parent": "student_term_registration",
+"pcols": [
+"term_registration_id"
+]
+}
+],
+"feedback_response_item": [
+{
+"cols": [
+"feedback_choice_id"
+],
+"parent": "feedback_choice",
+"pcols": [
+"feedback_choice_id"
+]
+},
+{
+"cols": [
+"questionnaire_item_id"
+],
+"parent": "feedback_questionnaire_item",
+"pcols": [
+"questionnaire_item_id"
+]
+},
+{
+"cols": [
+"feedback_response_id"
+],
+"parent": "feedback_response",
+"pcols": [
+"feedback_response_id"
+]
+}
+],
+"file_object": [
+{
+"cols": [
+"uploaded_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"financial_ledger_account": [
+{
+"cols": [
+"parent_account_id"
+],
+"parent": "financial_ledger_account",
+"pcols": [
+"ledger_account_id"
+]
+}
+],
+"funded_research_project": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"department_id"
+],
+"parent": "department",
+"pcols": [
+"department_id"
+]
+},
+{
+"cols": [
+"funding_agency_id"
+],
+"parent": "funding_agency",
+"pcols": [
+"funding_agency_id"
+]
+},
+{
+"cols": [
+"funding_type_id"
+],
+"parent": "funding_type",
+"pcols": [
+"funding_type_id"
+]
+},
+{
+"cols": [
+"principal_investigator_employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"source_proposal_activity_id"
+],
+"parent": "research_proposal",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"research_status_id"
+],
+"parent": "research_status",
+"pcols": [
+"research_status_id"
+]
+}
+],
+"funding_agency": [
+{
+"cols": [
+"organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"funding_type_id"
+],
+"parent": "funding_type",
+"pcols": [
+"funding_type_id"
+]
+}
+],
+"grade_rule": [
+{
+"cols": [
+"grade_scale_id"
+],
+"parent": "grade_scale",
+"pcols": [
+"grade_scale_id"
+]
+}
+],
+"grievance": [
+{
+"cols": [
+"grievance_category_id"
+],
+"parent": "grievance_category",
+"pcols": [
+"grievance_category_id"
+]
+},
+{
+"cols": [
+"department_id"
+],
+"parent": "department",
+"pcols": [
+"department_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"grievance_action": [
+{
+"cols": [
+"grievance_id"
+],
+"parent": "grievance",
+"pcols": [
+"grievance_id"
+]
+}
+],
+"institution": [
+{
+"cols": [
+"university_id"
+],
+"parent": "university",
+"pcols": [
+"university_id"
+]
+}
+],
+"journal": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"publisher_id"
+],
+"parent": "publisher",
+"pcols": [
+"publisher_id"
+]
+},
+{
+"cols": [
+"journal_type_id"
+],
+"parent": "journal_type",
+"pcols": [
+"journal_type_id"
+]
+}
+],
+"journal_metric": [
+{
+"cols": [
+"journal_id"
+],
+"parent": "journal",
+"pcols": [
+"journal_id"
+]
+},
+{
+"cols": [
+"metric_type_id"
+],
+"parent": "metric_type",
+"pcols": [
+"metric_type_id"
+]
+}
+],
+"journal_publication": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"journal_id"
+],
+"parent": "journal",
+"pcols": [
+"journal_id"
+]
+},
+{
+"cols": [
+"publication_type_id"
+],
+"parent": "publication_type",
+"pcols": [
+"publication_type_id"
+]
+}
+],
+"journal_publication_indexing": [
+{
+"cols": [
+"indexing_agency_id"
+],
+"parent": "indexing_agency",
+"pcols": [
+"indexing_agency_id"
+]
+},
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "journal_publication",
+"pcols": [
+"staff_activity_id"
+]
+}
+],
+"late_fee_slab": [
+{
+"cols": [
+"late_fee_rule_id"
+],
+"parent": "late_fee_rule",
+"pcols": [
+"late_fee_rule_id"
+]
+}
+],
+"login_audit": [
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"mentor_assignment": [
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"organizer": [
+{
+"cols": [
+"organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+}
+],
+"password_history": [
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"payment_allocation": [
+{
+"cols": [
+"assessment_item_id"
+],
+"parent": "student_fee_assessment_item",
+"pcols": [
+"assessment_item_id"
+]
+},
+{
+"cols": [
+"payment_transaction_id"
+],
+"parent": "payment_transaction",
+"pcols": [
+"payment_transaction_id"
+]
+},
+{
+"cols": [
+"allocated_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"payment_transaction": [
+{
+"cols": [
+"student_account_id"
+],
+"parent": "student_financial_account",
+"pcols": [
+"student_account_id"
+]
+},
+{
+"cols": [
+"application_id"
+],
+"parent": "admission_application",
+"pcols": [
+"application_id"
+]
+},
+{
+"cols": [
+"payment_mode_id"
+],
+"parent": "payment_mode",
+"pcols": [
+"payment_mode_id"
+]
+},
+{
+"cols": [
+"received_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"permission": [
+{
+"cols": [
+"access_action_id"
+],
+"parent": "access_action",
+"pcols": [
+"access_action_id"
+]
+},
+{
+"cols": [
+"access_resource_id"
+],
+"parent": "access_resource",
+"pcols": [
+"access_resource_id"
+]
+}
+],
+"previous_organization": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+},
+{
+"cols": [
+"previous_organization_type_id"
+],
+"parent": "previous_organization_type",
+"pcols": [
+"previous_organization_type_id"
+]
+}
+],
+"professional_development_activity": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"funding_agency_id"
+],
+"parent": "funding_agency",
+"pcols": [
+"funding_agency_id"
+]
+},
+{
+"cols": [
+"event_mode_id"
+],
+"parent": "event_mode",
+"pcols": [
+"event_mode_id"
+]
+},
+{
+"cols": [
+"organizer_id"
+],
+"parent": "organizer",
+"pcols": [
+"organizer_id"
+]
+},
+{
+"cols": [
+"sponsoring_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+},
+{
+"cols": [
+"training_program_type_id"
+],
+"parent": "training_program_type",
+"pcols": [
+"training_program_type_id"
+]
+}
+],
+"programme": [
+{
+"cols": [
+"department_id"
+],
+"parent": "department",
+"pcols": [
+"department_id"
+]
+}
+],
+"programme_specialization": [
+{
+"cols": [
+"programme_id"
+],
+"parent": "programme",
+"pcols": [
+"programme_id"
+]
+}
+],
+"programme_term_offering": [
+{
+"cols": [
+"academic_term_id"
+],
+"parent": "academic_term",
+"pcols": [
+"academic_term_id"
+]
+},
+{
+"cols": [
+"programme_id"
+],
+"parent": "programme",
+"pcols": [
+"programme_id"
+]
+},
+{
+"cols": [
+"curriculum_scheme_id"
+],
+"parent": "curriculum_scheme",
+"pcols": [
+"curriculum_scheme_id"
+]
+},
+{
+"cols": [
+"semester_id"
+],
+"parent": "semester",
+"pcols": [
+"semester_id"
+]
+},
+{
+"cols": [
+"specialization_id",
+"programme_id"
+],
+"parent": "programme_specialization",
+"pcols": [
+"specialization_id",
+"programme_id"
+]
+}
+],
+"publisher": [
+{
+"cols": [
+"organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+}
+],
+"refund_request": [
+{
+"cols": [
+"student_account_id"
+],
+"parent": "student_financial_account",
+"pcols": [
+"student_account_id"
+]
+},
+{
+"cols": [
+"approved_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"payment_transaction_id"
+],
+"parent": "payment_transaction",
+"pcols": [
+"payment_transaction_id"
+]
+}
+],
+"research_project_financial_utilization": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "funded_research_project",
+"pcols": [
+"staff_activity_id"
+]
+}
+],
+"research_proposal": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"department_id"
+],
+"parent": "department",
+"pcols": [
+"department_id"
+]
+},
+{
+"cols": [
+"funding_agency_id"
+],
+"parent": "funding_agency",
+"pcols": [
+"funding_agency_id"
+]
+},
+{
+"cols": [
+"funding_type_id"
+],
+"parent": "funding_type",
+"pcols": [
+"funding_type_id"
+]
+},
+{
+"cols": [
+"principal_investigator_employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"research_status_id"
+],
+"parent": "research_status",
+"pcols": [
+"research_status_id"
+]
+}
+],
+"research_supervision": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_professional_contribution",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"awarding_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"role": [
+{
+"cols": [
+"parent_role_id"
+],
+"parent": "role",
+"pcols": [
+"role_id"
+]
+}
+],
+"role_delegation": [
+{
+"cols": [
+"approved_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"source_assignment_id"
+],
+"parent": "user_role_assignment",
+"pcols": [
+"user_role_assignment_id"
+]
+},
+{
+"cols": [
+"delegate_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"delegator_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"role_permission": [
+{
+"cols": [
+"permission_id"
+],
+"parent": "permission",
+"pcols": [
+"permission_id"
+]
+},
+{
+"cols": [
+"role_id"
+],
+"parent": "role",
+"pcols": [
+"role_id"
+]
+}
+],
+"room": [
+{
+"cols": [
+"building_id"
+],
+"parent": "building",
+"pcols": [
+"building_id"
+]
+}
+],
+"service_fee_request": [
+{
+"cols": [
+"fee_assessment_id"
+],
+"parent": "student_fee_assessment",
+"pcols": [
+"fee_assessment_id"
+]
+},
+{
+"cols": [
+"certificate_request_id"
+],
+"parent": "certificate_request",
+"pcols": [
+"certificate_request_id"
+]
+},
+{
+"cols": [
+"processed_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"fee_type_id"
+],
+"parent": "fee_type",
+"pcols": [
+"fee_type_id"
+]
+}
+],
+"staff_activity": [
+{
+"cols": [
+"approval_status_id"
+],
+"parent": "approval_status",
+"pcols": [
+"approval_status_id"
+]
+},
+{
+"cols": [
+"approved_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"campus_id"
+],
+"parent": "campus",
+"pcols": [
+"campus_id"
+]
+},
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"deleted_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"department_id"
+],
+"parent": "department",
+"pcols": [
+"department_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"institution_id"
+],
+"parent": "institution",
+"pcols": [
+"institution_id"
+]
+},
+{
+"cols": [
+"participation_level_id"
+],
+"parent": "participation_level",
+"pcols": [
+"participation_level_id"
+]
+},
+{
+"cols": [
+"primary_role_type_id"
+],
+"parent": "role_type",
+"pcols": [
+"role_type_id"
+]
+},
+{
+"cols": [
+"activity_type_id"
+],
+"parent": "activity_type",
+"pcols": [
+"activity_type_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"verification_status_id"
+],
+"parent": "verification_status",
+"pcols": [
+"verification_status_id"
+]
+},
+{
+"cols": [
+"verified_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"staff_activity_contributor": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"employee_id"
+],
+"parent": "employee",
+"pcols": [
+"employee_id"
+]
+},
+{
+"cols": [
+"external_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"role_type_id"
+],
+"parent": "role_type",
+"pcols": [
+"role_type_id"
+]
+}
+],
+"staff_award": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"award_category_id"
+],
+"parent": "award_category",
+"pcols": [
+"award_category_id"
+]
+},
+{
+"cols": [
+"awarding_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+}
+],
+"staff_category": [
+{
+"cols": [
+"staff_type_id"
+],
+"parent": "staff_type",
+"pcols": [
+"staff_type_id"
+]
+}
+],
+"staff_professional_contribution": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"conference_event_id"
+],
+"parent": "conference_event",
+"pcols": [
+"conference_event_id"
+]
+},
+{
+"cols": [
+"course_id"
+],
+"parent": "course_catalog",
+"pcols": [
+"course_id"
+]
+},
+{
+"cols": [
+"journal_id"
+],
+"parent": "journal",
+"pcols": [
+"journal_id"
+]
+},
+{
+"cols": [
+"organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"programme_id"
+],
+"parent": "programme",
+"pcols": [
+"programme_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"professional_contribution_type_id"
+],
+"parent": "professional_contribution_type",
+"pcols": [
+"professional_contribution_type_id"
+]
+}
+],
+"staff_professional_membership": [
+{
+"cols": [
+"staff_activity_id"
+],
+"parent": "staff_activity",
+"pcols": [
+"staff_activity_id"
+]
+},
+{
+"cols": [
+"participation_level_id"
+],
+"parent": "participation_level",
+"pcols": [
+"participation_level_id"
+]
+},
+{
+"cols": [
+"organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"role_type_id"
+],
+"parent": "role_type",
+"pcols": [
+"role_type_id"
+]
+},
+{
+"cols": [
+"membership_type_id"
+],
+"parent": "membership_type",
+"pcols": [
+"membership_type_id"
+]
+}
+],
+"state": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+}
+],
+"student": [
+{
+"cols": [
+"blood_group_id"
+],
+"parent": "blood_group",
+"pcols": [
+"blood_group_id"
+]
+},
+{
+"cols": [
+"caste_id"
+],
+"parent": "caste",
+"pcols": [
+"caste_id"
+]
+},
+{
+"cols": [
+"gender_id"
+],
+"parent": "gender",
+"pcols": [
+"gender_id"
+]
+},
+{
+"cols": [
+"nationality_country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"religion_id"
+],
+"parent": "religion",
+"pcols": [
+"religion_id"
+]
+},
+{
+"cols": [
+"social_category_id"
+],
+"parent": "social_category",
+"pcols": [
+"social_category_id"
+]
+},
+{
+"cols": [
+"sub_caste_id"
+],
+"parent": "sub_caste",
+"pcols": [
+"sub_caste_id"
+]
+}
+],
+"student_activity": [
+{
+"cols": [
+"approval_status_id"
+],
+"parent": "approval_status",
+"pcols": [
+"approval_status_id"
+]
+},
+{
+"cols": [
+"approved_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"campus_id"
+],
+"parent": "campus",
+"pcols": [
+"campus_id"
+]
+},
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"deleted_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"department_id"
+],
+"parent": "department",
+"pcols": [
+"department_id"
+]
+},
+{
+"cols": [
+"institution_id"
+],
+"parent": "institution",
+"pcols": [
+"institution_id"
+]
+},
+{
+"cols": [
+"participation_level_id"
+],
+"parent": "participation_level",
+"pcols": [
+"participation_level_id"
+]
+},
+{
+"cols": [
+"event_mode_id"
+],
+"parent": "event_mode",
+"pcols": [
+"event_mode_id"
+]
+},
+{
+"cols": [
+"external_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"programme_id"
+],
+"parent": "programme",
+"pcols": [
+"programme_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"student_activity_type_id"
+],
+"parent": "student_activity_type",
+"pcols": [
+"student_activity_type_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"verification_status_id"
+],
+"parent": "verification_status",
+"pcols": [
+"verification_status_id"
+]
+},
+{
+"cols": [
+"verified_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"student_activity_evidence": [
+{
+"cols": [
+"student_activity_id"
+],
+"parent": "student_activity",
+"pcols": [
+"student_activity_id"
+]
+},
+{
+"cols": [
+"approval_status_id"
+],
+"parent": "approval_status",
+"pcols": [
+"approval_status_id"
+]
+},
+{
+"cols": [
+"approved_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"confidentiality_level_id"
+],
+"parent": "confidentiality_level",
+"pcols": [
+"confidentiality_level_id"
+]
+},
+{
+"cols": [
+"created_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"deleted_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"document_type_id"
+],
+"parent": "document_type",
+"pcols": [
+"document_type_id"
+]
+},
+{
+"cols": [
+"evidence_type_id"
+],
+"parent": "evidence_type",
+"pcols": [
+"evidence_type_id"
+]
+},
+{
+"cols": [
+"issuing_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"updated_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"verification_status_id"
+],
+"parent": "verification_status",
+"pcols": [
+"verification_status_id"
+]
+},
+{
+"cols": [
+"verified_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"student_activity_evidence_audit": [
+{
+"cols": [
+"student_activity_evidence_id"
+],
+"parent": "student_activity_evidence",
+"pcols": [
+"student_activity_evidence_id"
+]
+},
+{
+"cols": [
+"performed_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"student_activity_evidence_version_id"
+],
+"parent": "student_activity_evidence_version",
+"pcols": [
+"student_activity_evidence_version_id"
+]
+}
+],
+"student_activity_evidence_requirement": [
+{
+"cols": [
+"document_type_id"
+],
+"parent": "document_type",
+"pcols": [
+"document_type_id"
+]
+},
+{
+"cols": [
+"evidence_type_id"
+],
+"parent": "evidence_type",
+"pcols": [
+"evidence_type_id"
+]
+},
+{
+"cols": [
+"student_activity_type_id"
+],
+"parent": "student_activity_type",
+"pcols": [
+"student_activity_type_id"
+]
+}
+],
+"student_activity_evidence_version": [
+{
+"cols": [
+"student_activity_evidence_id"
+],
+"parent": "student_activity_evidence",
+"pcols": [
+"student_activity_evidence_id"
+]
+},
+{
+"cols": [
+"file_object_id"
+],
+"parent": "file_object",
+"pcols": [
+"file_object_id"
+]
+},
+{
+"cols": [
+"uploaded_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"student_activity_team_member": [
+{
+"cols": [
+"student_activity_id"
+],
+"parent": "student_activity",
+"pcols": [
+"student_activity_id"
+]
+},
+{
+"cols": [
+"external_organization_id"
+],
+"parent": "external_organization",
+"pcols": [
+"organization_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"student_address": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"student_assessment_mark": [
+{
+"cols": [
+"assessment_event_id",
+"course_offering_id"
+],
+"parent": "assessment_event",
+"pcols": [
+"assessment_event_id",
+"course_offering_id"
+]
+},
+{
+"cols": [
+"course_registration_id",
+"course_offering_id"
+],
+"parent": "student_course_registration",
+"pcols": [
+"course_registration_id",
+"course_offering_id"
+]
+}
+],
+"student_attendance": [
+{
+"cols": [
+"marked_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"course_offering_section_student_id",
+"course_offering_section_id"
+],
+"parent": "course_offering_section_student",
+"pcols": [
+"course_offering_section_student_id",
+"course_offering_section_id"
+]
+},
+{
+"cols": [
+"class_session_id",
+"course_offering_section_id"
+],
+"parent": "class_session",
+"pcols": [
+"class_session_id",
+"course_offering_section_id"
+]
+},
+{
+"cols": [
+"attendance_status_id"
+],
+"parent": "attendance_status",
+"pcols": [
+"attendance_status_id"
+]
+}
+],
+"student_course_registration": [
+{
+"cols": [
+"course_offering_id"
+],
+"parent": "course_offering",
+"pcols": [
+"course_offering_id"
+]
+},
+{
+"cols": [
+"term_registration_id"
+],
+"parent": "student_term_registration",
+"pcols": [
+"term_registration_id"
+]
+}
+],
+"student_course_result": [
+{
+"cols": [
+"course_registration_id"
+],
+"parent": "student_course_registration",
+"pcols": [
+"course_registration_id"
+]
+}
+],
+"student_document": [
+{
+"cols": [
+"file_object_id"
+],
+"parent": "file_object",
+"pcols": [
+"file_object_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"document_type_id"
+],
+"parent": "document_type",
+"pcols": [
+"document_type_id"
+]
+}
+],
+"student_entrance_exam": [
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"student_exit": [
+{
+"cols": [
+"enrolment_id"
+],
+"parent": "student_programme_enrolment",
+"pcols": [
+"enrolment_id"
+]
+}
+],
+"student_fee_assessment": [
+{
+"cols": [
+"student_account_id"
+],
+"parent": "student_financial_account",
+"pcols": [
+"student_account_id"
+]
+},
+{
+"cols": [
+"application_id"
+],
+"parent": "admission_application",
+"pcols": [
+"application_id"
+]
+},
+{
+"cols": [
+"created_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"enrolment_id"
+],
+"parent": "student_programme_enrolment",
+"pcols": [
+"enrolment_id"
+]
+},
+{
+"cols": [
+"fee_structure_id"
+],
+"parent": "fee_structure",
+"pcols": [
+"fee_structure_id"
+]
+},
+{
+"cols": [
+"academic_term_id"
+],
+"parent": "academic_term",
+"pcols": [
+"academic_term_id"
+]
+},
+{
+"cols": [
+"term_registration_id"
+],
+"parent": "student_term_registration",
+"pcols": [
+"term_registration_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"student_fee_assessment_item": [
+{
+"cols": [
+"fee_assessment_id"
+],
+"parent": "student_fee_assessment",
+"pcols": [
+"fee_assessment_id"
+]
+},
+{
+"cols": [
+"fee_structure_item_id"
+],
+"parent": "fee_structure_item",
+"pcols": [
+"fee_structure_item_id"
+]
+},
+{
+"cols": [
+"fee_type_id"
+],
+"parent": "fee_type",
+"pcols": [
+"fee_type_id"
+]
+}
+],
+"student_fee_concession": [
+{
+"cols": [
+"approved_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"concession_type_id"
+],
+"parent": "concession_type",
+"pcols": [
+"concession_type_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"student_fee_penalty": [
+{
+"cols": [
+"student_account_id"
+],
+"parent": "student_financial_account",
+"pcols": [
+"student_account_id"
+]
+},
+{
+"cols": [
+"approved_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"assessment_item_id"
+],
+"parent": "student_fee_assessment_item",
+"pcols": [
+"assessment_item_id"
+]
+},
+{
+"cols": [
+"fee_type_id"
+],
+"parent": "fee_type",
+"pcols": [
+"fee_type_id"
+]
+}
+],
+"student_financial_account": [
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"student_financial_hold": [
+{
+"cols": [
+"student_account_id"
+],
+"parent": "student_financial_account",
+"pcols": [
+"student_account_id"
+]
+},
+{
+"cols": [
+"placed_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"released_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"student_installment_schedule": [
+{
+"cols": [
+"fee_assessment_id"
+],
+"parent": "student_fee_assessment",
+"pcols": [
+"fee_assessment_id"
+]
+},
+{
+"cols": [
+"installment_plan_id"
+],
+"parent": "installment_plan",
+"pcols": [
+"installment_plan_id"
+]
+}
+],
+"student_parent_guardian": [
+{
+"cols": [
+"country_id"
+],
+"parent": "country",
+"pcols": [
+"country_id"
+]
+},
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"student_previous_education": [
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"student_programme_enrolment": [
+{
+"cols": [
+"admission_category_id"
+],
+"parent": "admission_category",
+"pcols": [
+"admission_category_id"
+]
+},
+{
+"cols": [
+"programme_id"
+],
+"parent": "programme",
+"pcols": [
+"programme_id"
+]
+},
+{
+"cols": [
+"curriculum_scheme_id"
+],
+"parent": "curriculum_scheme",
+"pcols": [
+"curriculum_scheme_id"
+]
+},
+{
+"cols": [
+"admission_semester_id"
+],
+"parent": "semester",
+"pcols": [
+"semester_id"
+]
+},
+{
+"cols": [
+"specialization_id",
+"programme_id"
+],
+"parent": "programme_specialization",
+"pcols": [
+"specialization_id",
+"programme_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"admission_academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"student_residence": [
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"student_scholarship": [
+{
+"cols": [
+"scholarship_scheme_id"
+],
+"parent": "scholarship_scheme",
+"pcols": [
+"scholarship_scheme_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"student_sponsorship": [
+{
+"cols": [
+"approved_by"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+},
+{
+"cols": [
+"academic_year_id"
+],
+"parent": "academic_year",
+"pcols": [
+"academic_year_id"
+]
+}
+],
+"student_term_registration": [
+{
+"cols": [
+"class_batch_id",
+"class_section_id"
+],
+"parent": "class_batch",
+"pcols": [
+"class_batch_id",
+"class_section_id"
+]
+},
+{
+"cols": [
+"enrolment_id"
+],
+"parent": "student_programme_enrolment",
+"pcols": [
+"enrolment_id"
+]
+},
+{
+"cols": [
+"programme_term_offering_id"
+],
+"parent": "programme_term_offering",
+"pcols": [
+"programme_term_offering_id"
+]
+},
+{
+"cols": [
+"class_section_id",
+"programme_term_offering_id"
+],
+"parent": "class_section",
+"pcols": [
+"class_section_id",
+"programme_term_offering_id"
+]
+}
+],
+"student_term_result": [
+{
+"cols": [
+"term_registration_id"
+],
+"parent": "student_term_registration",
+"pcols": [
+"term_registration_id"
+]
+}
+],
+"student_user_account": [
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"student_id"
+],
+"parent": "student",
+"pcols": [
+"student_id"
+]
+}
+],
+"sub_caste": [
+{
+"cols": [
+"caste_id"
+],
+"parent": "caste",
+"pcols": [
+"caste_id"
+]
+}
+],
+"time_slot": [
+{
+"cols": [
+"campus_id"
+],
+"parent": "campus",
+"pcols": [
+"campus_id"
+]
+}
+],
+"timetable_session": [
+{
+"cols": [
+"faculty_assignment_id"
+],
+"parent": "faculty_course_assignment",
+"pcols": [
+"faculty_assignment_id"
+]
+},
+{
+"cols": [
+"room_id"
+],
+"parent": "room",
+"pcols": [
+"room_id"
+]
+},
+{
+"cols": [
+"course_offering_section_id"
+],
+"parent": "course_offering_section",
+"pcols": [
+"course_offering_section_id"
+]
+},
+{
+"cols": [
+"time_slot_id"
+],
+"parent": "time_slot",
+"pcols": [
+"time_slot_id"
+]
+}
+],
+"university": [
+{
+"cols": [
+"state_id"
+],
+"parent": "state",
+"pcols": [
+"state_id"
+]
+}
+],
+"user_permission_override": [
+{
+"cols": [
+"granted_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"permission_id"
+],
+"parent": "permission",
+"pcols": [
+"permission_id"
+]
+},
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+],
+"user_role_assignment": [
+{
+"cols": [
+"assigned_by_user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+},
+{
+"cols": [
+"campus_id"
+],
+"parent": "campus",
+"pcols": [
+"campus_id"
+]
+},
+{
+"cols": [
+"department_id"
+],
+"parent": "department",
+"pcols": [
+"department_id"
+]
+},
+{
+"cols": [
+"institution_id"
+],
+"parent": "institution",
+"pcols": [
+"institution_id"
+]
+},
+{
+"cols": [
+"programme_id"
+],
+"parent": "programme",
+"pcols": [
+"programme_id"
+]
+},
+{
+"cols": [
+"role_id"
+],
+"parent": "role",
+"pcols": [
+"role_id"
+]
+},
+{
+"cols": [
+"user_id"
+],
+"parent": "user_account",
+"pcols": [
+"user_id"
+]
+}
+]
+},
+"columns": {
+"academic_term": [
+"academic_term_id",
+"academic_year_id",
+"term_code",
+"term_name",
+"term_type",
+"start_date",
+"end_date",
+"registration_start_date",
+"registration_end_date",
+"status"
+],
+"academic_year": [
+"academic_year_id",
+"year_code",
+"start_date",
+"end_date",
+"status"
+],
+"access_action": [
+"access_action_id",
+"action_code",
+"action_name",
+"description",
+"is_active"
+],
+"access_module": [
+"access_module_id",
+"module_code",
+"module_name",
+"description",
+"display_order",
+"is_active"
+],
+"access_resource": [
+"access_resource_id",
+"access_module_id",
+"resource_code",
+"resource_name",
+"description",
+"is_active"
+],
+"activity_audit": [
+"activity_audit_id",
+"user_id",
+"module_code",
+"action_code",
+"entity_name",
+"entity_id",
+"activity_at",
+"ip_address",
+"request_identifier",
+"before_values",
+"after_values",
+"details"
+],
+"activity_evidence_requirement": [
+"activity_evidence_requirement_id",
+"activity_type_id",
+"evidence_type_id",
+"document_type_id",
+"is_mandatory",
+"minimum_files",
+"maximum_files",
+"valid_from",
+"valid_to",
+"is_active"
+],
+"activity_type": [
+"activity_type_id",
+"activity_type_code",
+"activity_type_name",
+"activity_group",
+"description",
+"is_active"
+],
+"admission_applicant": [
+"admission_applicant_id",
+"first_name",
+"middle_name",
+"last_name",
+"display_name",
+"date_of_birth",
+"gender_id",
+"primary_email",
+"primary_phone",
+"nationality_country_id",
+"social_category_id",
+"caste_id",
+"sub_caste_id",
+"created_at",
+"updated_at"
+],
+"admission_application": [
+"application_id",
+"application_number",
+"admission_applicant_id",
+"admitted_student_id",
+"programme_id",
+"specialization_id",
+"academic_year_id",
+"admission_category_id",
+"application_date",
+"application_status",
+"eligibility_status",
+"remarks",
+"created_at",
+"updated_at"
+],
+"admission_category": [
+"admission_category_id",
+"category_code",
+"category_name",
+"description",
+"is_active"
+],
+"admission_payment": [
+"admission_payment_id",
+"application_id",
+"payment_transaction_id",
+"created_at"
+],
+"announcement": [
+"announcement_id",
+"announcement_type_id",
+"department_id",
+"title",
+"description",
+"publish_from",
+"publish_to",
+"approval_status",
+"audience_type",
+"created_at"
+],
+"announcement_attachment": [
+"announcement_id",
+"file_object_id",
+"display_order"
+],
+"announcement_type": [
+"announcement_type_id",
+"type_code",
+"type_name",
+"is_active"
+],
+"approval_status": [
+"approval_status_id",
+"status_code",
+"status_name",
+"is_terminal",
+"is_active"
+],
+"assessment_component": [
+"assessment_component_id",
+"course_offering_id",
+"component_code",
+"component_name",
+"component_type",
+"maximum_marks",
+"weightage_percent",
+"is_mandatory"
+],
+"assessment_event": [
+"assessment_event_id",
+"assessment_component_id",
+"course_offering_id",
+"event_number",
+"event_title",
+"assessment_date",
+"start_time",
+"end_time",
+"maximum_marks",
+"reduced_maximum_marks",
+"details",
+"status"
+],
+"attendance_correction_request": [
+"attendance_correction_id",
+"class_session_id",
+"course_offering_section_student_id",
+"old_status_id",
+"requested_status_id",
+"reason",
+"request_status",
+"requested_at",
+"resolved_at"
+],
+"attendance_status": [
+"attendance_status_id",
+"status_code",
+"status_name",
+"counts_as_present",
+"is_active"
+],
+"award_category": [
+"award_category_id",
+"category_code",
+"category_name",
+"is_active"
+],
+"awarding_body": [
+"awarding_body_id",
+"awarding_body_type_id",
+"awarding_body_name",
+"university_type",
+"city",
+"state_id",
+"country_id",
+"website_url",
+"is_active",
+"created_at",
+"updated_at"
+],
+"awarding_body_type": [
+"awarding_body_type_id",
+"type_code",
+"type_name",
+"is_active"
+],
+"blood_group": [
+"blood_group_id",
+"blood_group_code",
+"is_active"
+],
+"building": [
+"building_id",
+"campus_id",
+"building_code",
+"building_name",
+"is_active"
+],
+"campus": [
+"campus_id",
+"institution_id",
+"campus_code",
+"campus_name",
+"address_line_1",
+"address_line_2",
+"city",
+"state_id",
+"postal_code",
+"phone",
+"email",
+"is_active"
+],
+"caste": [
+"caste_id",
+"social_category_id",
+"caste_code",
+"caste_name",
+"is_active"
+],
+"certificate_request": [
+"certificate_request_id",
+"request_number",
+"student_id",
+"certificate_type_id",
+"requested_at",
+"purpose",
+"request_status",
+"issued_at",
+"certificate_number",
+"file_object_id"
+],
+"certificate_type": [
+"certificate_type_id",
+"certificate_code",
+"certificate_name",
+"is_active"
+],
+"class_batch": [
+"class_batch_id",
+"class_section_id",
+"batch_code",
+"batch_name",
+"capacity",
+"is_active"
+],
+"class_section": [
+"class_section_id",
+"programme_term_offering_id",
+"section_code",
+"section_name",
+"capacity",
+"home_room_id",
+"is_active"
+],
+"class_session": [
+"class_session_id",
+"course_offering_section_id",
+"faculty_assignment_id",
+"timetable_session_id",
+"session_date",
+"start_time",
+"end_time",
+"room_id",
+"session_type",
+"planned_topic",
+"topic_covered",
+"class_number",
+"session_status",
+"created_at"
+],
+"cocurricular_activity": [
+"staff_activity_id",
+"cocurricular_category_id",
+"event_name",
+"organizer_id",
+"institution_organization_id",
+"event_date",
+"venue_name",
+"city",
+"state_id",
+"country_id",
+"achievement_award",
+"contribution_details"
+],
+"cocurricular_category": [
+"cocurricular_category_id",
+"category_code",
+"category_name",
+"is_active"
+],
+"concession_type": [
+"concession_type_id",
+"concession_code",
+"concession_name",
+"concession_basis",
+"maximum_percentage",
+"maximum_amount",
+"approval_required",
+"is_active"
+],
+"conference_activity": [
+"staff_activity_id",
+"conference_event_id",
+"conference_contribution_type_id",
+"publication_type_id",
+"paper_title",
+"abstract_text",
+"proceedings_title",
+"proceedings_volume",
+"proceedings_issue",
+"page_from",
+"page_to",
+"isbn",
+"issn",
+"doi",
+"proceedings_url",
+"presentation_title",
+"award_name",
+"award_details",
+"award_date"
+],
+"conference_activity_indexing": [
+"staff_activity_id",
+"indexing_agency_id",
+"indexing_status",
+"source_url",
+"remarks"
+],
+"conference_contribution_type": [
+"conference_contribution_type_id",
+"type_code",
+"type_name",
+"is_active"
+],
+"conference_event": [
+"conference_event_id",
+"conference_title",
+"conference_edition",
+"organizer_id",
+"sponsoring_organization_id",
+"proceedings_publisher_id",
+"participation_level_id",
+"event_mode_id",
+"venue_name",
+"city",
+"state_id",
+"country_id",
+"start_date",
+"end_date",
+"conference_website",
+"brochure_url",
+"is_active",
+"created_at",
+"updated_at"
+],
+"confidentiality_level": [
+"confidentiality_level_id",
+"level_code",
+"level_name",
+"display_order",
+"is_active"
+],
+"consultancy_project": [
+"staff_activity_id",
+"consultancy_title",
+"client_organization_id",
+"principal_consultant_employee_id",
+"consultancy_type",
+"work_order_number",
+"agreement_number",
+"purchase_order_number",
+"project_start_date",
+"completion_date",
+"consultancy_amount",
+"amount_received",
+"faculty_incentive_share",
+"currency_code",
+"deliverables",
+"status",
+"client_feedback"
+],
+"counselling_session": [
+"counselling_session_id",
+"mentor_assignment_id",
+"session_date",
+"observations",
+"action_plan",
+"follow_up_date",
+"session_status",
+"confidentiality_level"
+],
+"country": [
+"country_id",
+"iso_code",
+"country_name",
+"is_active"
+],
+"course_catalog": [
+"course_id",
+"owning_department_id",
+"course_category_id",
+"course_code",
+"course_title",
+"short_title",
+"course_type",
+"lecture_hours",
+"tutorial_hours",
+"practical_hours",
+"self_study_hours",
+"credits",
+"effective_from",
+"effective_to",
+"is_active"
+],
+"course_category": [
+"course_category_id",
+"category_code",
+"category_name",
+"is_graded",
+"contributes_to_gpa",
+"is_active"
+],
+"course_offering": [
+"course_offering_id",
+"programme_term_offering_id",
+"curriculum_course_id",
+"course_id",
+"offering_code",
+"registration_capacity",
+"status"
+],
+"course_offering_section": [
+"course_offering_section_id",
+"course_offering_id",
+"programme_term_offering_id",
+"class_section_id",
+"class_batch_id",
+"class_batch_key",
+"session_type"
+],
+"course_offering_section_student": [
+"course_offering_section_student_id",
+"course_offering_section_id",
+"course_registration_id",
+"course_offering_id",
+"roster_status",
+"effective_from",
+"effective_to"
+],
+"course_prerequisite": [
+"course_id",
+"prerequisite_course_id",
+"minimum_grade"
+],
+"curriculum_course": [
+"curriculum_course_id",
+"curriculum_scheme_id",
+"semester_id",
+"course_id",
+"course_category_id",
+"is_mandatory",
+"elective_group_code",
+"display_order",
+"internal_max_marks",
+"external_max_marks",
+"passing_marks",
+"exam_duration_minutes"
+],
+"curriculum_scheme": [
+"curriculum_scheme_id",
+"programme_id",
+"specialization_id",
+"scheme_code",
+"scheme_name",
+"regulation_year",
+"total_credits",
+"effective_from",
+"effective_to",
+"status"
+],
+"department": [
+"department_id",
+"campus_id",
+"department_code",
+"department_name",
+"department_type",
+"is_active"
+],
+"designation": [
+"designation_id",
+"staff_category_id",
+"designation_code",
+"designation_name",
+"description",
+"is_active"
+],
+"document_type": [
+"document_type_id",
+"document_code",
+"document_name",
+"requires_verification",
+"is_active"
+],
+"education_institution": [
+"education_institution_id",
+"education_institution_type_id",
+"institution_name",
+"city",
+"state_id",
+"country_id",
+"website_url",
+"is_active",
+"created_at",
+"updated_at"
+],
+"education_institution_type": [
+"education_institution_type_id",
+"type_code",
+"type_name",
+"is_active"
+],
+"employee": [
+"employee_id",
+"institution_id",
+"employment_source_id",
+"external_agency_id",
+"employee_number",
+"agency_employee_number",
+"first_name",
+"middle_name",
+"last_name",
+"display_name",
+"date_of_birth",
+"gender_id",
+"blood_group_id",
+"primary_email",
+"primary_phone",
+"nationality_country_id",
+"religion_id",
+"social_category_id",
+"caste_id",
+"sub_caste_id",
+"photo_url",
+"joining_date",
+"employment_type",
+"employment_status",
+"created_at",
+"updated_at"
+],
+"employee_aadhaar": [
+"employee_aadhaar_id",
+"employee_id",
+"aadhaar_number_ciphertext",
+"aadhaar_number_fingerprint",
+"aadhaar_number_last4",
+"aadhaar_number_masked",
+"name_as_per_aadhaar",
+"format_validated",
+"verification_status",
+"verified_by_user_id",
+"verified_at",
+"verification_remarks",
+"collection_purpose",
+"remarks",
+"created_by_user_id",
+"updated_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at"
+],
+"employee_address": [
+"employee_address_id",
+"employee_id",
+"address_type",
+"address_line_1",
+"address_line_2",
+"city",
+"state_id",
+"country_id",
+"postal_code",
+"valid_from",
+"valid_to",
+"is_primary",
+"current_primary_employee_id"
+],
+"employee_assignment": [
+"employee_assignment_id",
+"employee_id",
+"campus_id",
+"department_id",
+"designation_id",
+"start_date",
+"end_date",
+"is_primary",
+"current_primary_employee_id"
+],
+"employee_bank_account": [
+"employee_bank_account_id",
+"employee_id",
+"account_holder_name",
+"bank_name",
+"branch_name",
+"account_number_ciphertext",
+"account_number_fingerprint",
+"account_number_last4",
+"account_number_confirmed",
+"account_type",
+"ifsc_code",
+"micr_code",
+"branch_code",
+"bank_address",
+"city",
+"state_id",
+"country_id",
+"upi_id",
+"is_salary_account",
+"is_primary",
+"account_status",
+"verification_status",
+"verified_by_user_id",
+"verified_at",
+"verification_remarks",
+"effective_from",
+"effective_to",
+"remarks",
+"created_by_user_id",
+"updated_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at",
+"active_primary_employee_id"
+],
+"employee_competency": [
+"employee_id",
+"course_id",
+"competency_level",
+"valid_from",
+"valid_to"
+],
+"employee_document": [
+"employee_document_id",
+"employee_id",
+"document_scope",
+"employee_qualification_id",
+"employee_previous_employment_id",
+"employee_bank_account_id",
+"employee_pan_id",
+"employee_aadhaar_id",
+"employee_document_category_id",
+"document_type_id",
+"file_object_id",
+"document_title",
+"document_number",
+"issue_date",
+"expiry_date",
+"version_number",
+"supersedes_employee_document_id",
+"verification_status",
+"verified_by_user_id",
+"verified_at",
+"verification_remarks",
+"approval_status",
+"approved_by_user_id",
+"approved_at",
+"approval_remarks",
+"confidentiality_level",
+"is_private",
+"is_active",
+"created_by_user_id",
+"updated_by_user_id",
+"deleted_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at"
+],
+"employee_document_access_rule": [
+"employee_document_access_rule_id",
+"employee_document_id",
+"role_id",
+"user_id",
+"can_view",
+"can_download",
+"can_update",
+"can_verify",
+"can_approve",
+"valid_from",
+"valid_to",
+"granted_by_user_id",
+"created_at"
+],
+"employee_document_category": [
+"employee_document_category_id",
+"category_code",
+"category_name",
+"default_confidentiality",
+"requires_verification",
+"requires_approval",
+"is_active"
+],
+"employee_pan": [
+"employee_pan_id",
+"employee_id",
+"pan_number_ciphertext",
+"pan_number_fingerprint",
+"pan_number_masked",
+"name_as_per_pan",
+"pan_issue_date",
+"pan_issue_details",
+"format_validated",
+"verification_status",
+"verified_by_user_id",
+"verified_at",
+"verification_remarks",
+"remarks",
+"created_by_user_id",
+"updated_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at"
+],
+"employee_previous_employment": [
+"employee_previous_employment_id",
+"employee_id",
+"previous_organization_id",
+"department_division",
+"designation",
+"employment_type",
+"nature_of_work",
+"employment_start_date",
+"employment_end_date",
+"experience_days",
+"last_drawn_salary",
+"salary_currency_code",
+"reason_for_leaving",
+"reporting_authority_name",
+"reporting_authority_designation",
+"reporting_authority_phone",
+"reporting_authority_email",
+"remarks",
+"created_by_user_id",
+"updated_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at"
+],
+"employee_qualification": [
+"employee_qualification_id",
+"employee_id",
+"qualification_level_id",
+"education_institution_id",
+"awarding_body_id",
+"study_mode_id",
+"degree_certificate_name",
+"specialization",
+"course_program_name",
+"start_date",
+"start_year",
+"completion_date",
+"completion_year",
+"passing_year",
+"registration_roll_number",
+"result",
+"class_grade",
+"cgpa",
+"cgpa_scale",
+"percentage",
+"maximum_marks",
+"marks_obtained",
+"qualification_status",
+"is_highest_qualification",
+"active_highest_employee_id",
+"remarks",
+"created_by_user_id",
+"updated_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at"
+],
+"employee_sensitive_access_audit": [
+"employee_sensitive_access_audit_id",
+"user_id",
+"employee_id",
+"action_code",
+"entity_type",
+"entity_id",
+"employee_document_id",
+"access_purpose",
+"was_successful",
+"failure_reason",
+"ip_address",
+"user_agent",
+"request_identifier",
+"accessed_at"
+],
+"employee_user_account": [
+"employee_id",
+"user_id",
+"linked_at"
+],
+"employment_source": [
+"employment_source_id",
+"source_code",
+"source_name",
+"is_external",
+"description",
+"is_active",
+"created_at",
+"updated_at"
+],
+"enrolment_status_history": [
+"enrolment_status_history_id",
+"enrolment_id",
+"old_status",
+"new_status",
+"effective_date",
+"reason"
+],
+"event_mode": [
+"event_mode_id",
+"mode_code",
+"mode_name",
+"is_active"
+],
+"evidence_document": [
+"evidence_document_id",
+"staff_activity_id",
+"document_type_id",
+"evidence_type_id",
+"confidentiality_level_id",
+"document_title",
+"description",
+"academic_year_id",
+"document_issue_date",
+"issuing_authority",
+"issuing_organization_id",
+"certificate_document_number",
+"expiry_date",
+"verification_status_id",
+"verified_by_user_id",
+"verified_at",
+"verification_remarks",
+"approval_status_id",
+"approved_by_user_id",
+"approved_at",
+"rejection_reason",
+"current_version_number",
+"is_active",
+"created_by_user_id",
+"updated_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at",
+"deleted_by_user_id",
+"deletion_reason"
+],
+"evidence_document_audit": [
+"evidence_document_audit_id",
+"evidence_document_id",
+"evidence_document_version_id",
+"action_code",
+"performed_by_user_id",
+"performed_at",
+"ip_address",
+"user_agent",
+"before_values",
+"after_values",
+"remarks"
+],
+"evidence_document_tag": [
+"evidence_document_id",
+"evidence_tag_id"
+],
+"evidence_document_version": [
+"evidence_document_version_id",
+"evidence_document_id",
+"version_number",
+"file_object_id",
+"change_reason",
+"uploaded_by_user_id",
+"uploaded_at",
+"is_current"
+],
+"evidence_tag": [
+"evidence_tag_id",
+"tag_code",
+"tag_name",
+"is_active"
+],
+"evidence_type": [
+"evidence_type_id",
+"evidence_type_code",
+"evidence_type_name",
+"description",
+"is_active"
+],
+"external_agency": [
+"external_agency_id",
+"institution_id",
+"agency_code",
+"agency_name",
+"service_type",
+"contact_person",
+"phone",
+"email",
+"contract_start_date",
+"contract_end_date",
+"address",
+"is_active",
+"created_at",
+"updated_at"
+],
+"external_organization": [
+"organization_id",
+"organization_code",
+"organization_name",
+"short_name",
+"website_url",
+"email",
+"phone",
+"address_line_1",
+"address_line_2",
+"city",
+"state_id",
+"country_id",
+"postal_code",
+"is_active",
+"created_at",
+"updated_at"
+],
+"external_organization_type": [
+"organization_id",
+"organization_type_id"
+],
+"extracurricular_activity": [
+"staff_activity_id",
+"extracurricular_category_id",
+"event_name",
+"organizer_id",
+"institution_organization_id",
+"event_date",
+"venue_name",
+"city",
+"state_id",
+"country_id",
+"award_recognition",
+"activity_details"
+],
+"extracurricular_category": [
+"extracurricular_category_id",
+"category_code",
+"category_name",
+"is_active"
+],
+"faculty_course_assignment": [
+"faculty_assignment_id",
+"course_offering_section_id",
+"employee_id",
+"assignment_role",
+"workload_hours",
+"start_date",
+"end_date",
+"assignment_status"
+],
+"faculty_internship": [
+"staff_activity_id",
+"organization_id",
+"internship_title",
+"internship_domain",
+"industry_sector_id",
+"location_text",
+"mentor_name",
+"mentor_designation",
+"mentor_email",
+"work_undertaken",
+"technologies_tools",
+"outcomes",
+"stipend_incentive_type",
+"stipend_incentive_amount",
+"currency_code",
+"funding_source",
+"mou_reference",
+"collaboration_reference"
+],
+"fee_activity_audit": [
+"fee_audit_id",
+"user_id",
+"action_code",
+"entity_name",
+"entity_id",
+"old_values",
+"new_values",
+"ip_address",
+"performed_at"
+],
+"fee_adjustment": [
+"fee_adjustment_id",
+"adjustment_number",
+"student_account_id",
+"assessment_item_id",
+"adjustment_type",
+"adjustment_date",
+"adjustment_amount",
+"reason",
+"approval_status",
+"approved_by",
+"approved_at"
+],
+"fee_assessment_benefit": [
+"assessment_benefit_id",
+"assessment_item_id",
+"benefit_type",
+"student_concession_id",
+"student_scholarship_id",
+"student_sponsorship_id",
+"benefit_amount",
+"applied_date",
+"approved_by"
+],
+"fee_category": [
+"fee_category_id",
+"category_code",
+"category_name",
+"description",
+"display_order",
+"is_refundable",
+"is_active",
+"created_at",
+"updated_at"
+],
+"fee_charge_source": [
+"charge_source_id",
+"assessment_item_id",
+"source_module",
+"source_entity",
+"source_entity_id"
+],
+"fee_receipt": [
+"fee_receipt_id",
+"receipt_number",
+"payment_transaction_id",
+"receipt_date",
+"receipt_amount",
+"receipt_status",
+"issued_by",
+"cancelled_by",
+"cancelled_at",
+"cancellation_reason",
+"original_receipt_id"
+],
+"fee_refund": [
+"fee_refund_id",
+"refund_request_id",
+"refund_transaction_number",
+"refund_date",
+"refund_amount",
+"refund_mode_id",
+"bank_reference_number",
+"processed_by",
+"refund_status",
+"remarks"
+],
+"fee_structure": [
+"fee_structure_id",
+"structure_code",
+"structure_name",
+"institution_id",
+"campus_id",
+"programme_id",
+"specialization_id",
+"academic_year_id",
+"admission_category_id",
+"version_number",
+"effective_from",
+"effective_to",
+"approval_status",
+"approved_by",
+"approved_at",
+"remarks",
+"is_active",
+"created_at",
+"updated_at"
+],
+"fee_structure_item": [
+"fee_structure_item_id",
+"fee_structure_id",
+"fee_type_id",
+"semester_id",
+"academic_term_id",
+"semester_key",
+"academic_term_key",
+"amount",
+"due_date",
+"due_days_from_registration",
+"installment_allowed",
+"waiver_allowed",
+"late_fee_rule_id",
+"display_order",
+"remarks"
+],
+"fee_type": [
+"fee_type_id",
+"fee_category_id",
+"fee_code",
+"fee_name",
+"description",
+"charge_frequency",
+"ledger_account_id",
+"is_mandatory",
+"is_refundable",
+"is_taxable",
+"is_active",
+"created_at",
+"updated_at"
+],
+"feedback_choice": [
+"feedback_choice_id",
+"feedback_question_id",
+"choice_text",
+"score",
+"display_order",
+"is_active"
+],
+"feedback_cycle": [
+"feedback_cycle_id",
+"questionnaire_id",
+"academic_term_id",
+"cycle_name",
+"start_at",
+"end_at",
+"result_visibility",
+"status"
+],
+"feedback_question": [
+"feedback_question_id",
+"feedback_category_id",
+"question_text",
+"response_type",
+"is_active"
+],
+"feedback_question_category": [
+"feedback_category_id",
+"category_code",
+"category_name",
+"is_active"
+],
+"feedback_questionnaire": [
+"questionnaire_id",
+"questionnaire_code",
+"questionnaire_name",
+"questionnaire_type",
+"is_anonymous",
+"status"
+],
+"feedback_questionnaire_item": [
+"questionnaire_item_id",
+"questionnaire_id",
+"feedback_question_id",
+"weightage",
+"display_order",
+"is_required"
+],
+"feedback_response": [
+"feedback_response_id",
+"feedback_cycle_id",
+"term_registration_id",
+"course_offering_id",
+"faculty_assignment_id",
+"submitted_at",
+"response_token"
+],
+"feedback_response_item": [
+"feedback_response_item_id",
+"feedback_response_id",
+"questionnaire_item_id",
+"feedback_choice_id",
+"numeric_score",
+"text_response"
+],
+"file_object": [
+"file_object_id",
+"storage_provider",
+"storage_key",
+"original_file_name",
+"mime_type",
+"file_size_bytes",
+"checksum_sha256",
+"uploaded_at",
+"stored_file_name",
+"storage_url",
+"file_extension",
+"confidentiality_level",
+"is_encrypted",
+"uploaded_by_user_id",
+"updated_at",
+"deleted_at",
+"encryption_key_reference",
+"virus_scan_status",
+"virus_scanned_at"
+],
+"financial_ledger_account": [
+"ledger_account_id",
+"parent_account_id",
+"account_code",
+"account_name",
+"account_type",
+"is_active"
+],
+"funded_research_project": [
+"staff_activity_id",
+"source_proposal_activity_id",
+"project_title",
+"principal_investigator_employee_id",
+"department_id",
+"funding_agency_id",
+"funding_type_id",
+"scheme_program_name",
+"requested_amount",
+"sanctioned_amount",
+"amount_received",
+"amount_utilized",
+"currency_code",
+"sanction_date",
+"sanction_order_number",
+"project_start_date",
+"project_end_date",
+"duration_months",
+"research_status_id",
+"project_objectives",
+"research_domain",
+"project_outcomes",
+"publications_generated",
+"patents_generated",
+"products_generated",
+"other_outputs",
+"utilization_summary",
+"completion_date"
+],
+"funding_agency": [
+"funding_agency_id",
+"organization_id",
+"funding_type_id",
+"agency_category",
+"is_active"
+],
+"funding_type": [
+"funding_type_id",
+"funding_type_code",
+"funding_type_name",
+"is_external",
+"description",
+"is_active"
+],
+"gender": [
+"gender_id",
+"gender_code",
+"gender_name",
+"is_active"
+],
+"grade_rule": [
+"grade_rule_id",
+"grade_scale_id",
+"grade_letter",
+"grade_point",
+"minimum_percentage",
+"maximum_percentage",
+"result_status"
+],
+"grade_scale": [
+"grade_scale_id",
+"scale_name",
+"effective_from",
+"effective_to",
+"is_active"
+],
+"grievance": [
+"grievance_id",
+"grievance_number",
+"student_id",
+"grievance_category_id",
+"department_id",
+"submitted_at",
+"subject",
+"description",
+"priority",
+"status",
+"resolved_at",
+"resolution"
+],
+"grievance_action": [
+"grievance_action_id",
+"grievance_id",
+"action_at",
+"action_type",
+"action_notes",
+"new_status"
+],
+"grievance_category": [
+"grievance_category_id",
+"category_code",
+"category_name",
+"is_active"
+],
+"indexing_agency": [
+"indexing_agency_id",
+"agency_code",
+"agency_name",
+"website_url",
+"description",
+"is_active"
+],
+"industry_sector": [
+"industry_sector_id",
+"sector_code",
+"sector_name",
+"description",
+"is_active"
+],
+"installment_plan": [
+"installment_plan_id",
+"plan_code",
+"plan_name",
+"number_of_installments",
+"minimum_initial_percentage",
+"approval_required",
+"is_active"
+],
+"institution": [
+"institution_id",
+"university_id",
+"institution_code",
+"institution_name",
+"legal_name",
+"website_url",
+"email",
+"phone",
+"is_active",
+"created_at",
+"updated_at"
+],
+"journal": [
+"journal_id",
+"journal_name",
+"journal_type_id",
+"publisher_id",
+"issn",
+"eissn",
+"website_url",
+"country_id",
+"is_peer_reviewed_default",
+"is_open_access_default",
+"is_active",
+"created_at",
+"updated_at"
+],
+"journal_metric": [
+"journal_metric_id",
+"journal_id",
+"metric_type_id",
+"metric_year",
+"metric_value",
+"quartile",
+"source_name",
+"source_url",
+"verified_at"
+],
+"journal_publication": [
+"staff_activity_id",
+"publication_type_id",
+"journal_id",
+"paper_title",
+"volume_number",
+"issue_number",
+"edition",
+"page_from",
+"page_to",
+"article_number",
+"publication_date",
+"publication_year",
+"doi",
+"url",
+"peer_reviewed",
+"open_access",
+"primary_author_position",
+"primary_staff_corresponding_author",
+"affiliation_text",
+"abstract_text",
+"keywords"
+],
+"journal_publication_indexing": [
+"staff_activity_id",
+"indexing_agency_id",
+"indexed_year",
+"indexing_status",
+"source_url",
+"remarks"
+],
+"journal_type": [
+"journal_type_id",
+"journal_type_code",
+"journal_type_name",
+"description",
+"is_active"
+],
+"late_fee_rule": [
+"late_fee_rule_id",
+"rule_code",
+"rule_name",
+"calculation_method",
+"grace_period_days",
+"fixed_amount",
+"daily_amount",
+"percentage_rate",
+"maximum_amount",
+"effective_from",
+"effective_to",
+"is_active"
+],
+"late_fee_slab": [
+"late_fee_slab_id",
+"late_fee_rule_id",
+"from_day",
+"to_day",
+"late_fee_amount"
+],
+"login_audit": [
+"login_audit_id",
+"user_id",
+"username_attempted",
+"login_at",
+"logout_at",
+"ip_address",
+"user_agent",
+"was_successful",
+"failure_reason",
+"session_identifier"
+],
+"membership_type": [
+"membership_type_id",
+"type_code",
+"type_name",
+"is_active"
+],
+"mentor_assignment": [
+"mentor_assignment_id",
+"student_id",
+"employee_id",
+"start_date",
+"end_date",
+"assignment_status"
+],
+"metric_type": [
+"metric_type_id",
+"metric_code",
+"metric_name",
+"description",
+"is_active"
+],
+"organization_type": [
+"organization_type_id",
+"organization_type_code",
+"organization_type_name",
+"is_active"
+],
+"organizer": [
+"organizer_id",
+"organization_id",
+"is_active"
+],
+"participation_level": [
+"participation_level_id",
+"level_code",
+"level_name",
+"display_order",
+"is_active"
+],
+"password_history": [
+"password_history_id",
+"user_id",
+"password_hash",
+"changed_at"
+],
+"payment_allocation": [
+"payment_allocation_id",
+"payment_transaction_id",
+"assessment_item_id",
+"allocated_amount",
+"allocation_date",
+"allocated_by"
+],
+"payment_mode": [
+"payment_mode_id",
+"mode_code",
+"mode_name",
+"requires_reference",
+"is_online",
+"is_active"
+],
+"payment_transaction": [
+"payment_transaction_id",
+"transaction_number",
+"student_account_id",
+"application_id",
+"transaction_date",
+"payment_mode_id",
+"amount",
+"currency_code",
+"payment_status",
+"gateway_name",
+"gateway_transaction_id",
+"bank_reference_number",
+"cheque_number",
+"cheque_date",
+"bank_name",
+"payer_name",
+"payer_contact",
+"received_by",
+"remarks",
+"created_at"
+],
+"permission": [
+"permission_id",
+"access_resource_id",
+"access_action_id",
+"permission_code",
+"permission_name",
+"description",
+"is_sensitive",
+"is_active"
+],
+"previous_organization": [
+"previous_organization_id",
+"previous_organization_type_id",
+"organization_name",
+"address_line_1",
+"address_line_2",
+"city",
+"state_id",
+"country_id",
+"postal_code",
+"phone",
+"email",
+"website_url",
+"is_active",
+"created_at",
+"updated_at"
+],
+"previous_organization_type": [
+"previous_organization_type_id",
+"type_code",
+"type_name",
+"classification",
+"is_active"
+],
+"professional_contribution_type": [
+"professional_contribution_type_id",
+"contribution_code",
+"contribution_name",
+"description",
+"is_active"
+],
+"professional_development_activity": [
+"staff_activity_id",
+"training_program_type_id",
+"program_title",
+"organizer_id",
+"sponsoring_organization_id",
+"funding_agency_id",
+"venue_name",
+"city",
+"state_id",
+"country_id",
+"event_mode_id",
+"duration_days",
+"duration_hours",
+"financial_support_received",
+"financial_support_amount",
+"currency_code",
+"certificate_number",
+"learning_outcomes"
+],
+"programme": [
+"programme_id",
+"department_id",
+"programme_code",
+"programme_name",
+"award_name",
+"programme_level",
+"duration_semesters",
+"maximum_duration_semesters",
+"is_active"
+],
+"programme_specialization": [
+"specialization_id",
+"programme_id",
+"specialization_code",
+"specialization_name",
+"is_active"
+],
+"programme_term_offering": [
+"programme_term_offering_id",
+"academic_term_id",
+"programme_id",
+"specialization_id",
+"specialization_key",
+"curriculum_scheme_id",
+"semester_id",
+"status"
+],
+"publication_type": [
+"publication_type_id",
+"publication_type_code",
+"publication_type_name",
+"description",
+"is_active",
+"created_at",
+"updated_at"
+],
+"publisher": [
+"publisher_id",
+"organization_id",
+"is_active"
+],
+"qualification_level": [
+"qualification_level_id",
+"level_code",
+"level_name",
+"display_order",
+"is_terminal_degree",
+"description",
+"is_active",
+"created_at",
+"updated_at"
+],
+"refund_request": [
+"refund_request_id",
+"refund_request_number",
+"student_account_id",
+"payment_transaction_id",
+"request_date",
+"refund_reason",
+"requested_amount",
+"approved_amount",
+"request_status",
+"approved_by",
+"approved_at"
+],
+"religion": [
+"religion_id",
+"religion_code",
+"religion_name",
+"is_active"
+],
+"research_project_financial_utilization": [
+"utilization_id",
+"staff_activity_id",
+"financial_year",
+"reporting_period_from",
+"reporting_period_to",
+"opening_balance",
+"amount_received",
+"expenditure_amount",
+"closing_balance",
+"utilization_certificate_number",
+"statement_of_expenditure_number",
+"remarks",
+"created_at"
+],
+"research_proposal": [
+"staff_activity_id",
+"proposal_title",
+"principal_investigator_employee_id",
+"department_id",
+"proposal_submission_date",
+"funding_agency_id",
+"funding_type_id",
+"scheme_program_name",
+"requested_amount",
+"currency_code",
+"research_status_id",
+"proposal_reference_number",
+"project_objectives",
+"research_domain",
+"expected_outcomes",
+"review_comments"
+],
+"research_status": [
+"research_status_id",
+"status_code",
+"status_name",
+"display_order",
+"is_terminal",
+"is_active"
+],
+"research_supervision": [
+"research_supervision_id",
+"staff_activity_id",
+"supervision_level",
+"scholar_name",
+"student_id",
+"registration_number",
+"research_title",
+"registration_date",
+"completion_date",
+"supervision_role",
+"status",
+"awarding_organization_id"
+],
+"role": [
+"role_id",
+"parent_role_id",
+"role_code",
+"role_name",
+"role_category",
+"role_level",
+"description",
+"is_system_role",
+"is_assignable",
+"is_active",
+"created_at",
+"updated_at"
+],
+"role_delegation": [
+"role_delegation_id",
+"delegator_user_id",
+"delegate_user_id",
+"source_assignment_id",
+"valid_from",
+"valid_to",
+"delegation_status",
+"reason",
+"approved_by_user_id",
+"created_at"
+],
+"role_permission": [
+"role_id",
+"permission_id",
+"permission_effect",
+"granted_at"
+],
+"role_type": [
+"role_type_id",
+"role_code",
+"role_name",
+"description",
+"is_active"
+],
+"room": [
+"room_id",
+"building_id",
+"room_code",
+"room_name",
+"room_type",
+"capacity",
+"is_active"
+],
+"scholarship_scheme": [
+"scholarship_scheme_id",
+"scheme_code",
+"scheme_name",
+"sponsoring_authority",
+"scheme_type",
+"maximum_amount",
+"is_reimbursable",
+"is_active"
+],
+"semester": [
+"semester_id",
+"semester_number",
+"semester_name"
+],
+"service_fee_request": [
+"service_fee_request_id",
+"request_number",
+"student_id",
+"certificate_request_id",
+"fee_type_id",
+"request_date",
+"service_description",
+"quantity",
+"unit_amount",
+"total_amount",
+"fee_assessment_id",
+"request_status",
+"processed_by",
+"processed_at"
+],
+"social_category": [
+"social_category_id",
+"category_code",
+"category_name",
+"is_active"
+],
+"staff_activity": [
+"staff_activity_id",
+"employee_id",
+"activity_type_id",
+"academic_year_id",
+"institution_id",
+"campus_id",
+"department_id",
+"participation_level_id",
+"primary_role_type_id",
+"activity_title",
+"start_date",
+"end_date",
+"description",
+"outcomes",
+"remarks",
+"verification_status_id",
+"verified_by_user_id",
+"verified_at",
+"verification_remarks",
+"approval_status_id",
+"approved_by_user_id",
+"approved_at",
+"approval_remarks",
+"rejection_reason",
+"created_by_user_id",
+"updated_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at",
+"deleted_by_user_id",
+"deletion_reason"
+],
+"staff_activity_contributor": [
+"staff_activity_contributor_id",
+"staff_activity_id",
+"employee_id",
+"external_person_name",
+"external_person_email",
+"external_organization_id",
+"affiliation_text",
+"role_type_id",
+"contributor_sequence",
+"is_corresponding_author",
+"contribution_details",
+"is_primary",
+"created_at"
+],
+"staff_award": [
+"staff_activity_id",
+"award_category_id",
+"award_name",
+"awarding_organization_id",
+"award_date",
+"citation_details",
+"cash_prize_amount",
+"incentive_amount",
+"currency_code",
+"award_reference_number"
+],
+"staff_category": [
+"staff_category_id",
+"staff_type_id",
+"category_code",
+"category_name",
+"description",
+"is_active",
+"created_at",
+"updated_at"
+],
+"staff_professional_contribution": [
+"staff_activity_id",
+"professional_contribution_type_id",
+"organization_id",
+"journal_id",
+"conference_event_id",
+"programme_id",
+"course_id",
+"student_id",
+"title_topic",
+"appointment_reference_number",
+"contribution_date",
+"start_date",
+"end_date",
+"number_of_reviews",
+"number_of_candidates",
+"contribution_details",
+"outcome_details"
+],
+"staff_professional_membership": [
+"staff_activity_id",
+"organization_id",
+"membership_type_id",
+"membership_number",
+"membership_start_date",
+"membership_expiry_date",
+"is_lifetime_membership",
+"role_type_id",
+"participation_level_id",
+"renewal_required",
+"membership_status"
+],
+"staff_type": [
+"staff_type_id",
+"type_code",
+"type_name",
+"description",
+"is_active",
+"created_at",
+"updated_at"
+],
+"state": [
+"state_id",
+"country_id",
+"state_code",
+"state_name",
+"is_active"
+],
+"student": [
+"student_id",
+"student_number",
+"university_seat_number",
+"first_name",
+"middle_name",
+"last_name",
+"display_name",
+"date_of_birth",
+"gender_id",
+"blood_group_id",
+"primary_email",
+"primary_phone",
+"nationality_country_id",
+"religion_id",
+"social_category_id",
+"caste_id",
+"sub_caste_id",
+"photo_url",
+"admission_date",
+"student_status",
+"notes",
+"created_at",
+"updated_at"
+],
+"student_activity": [
+"student_activity_id",
+"student_id",
+"student_activity_type_id",
+"academic_year_id",
+"institution_id",
+"campus_id",
+"department_id",
+"programme_id",
+"participation_level_id",
+"event_mode_id",
+"external_organization_id",
+"organizer_name",
+"activity_title",
+"event_name",
+"team_name",
+"participation_role",
+"start_date",
+"end_date",
+"venue_name",
+"city",
+"state_id",
+"country_id",
+"achievement_type",
+"position_rank",
+"award_name",
+"award_details",
+"cash_prize_amount",
+"currency_code",
+"certificate_number",
+"activity_url",
+"description",
+"outcomes",
+"remarks",
+"verification_status_id",
+"verified_by_user_id",
+"verified_at",
+"verification_remarks",
+"approval_status_id",
+"approved_by_user_id",
+"approved_at",
+"approval_remarks",
+"rejection_reason",
+"created_by_user_id",
+"updated_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at",
+"deleted_by_user_id",
+"deletion_reason"
+],
+"student_activity_evidence": [
+"student_activity_evidence_id",
+"student_activity_id",
+"document_type_id",
+"evidence_type_id",
+"confidentiality_level_id",
+"document_title",
+"description",
+"academic_year_id",
+"document_issue_date",
+"issuing_authority",
+"issuing_organization_id",
+"certificate_document_number",
+"expiry_date",
+"verification_status_id",
+"verified_by_user_id",
+"verified_at",
+"verification_remarks",
+"approval_status_id",
+"approved_by_user_id",
+"approved_at",
+"rejection_reason",
+"current_version_number",
+"is_active",
+"created_by_user_id",
+"updated_by_user_id",
+"created_at",
+"updated_at",
+"deleted_at",
+"deleted_by_user_id",
+"deletion_reason"
+],
+"student_activity_evidence_audit": [
+"student_activity_evidence_audit_id",
+"student_activity_evidence_id",
+"student_activity_evidence_version_id",
+"action_code",
+"performed_by_user_id",
+"performed_at",
+"ip_address",
+"user_agent",
+"before_values",
+"after_values",
+"remarks"
+],
+"student_activity_evidence_requirement": [
+"student_activity_evidence_requirement_id",
+"student_activity_type_id",
+"evidence_type_id",
+"document_type_id",
+"is_mandatory",
+"minimum_files",
+"maximum_files",
+"valid_from",
+"valid_to",
+"is_active",
+"document_type_key"
+],
+"student_activity_evidence_version": [
+"student_activity_evidence_version_id",
+"student_activity_evidence_id",
+"version_number",
+"file_object_id",
+"change_reason",
+"uploaded_by_user_id",
+"uploaded_at",
+"is_current",
+"current_document_key"
+],
+"student_activity_team_member": [
+"student_activity_team_member_id",
+"student_activity_id",
+"student_id",
+"external_member_name",
+"external_member_email",
+"external_organization_id",
+"member_role",
+"member_sequence",
+"is_team_lead",
+"remarks",
+"created_at"
+],
+"student_activity_type": [
+"student_activity_type_id",
+"type_code",
+"type_name",
+"activity_group",
+"description",
+"requires_team_details",
+"supports_achievement",
+"is_active",
+"created_at",
+"updated_at"
+],
+"student_address": [
+"student_address_id",
+"student_id",
+"address_type",
+"address_line_1",
+"address_line_2",
+"city",
+"state_id",
+"country_id",
+"postal_code",
+"valid_from",
+"valid_to",
+"is_primary",
+"current_primary_student_id"
+],
+"student_assessment_mark": [
+"student_assessment_mark_id",
+"assessment_event_id",
+"course_registration_id",
+"course_offering_id",
+"attendance_status",
+"marks_obtained",
+"reduced_marks",
+"remarks",
+"evaluated_at"
+],
+"student_attendance": [
+"class_session_id",
+"course_offering_section_student_id",
+"course_offering_section_id",
+"attendance_status_id",
+"marked_at",
+"marked_by_user_id",
+"remarks"
+],
+"student_course_registration": [
+"course_registration_id",
+"term_registration_id",
+"course_offering_id",
+"registration_type",
+"registration_date",
+"registration_status"
+],
+"student_course_result": [
+"student_course_result_id",
+"course_registration_id",
+"attempt_number",
+"internal_marks",
+"external_marks",
+"total_marks",
+"grade_letter",
+"grade_point",
+"credits_earned",
+"result_status",
+"result_date",
+"remarks"
+],
+"student_document": [
+"student_document_id",
+"student_id",
+"document_type_id",
+"file_object_id",
+"document_number",
+"issue_date",
+"expiry_date",
+"verification_status",
+"verified_at",
+"remarks"
+],
+"student_entrance_exam": [
+"student_entrance_exam_id",
+"student_id",
+"exam_name",
+"registration_number",
+"rank_number",
+"score",
+"exam_year",
+"allotment_date",
+"registration_fee"
+],
+"student_exit": [
+"student_exit_id",
+"enrolment_id",
+"exit_type",
+"exit_date",
+"destination_institution",
+"old_registration_number",
+"remarks"
+],
+"student_fee_assessment": [
+"fee_assessment_id",
+"assessment_number",
+"student_account_id",
+"application_id",
+"enrolment_id",
+"term_registration_id",
+"academic_year_id",
+"academic_term_id",
+"fee_structure_id",
+"assessment_type",
+"assessment_date",
+"gross_amount",
+"concession_amount",
+"scholarship_amount",
+"adjustment_amount",
+"net_payable_amount",
+"amount_paid",
+"balance_amount",
+"due_date",
+"assessment_status",
+"remarks",
+"created_by",
+"created_at",
+"updated_at"
+],
+"student_fee_assessment_item": [
+"assessment_item_id",
+"fee_assessment_id",
+"fee_type_id",
+"fee_structure_item_id",
+"description",
+"original_amount",
+"concession_amount",
+"scholarship_amount",
+"adjustment_amount",
+"net_amount",
+"amount_paid",
+"balance_amount",
+"due_date",
+"item_status"
+],
+"student_fee_concession": [
+"student_concession_id",
+"student_id",
+"concession_type_id",
+"academic_year_id",
+"application_number",
+"application_date",
+"approved_percentage",
+"approved_amount",
+"valid_from",
+"valid_to",
+"approval_status",
+"approved_by",
+"approved_at",
+"remarks"
+],
+"student_fee_penalty": [
+"fee_penalty_id",
+"student_account_id",
+"assessment_item_id",
+"fee_type_id",
+"penalty_date",
+"penalty_reason",
+"penalty_amount",
+"waived_amount",
+"net_penalty_amount",
+"penalty_status",
+"approved_by"
+],
+"student_financial_account": [
+"student_account_id",
+"student_id",
+"account_number",
+"account_status",
+"opening_balance",
+"credit_balance",
+"created_at",
+"updated_at"
+],
+"student_financial_hold": [
+"financial_hold_id",
+"student_account_id",
+"hold_type",
+"hold_reason",
+"placed_at",
+"placed_by",
+"released_at",
+"released_by",
+"release_reason",
+"hold_status"
+],
+"student_installment_schedule": [
+"student_installment_id",
+"fee_assessment_id",
+"installment_plan_id",
+"installment_number",
+"due_date",
+"installment_amount",
+"amount_paid",
+"balance_amount",
+"installment_status"
+],
+"student_parent_guardian": [
+"student_parent_guardian_id",
+"student_id",
+"relationship_type",
+"full_name",
+"occupation",
+"annual_income",
+"email",
+"phone",
+"address_line_1",
+"address_line_2",
+"city",
+"state_id",
+"country_id",
+"postal_code",
+"is_primary_contact"
+],
+"student_previous_education": [
+"previous_education_id",
+"student_id",
+"qualification_level",
+"examination_name",
+"institution_name",
+"board_university",
+"registration_number",
+"month_of_passing",
+"year_of_passing",
+"result_class",
+"marks_obtained",
+"maximum_marks",
+"percentage"
+],
+"student_programme_enrolment": [
+"enrolment_id",
+"student_id",
+"programme_id",
+"specialization_id",
+"curriculum_scheme_id",
+"admission_academic_year_id",
+"admission_category_id",
+"admission_date",
+"admission_semester_id",
+"expected_completion_date",
+"enrolment_status"
+],
+"student_residence": [
+"student_residence_id",
+"student_id",
+"residence_type",
+"hostel_name",
+"room_number",
+"start_date",
+"end_date",
+"is_current"
+],
+"student_scholarship": [
+"student_scholarship_id",
+"student_id",
+"scholarship_scheme_id",
+"academic_year_id",
+"application_number",
+"sanction_number",
+"applied_amount",
+"sanctioned_amount",
+"received_amount",
+"application_status",
+"sanction_date",
+"received_date",
+"remarks"
+],
+"student_sponsorship": [
+"student_sponsorship_id",
+"student_id",
+"academic_year_id",
+"sponsoring_authority",
+"sanction_reference",
+"sanctioned_amount",
+"valid_from",
+"valid_to",
+"approval_status",
+"approved_by",
+"approved_at"
+],
+"student_term_registration": [
+"term_registration_id",
+"enrolment_id",
+"programme_term_offering_id",
+"class_section_id",
+"class_batch_id",
+"roll_number",
+"registration_date",
+"registration_status"
+],
+"student_term_result": [
+"student_term_result_id",
+"term_registration_id",
+"credits_registered",
+"credits_earned",
+"sgpa",
+"cgpa",
+"result_status",
+"published_at"
+],
+"student_user_account": [
+"student_id",
+"user_id",
+"linked_at"
+],
+"study_mode": [
+"study_mode_id",
+"mode_code",
+"mode_name",
+"is_active"
+],
+"sub_caste": [
+"sub_caste_id",
+"caste_id",
+"sub_caste_code",
+"sub_caste_name",
+"is_active"
+],
+"time_slot": [
+"time_slot_id",
+"campus_id",
+"slot_code",
+"start_time",
+"end_time",
+"is_break",
+"is_active"
+],
+"timetable_session": [
+"timetable_session_id",
+"course_offering_section_id",
+"faculty_assignment_id",
+"day_of_week",
+"time_slot_id",
+"room_id",
+"effective_from",
+"effective_to"
+],
+"training_program_type": [
+"training_program_type_id",
+"type_code",
+"type_name",
+"description",
+"is_active"
+],
+"university": [
+"university_id",
+"university_code",
+"university_name",
+"legal_name",
+"university_type",
+"website_url",
+"email",
+"phone",
+"address_line_1",
+"address_line_2",
+"city",
+"state_id",
+"postal_code",
+"is_active",
+"created_at",
+"updated_at"
+],
+"user_account": [
+"user_id",
+"username",
+"password_hash",
+"email",
+"account_status",
+"must_change_password",
+"multi_factor_enabled",
+"failed_login_count",
+"locked_until",
+"password_changed_at",
+"last_login_at",
+"created_at",
+"updated_at"
+],
+"user_permission_override": [
+"user_permission_override_id",
+"user_id",
+"permission_id",
+"permission_effect",
+"scope_type",
+"scope_entity_id",
+"normalized_scope_entity_id",
+"valid_from",
+"valid_to",
+"granted_by_user_id",
+"justification",
+"created_at"
+],
+"user_role_assignment": [
+"user_role_assignment_id",
+"user_id",
+"role_id",
+"scope_type",
+"institution_id",
+"campus_id",
+"department_id",
+"programme_id",
+"scope_entity_id",
+"valid_from",
+"valid_to",
+"assignment_status",
+"is_primary",
+"assigned_by_user_id",
+"assignment_reason",
+"created_at"
+],
+"v_active_role_permission": [
+"user_id",
+"source_assignment_id",
+"role_id",
+"role_code",
+"scope_type",
+"scope_entity_id",
+"permission_id",
+"permission_code",
+"permission_effect",
+"permission_source"
+],
+"v_active_user_role": [
+"user_role_assignment_id",
+"user_id",
+"role_id",
+"role_code",
+"role_name",
+"scope_type",
+"institution_id",
+"campus_id",
+"department_id",
+"programme_id",
+"valid_from",
+"valid_to"
+],
+"v_effective_user_permission": [
+"user_id",
+"permission_id",
+"permission_code",
+"scope_type",
+"scope_entity_id",
+"permission_effect"
+],
+"v_employee_previous_experience": [
+"employee_previous_employment_id",
+"employee_id",
+"organization_name",
+"designation",
+"employment_type",
+"employment_start_date",
+"employment_end_date",
+"calculated_experience_days",
+"completed_years",
+"remaining_months"
+],
+"v_fee_collection_summary": [
+"collection_date",
+"mode_code",
+"transaction_count",
+"collected_amount"
+],
+"v_staff_activity_profile": [
+"staff_activity_id",
+"employee_id",
+"employee_number",
+"staff_name",
+"activity_type_code",
+"activity_type_name",
+"activity_group",
+"activity_title",
+"academic_year",
+"university_name",
+"institution_name",
+"campus_name",
+"department_name",
+"participation_level",
+"primary_role",
+"start_date",
+"end_date",
+"verification_status",
+"approval_status",
+"created_at",
+"updated_at",
+"deleted_at"
+],
+"v_staff_evidence_search": [
+"evidence_document_id",
+"staff_activity_id",
+"employee_id",
+"employee_number",
+"staff_name",
+"department_id",
+"department_name",
+"activity_type_code",
+"activity_type_name",
+"academic_year",
+"document_code",
+"document_name",
+"evidence_type_code",
+"evidence_type_name",
+"document_title",
+"certificate_document_number",
+"document_issue_date",
+"expiry_date",
+"verification_status",
+"approval_status",
+"confidentiality_level",
+"current_version_number",
+"is_active",
+"created_at",
+"updated_at",
+"deleted_at"
+],
+"v_student_activity_evidence_search": [
+"student_activity_evidence_id",
+"student_activity_id",
+"student_id",
+"student_number",
+"student_name",
+"activity_type_code",
+"activity_type_name",
+"department_id",
+"department_name",
+"programme_id",
+"programme_name",
+"academic_year",
+"document_code",
+"document_name",
+"evidence_type_code",
+"evidence_type_name",
+"document_title",
+"certificate_document_number",
+"document_issue_date",
+"expiry_date",
+"verification_status",
+"approval_status",
+"confidentiality_level",
+"current_version_number",
+"is_active",
+"created_at",
+"updated_at",
+"deleted_at"
+],
+"v_student_activity_profile": [
+"student_activity_id",
+"student_id",
+"student_number",
+"student_name",
+"activity_type_code",
+"activity_type_name",
+"activity_group",
+"activity_title",
+"event_name",
+"academic_year",
+"institution_name",
+"campus_name",
+"department_name",
+"programme_name",
+"participation_level",
+"event_mode",
+"start_date",
+"end_date",
+"achievement_type",
+"position_rank",
+"award_name",
+"cash_prize_amount",
+"verification_status",
+"approval_status",
+"created_at",
+"updated_at",
+"deleted_at"
+],
+"v_student_fee_balance": [
+"student_account_id",
+"student_id",
+"account_number",
+"total_assessed",
+"total_paid",
+"total_outstanding",
+"credit_balance"
+],
+"verification_status": [
+"verification_status_id",
+"status_code",
+"status_name",
+"is_terminal",
+"is_active"
+]
+}
+}

@@ -1,0 +1,41 @@
+import type { SimsContext } from '@/lib/context';
+
+export type NavItem = {
+  href: string;
+  label: string;
+  /** access_module code; undefined = always shown to any signed-in, provisioned user */
+  module?: string;
+  /** shown only to a signed-in student (linked student record) */
+  studentOnly?: boolean;
+};
+
+/** Only pages that actually exist belong here. Visibility is a convenience; RLS is the enforcement. */
+export const NAV_ITEMS: NavItem[] = [
+  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/students', label: 'Students', module: 'STUDENT' },
+  { href: '/admissions', label: 'Admissions', module: 'ADMISSION' },
+  { href: '/registration', label: 'Registration', module: 'REGISTRATION' },
+  { href: '/attendance', label: 'Attendance', module: 'ATTENDANCE' },
+  { href: '/timetable', label: 'Timetable', module: 'TIMETABLE' },
+  { href: '/assessment', label: 'Assessment', module: 'ASSESSMENT' },
+  { href: '/results/grades', label: 'Grading', module: 'RESULT' },
+  { href: '/my-results', label: 'My results', studentOnly: true },
+  { href: '/mentoring', label: 'Mentoring', module: 'MENTORING' },
+  { href: '/feedback', label: 'Feedback', module: 'FEEDBACK' },
+  { href: '/finance', label: 'Fees', module: 'FEES' },
+  { href: '/employees', label: 'Employees', module: 'EMPLOYEE' },
+  { href: '/structure', label: 'Institution structure', module: 'INSTITUTION' },
+  { href: '/calendar', label: 'Academic calendar', module: 'ACADEMIC_CALENDAR' },
+  { href: '/curriculum', label: 'Curriculum', module: 'CURRICULUM' },
+  { href: '/courses', label: 'Courses', module: 'CURRICULUM' },
+  { href: '/settings', label: 'Settings' },
+];
+
+export function visibleNav(ctx: SimsContext): NavItem[] {
+  const mods = new Set(ctx.readable_modules);
+  return NAV_ITEMS.filter((i) => (i.studentOnly ? ctx.student_id !== null : !i.module || mods.has(i.module)));
+}
+
+export function primaryRoleLabel(ctx: SimsContext): string {
+  return ctx.roles[0]?.role_name ?? 'No active role';
+}

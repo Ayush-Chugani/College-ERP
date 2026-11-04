@@ -1,0 +1,32 @@
+{
+  "_doc": "Curated privileged-workflow columns. value_guards: enum status columns; lookup_guards: *_status_id columns resolved through a lookup table by code; any_guards: metadata columns, any change needs the action. Tables without client write policies are skipped automatically.",
+  "value_guards": [
+    {"table": "announcement", "column": "approval_status", "action": "APPROVE", "values": ["APPROVED", "REJECTED"]},
+    {"table": "assessment_event", "column": "status", "action": "PUBLISH", "values": ["PUBLISHED"]},
+    {"table": "attendance_correction_request", "column": "request_status", "action": "APPROVE", "values": ["APPROVED", "REJECTED"]},
+    {"table": "certificate_request", "column": "request_status", "action": "APPROVE", "values": ["APPROVED", "REJECTED"]},
+    {"table": "consultancy_project", "column": "status", "action": "APPROVE", "values": ["APPROVED"]},
+    {"table": "conference_activity_indexing", "column": "indexing_status", "action": "VERIFY", "values": ["VERIFIED"]},
+    {"table": "journal_publication_indexing", "column": "indexing_status", "action": "VERIFY", "values": ["VERIFIED"]},
+    {"table": "employee_aadhaar", "column": "verification_status", "action": "VERIFY", "values": ["VERIFIED", "REJECTED"]},
+    {"table": "employee_bank_account", "column": "verification_status", "action": "VERIFY", "values": ["VERIFIED", "REJECTED"]},
+    {"table": "employee_pan", "column": "verification_status", "action": "VERIFY", "values": ["VERIFIED", "REJECTED"]},
+    {"table": "employee_document", "column": "verification_status", "action": "VERIFY", "values": ["VERIFIED", "REJECTED"]},
+    {"table": "employee_document", "column": "approval_status", "action": "APPROVE", "values": ["APPROVED", "REJECTED"]},
+    {"table": "student_document", "column": "verification_status", "action": "VERIFY", "values": ["VERIFIED", "REJECTED"]},
+    {"table": "student_course_registration", "column": "registration_status", "action": "APPROVE", "values": ["APPROVED", "REJECTED"]},
+    {"table": "student_term_registration", "column": "registration_status", "action": "APPROVE", "values": ["APPROVED", "REJECTED"]}
+  ],
+  "lookup_guards": [
+    {"tables": ["evidence_document", "staff_activity", "student_activity", "student_activity_evidence"], "column": "approval_status_id",
+     "lookup": "approval_status", "lookup_pk": "approval_status_id", "lookup_code": "status_code", "action": "APPROVE", "values": ["APPROVED", "REJECTED"]},
+    {"tables": ["evidence_document", "staff_activity", "student_activity", "student_activity_evidence"], "column": "verification_status_id",
+     "lookup": "verification_status", "lookup_pk": "verification_status_id", "lookup_code": "status_code", "action": "VERIFY", "values": ["VERIFIED", "REJECTED", "NEEDS_CORRECTION"]}
+  ],
+  "any_guards": {
+    "APPROVE": ["approved_at", "approved_by", "approved_by_user_id", "approval_remarks", "approved_amount", "approved_percentage"],
+    "VERIFY": ["verified_at", "verified_by_user_id", "verification_remarks"],
+    "PUBLISH": ["published_at", "released_at", "released_by"]
+  },
+  "actor_columns": ["approved_by", "approved_by_user_id", "verified_by_user_id", "released_by"]
+}

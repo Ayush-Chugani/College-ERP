@@ -1,0 +1,10 @@
+.env
+.env.local
+.env.*.local
+node_modules/
+.next/
+supabase/.temp/
+supabase/.branches/
+tools/work/
+__pycache__/
+tsconfig.tsbuildinfo
