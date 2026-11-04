@@ -47,6 +47,20 @@ Teaching sections, instructor assignments and class sessions are written directl
 
 `my_context().permissions` lists the caller's ALLOW codes at non-SELF scopes, for hiding UI actions only.
 
+## Communication (migration 040)
+`announcement` and `announcement_attachment` are **RPC-only** for writes; the author is kept in `sims_private.announcement_author` (the source has no author column).
+
+| RPC | Needs | Notes |
+|---|---|---|
+| `announcement_save(id?, type, department?, title, description, publish_from, publish_to?, audience)` -> id | `COMMUNICATION.ALL.CREATE` at the department (global for institution-wide); editing needs the author or `UPDATE` | Only in DRAFT or REJECTED (editing returns REJECTED to DRAFT). Audience ALL / STUDENTS / STAFF / DEPARTMENT. |
+| `announcement_submit(id)` | author or `UPDATE` | DRAFT or REJECTED -> PENDING; replay is a no-op. |
+| `announcement_decide(id, approve)` | `COMMUNICATION.ALL.APPROVE` at the department; not the author unless global `CONFIGURE` | PENDING -> APPROVED or REJECTED. |
+| `announcement_archive(id)` | `UPDATE` holder, or the author of a draft or rejected one | Not while PENDING. |
+| `announcements_manage(status, search, limit, offset)` | `COMMUNICATION.ALL.READ` at the department, or the author | Management list. |
+| `announcements_feed(limit)` | signed-in student or staff member | Approved, inside the publication window, audience matches. |
+| `announcement_detail(id)` -> jsonb | manager, or a recipient of an approved announcement | Same refusal for unknown and not-for-you ids; includes `can_edit` / `can_decide` / `can_archive` flags. |
+| `announcement_targets()`, `announcement_can_post_global()` | `CREATE` | Departments the caller may post to, for the editor. |
+
 ## Grievance (migration 039)
 `grievance` and `grievance_action` are **RPC-only** for writes. Students are authorised by identity (their own record); staff by `GRIEVANCE.ALL.READ` / `UPDATE` at the student's scope.
 
@@ -143,16 +157,6 @@ Error codes: `42501` not authorised / unknown; `22023` invalid input; `23505` ke
 
 ### Not covered
 Admission-application (`application_id`) payments, fee receipts (the numbering rule is not defined in the source), online-gateway confirmation, late-fee/installment automation, ledger postings. Concurrent interleavings are protected by row locks and unique keys but **have not been load-tested** (tests ran on a single connection).
-
-## Announcements (migration 040)
-Authorised with `COMMUNICATION.ALL.*` at the announcement's department (no department = institution-wide, needs a GLOBAL grant). The generated direct-write policies remain (KI-51).
-| RPC | Permission | Notes |
-|---|---|---|
-| `announcement_save(p_id?, type_id, department_id?, title, description, publish_from, publish_to?, audience)` -> id | CREATE (new) / UPDATE (edit) | Edits only DRAFT or REJECTED. Audience ALL, STUDENTS, STAFF, DEPARTMENT, PROGRAMME, CUSTOM; DEPARTMENT and PROGRAMME need a department. |
-| `announcement_set_status(id, status)` | UPDATE (PENDING, ARCHIVED, DRAFT), APPROVE (APPROVED, REJECTED) | DRAFT -> PENDING -> APPROVED / REJECTED, APPROVED -> ARCHIVED, REJECTED -> DRAFT; identical replay returns quietly. |
-| `announcement_delete(id)` | DELETE | DRAFT only. |
-| `announcement_manage_list(search?, status?, limit, offset)` / `announcement_get(id)` | READ | Staff list with `total_count`; `announcement_get` also returns `can_update`, `can_approve`, `can_delete`. |
-| `announcement_feed(limit)` | any active member | APPROVED, inside the publish window, matching the caller's audience (student, employee, department member). CUSTOM is never shown. |
 
 ## Identity administration and audit viewer (migration 041)
 Everything needs a GLOBAL grant: `IAM.ALL.READ` to read, `IAM.ALL.UPDATE` to change, `AUDIT.ALL.READ` for the audit viewer. Without it the list functions return no rows and the others raise `42501`.

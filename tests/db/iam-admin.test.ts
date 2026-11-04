@@ -41,7 +41,7 @@ describe('account status', () => {
     await setStatus(U.superAdmin, 9, 'DISABLED');
     await setStatus(U.superAdmin, 9, 'DISABLED'); // idempotent
     expect(await val('select account_status from user_account where user_id = 9')).toBe('DISABLED');
-    expect(await asUser(U.registrar2, 'select * from public.announcement_feed()')).toEqual([]); // no longer an active member
+    expect(await asUser(U.registrar2, 'select * from public.announcements_feed()')).toEqual([]); // no longer an active member
     await setStatus(U.superAdmin, 9, 'ACTIVE', null);
     expect(await val('select account_status from user_account where user_id = 9')).toBe('ACTIVE');
     expect(Number(await val("select count(*) from activity_audit where module_code = 'IAM' and action_code = 'ACCOUNT_STATUS'"))).toBe(2);
