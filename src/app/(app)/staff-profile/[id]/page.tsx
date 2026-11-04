@@ -7,7 +7,9 @@ import { listDocumentTypes } from '@/features/document-data';
 import { EvidencePanel } from '@/features/evidence-panel';
 import type { DetailSchema } from '@/features/staff-data';
 import { getStaffActivity, listEvidenceTypesStaff, listRoleTypes, listStaffTypes, parseStaffId } from '@/features/staff-data';
+import { SectionTabs } from '@/features/record-editor';
 import { ContributorPanel, StaffActivityForm } from '@/features/staff-forms';
+import { IndexingPanel } from '@/features/staff-indexing';
 import { WorkflowActions } from '@/features/workflow-actions';
 import { requireContext } from '@/lib/server-context';
 import { fieldKind, humanize, label } from '@/lib/staff-validation';
@@ -67,6 +69,9 @@ export default async function StaffRecordPage({ params }: { params: Promise<{ id
           {readRows.map((r) => <Row key={r.k} k={r.k} v={r.v} />)}
         </dl></CardContent></Card>
       )}
+      {(a.detail_table === 'journal_publication' || a.detail_table === 'conference_activity') && <Card><CardHeader><CardTitle>Indexing</CardTitle></CardHeader><CardContent><IndexingPanel activityId={a.staff_activity_id} /></CardContent></Card>}
+      {a.detail_table === 'staff_professional_contribution' && <Card><CardHeader><CardTitle>Research supervision</CardTitle></CardHeader><CardContent><SectionTabs kind="activity" parentId={a.staff_activity_id} sections={[{ section: 'supervision', label: 'Research supervision' }]} /></CardContent></Card>}
+      {a.detail_table === 'funded_research_project' && <Card><CardHeader><CardTitle>Financial utilisation</CardTitle></CardHeader><CardContent><SectionTabs kind="activity" parentId={a.staff_activity_id} sections={[{ section: 'utilization', label: 'Financial utilisation' }]} /></CardContent></Card>}
       <Card><CardHeader><CardTitle>Contributors</CardTitle></CardHeader><CardContent><ContributorPanel a={a} roles={roles} /></CardContent></Card>
       <Card><CardHeader><CardTitle>Evidence</CardTitle></CardHeader><CardContent><EvidencePanel a={{ activityId: a.staff_activity_id, ownerId: a.employee_id, ownerKind: 'employee', canEdit: a.can_edit, evidence: a.evidence }} documentTypes={docTypes} evidenceTypes={evTypes} /></CardContent></Card>
     </div>

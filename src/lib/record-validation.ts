@@ -1,7 +1,7 @@
 import { fieldKind, humanize, type DetailColumn } from '@/lib/staff-validation';
 
 export { REF_TABLES } from '@/lib/staff-validation';
-export const SECTION_KINDS = ['student', 'employee'] as const;
+export const SECTION_KINDS = ['student', 'employee', 'activity'] as const;
 export type SectionKind = (typeof SECTION_KINDS)[number];
 
 /** Short text for a table cell. */

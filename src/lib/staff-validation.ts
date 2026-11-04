@@ -10,7 +10,7 @@ export const OPTION_TABLES = [
 /** Mirrors sims_private.ref_tables / section_option_tables (migration 046); drift-tested. */
 export const REF_TABLES = [
   'blood_group', 'caste', 'country', 'gender', 'religion', 'social_category', 'state', 'sub_caste', 'document_type', 'publication_type', 'journal_type', 'indexing_agency', 'funding_type', 'award_category',
-  'membership_type', 'qualification_level', 'education_institution', 'awarding_body', 'study_mode', 'previous_organization', 'staff_category', 'staff_type', 'designation',
+  'membership_type', 'metric_type', 'journal_metric', 'qualification_level', 'education_institution', 'awarding_body', 'study_mode', 'previous_organization', 'staff_category', 'staff_type', 'designation',
   'fee_category', 'financial_ledger_account', 'fee_type', 'late_fee_rule', 'late_fee_slab', 'concession_type', 'scholarship_scheme', 'installment_plan', 'payment_mode',
 ] as const;
 export const LOOKUP_TABLES = ['journal', 'publisher', 'conference_event', 'organizer', 'external_organization', 'funding_agency'] as const;

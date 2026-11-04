@@ -30,14 +30,14 @@ describe('lists and cells', () => {
   });
 });
 
-describe('drift against migration 046', () => {
-  const sql = fs.readFileSync(path.resolve(__dirname, '../../supabase/migrations/046_record_sections_and_reference_data.sql'), 'utf8');
+describe('drift against migrations 046 and 055', () => {
+  const sql = fs.readFileSync(path.resolve(__dirname, '../../supabase/migrations/055_research_leftovers.sql'), 'utf8'); // redefines ref_tables and the section list
   it('reference tables match the database list', () => {
     const body = /FUNCTION sims_private\.ref_tables\(\)[\s\S]*?ARRAY\[([^\]]*)\]/.exec(sql)?.[1] ?? '';
     expect([...body.matchAll(/'(\w+)'/g)].map((m) => m[1]).sort()).toEqual([...REF_TABLES].sort());
   });
   it('knows both parent kinds and the section routes exist', () => {
-    expect([...SECTION_KINDS]).toEqual(['student', 'employee']);
+    expect([...SECTION_KINDS]).toEqual(['student', 'employee', 'activity']);
     for (const kind of SECTION_KINDS) expect(sql).toContain(`('${kind}', '`);
     const root = path.resolve(__dirname, '../../src/app/(app)');
     expect(fs.existsSync(path.join(root, 'students/[id]/records/page.tsx'))).toBe(true);

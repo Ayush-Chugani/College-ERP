@@ -16,6 +16,9 @@ export function MfaChallengeForm({ next }: { next?: string }) {
   const [factorId, setFactorId] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [state, setState] = useState<'loading' | 'ready' | 'none'>('loading');
+  const [recovery, setRecovery] = useState(false);
+  const [recoveryCode, setRecoveryCode] = useState('');
+  const [busy, setBusy] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<MfaCodeInput, unknown, MfaCodeValues>({ resolver: zodResolver(mfaCodeSchema) });
 
   useEffect(() => {
@@ -42,6 +45,23 @@ export function MfaChallengeForm({ next }: { next?: string }) {
     router.refresh();
   }
 
+  async function useRecovery() {
+    setBusy(true);
+    const supabase = createClient();
+    const { data, error } = await supabase.rpc('mfa_recovery_use', { p_code: recoveryCode });
+    setBusy(false);
+    if (error) return void toast.error(error.code === '45000' ? error.message : 'The code could not be checked.');
+    if (data !== true) {
+      if (email) void supabase.rpc('auth_failure_record', { p_username: email, p_reason: 'MFA_FAILED' });
+      return void toast.error('That recovery code is not valid.');
+    }
+    await supabase.auth.refreshSession();
+    await supabase.rpc('auth_login_record');
+    toast.success('Signed in. Two-step verification was turned off: set it up again with your new device.');
+    router.replace('/settings');
+    router.refresh();
+  }
+
   if (state === 'loading') return <p className="text-sm text-muted-foreground">Loading…</p>;
   if (state === 'none') return <p className="text-sm">No authenticator is set up for this account. <a className="text-primary underline-offset-4 hover:underline" href="/login">Back to sign in</a></p>;
   return (
@@ -55,6 +75,16 @@ export function MfaChallengeForm({ next }: { next?: string }) {
         </div>
         <Button type="submit" className="w-full" disabled={isSubmitting}>{isSubmitting ? 'Checking…' : 'Verify'}</Button>
       </form>
+      {!recovery ? (
+        <button type="button" className="text-sm text-primary underline-offset-4 hover:underline" onClick={() => setRecovery(true)}>Lost your device? Use a recovery code</button>
+      ) : (
+        <div className="space-y-2 rounded-md border border-border bg-muted p-3">
+          <Label htmlFor="recovery">Recovery code</Label>
+          <Input id="recovery" autoComplete="off" maxLength={12} placeholder="XXXXX-XXXXX" value={recoveryCode} onChange={(e) => setRecoveryCode(e.target.value)} />
+          <p className="text-xs text-muted-foreground">Using a code turns two-step verification off until you set it up again in Settings.</p>
+          <div className="flex gap-2"><Button type="button" disabled={busy || recoveryCode.trim().length < 10} onClick={useRecovery}>Use code</Button><Button type="button" variant="outline" onClick={() => setRecovery(false)}>Cancel</Button></div>
+        </div>
+      )}
       <form action="/auth/signout" method="post"><Button type="submit" variant="outline" className="w-full">Cancel and sign out</Button></form>
     </div>
   );

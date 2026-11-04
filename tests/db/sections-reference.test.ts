@@ -116,7 +116,7 @@ describe('employee sections', () => {
 describe('reference data', () => {
   it('lists only what the caller may configure', async () => {
     // SUPER_ADMIN holds FEES.FEE_STRUCTURE.CONFIGURE since M052, so all 32 lists are offered.
-    expect((await asUser<{ tbl: string }>(U.superAdmin, 'select tbl from public.ref_list()')).length).toBe(32);
+    expect((await asUser<{ tbl: string }>(U.superAdmin, 'select tbl from public.ref_list()')).length).toBe(34);
     expect(await asUser(U.student1, 'select * from public.ref_list()')).toEqual([]);
     expect(await asUser(U.registrar1, 'select * from public.ref_list()')).toEqual([]);
     await expect(as('anon', null, 'select * from public.ref_list()')).rejects.toThrow(/permission denied/);

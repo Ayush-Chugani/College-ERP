@@ -105,6 +105,7 @@ export function MfaPanel() {
           <Button type="button" disabled={busy} onClick={start}>Set up two-step verification</Button>
         </div>
       ) : null}
+      {active.length > 0 && <RecoveryCodes />}
       {enrol && (
         <form onSubmit={form.handleSubmit(confirm)} className="space-y-3 rounded-md border border-border bg-muted p-3" noValidate aria-label="Confirm two-step verification">
           <p className="text-sm">Scan this code with an authenticator app (Google Authenticator, Microsoft Authenticator, Authy…), then enter the 6-digit code it shows.</p>
@@ -114,6 +115,45 @@ export function MfaPanel() {
           <TextField id="mfa-code" label="Code" className="max-w-[10rem]" inputMode="numeric" autoComplete="one-time-code" maxLength={8} {...form.register('code')} error={e.code?.message} />
           <div className="flex gap-2"><Button type="submit" disabled={form.formState.isSubmitting}>Turn on</Button><Button type="button" variant="outline" onClick={cancelEnrol}>Cancel</Button></div>
         </form>
+      )}
+    </div>
+  );
+}
+
+/** Recovery codes (migration 056): shown once after generation; only the count of unused codes is ever shown again. */
+export function RecoveryCodes() {
+  const supabase = createClient();
+  const [status, setStatus] = useState<{ unused: number; generated_at: string | null } | null>(null);
+  const [codes, setCodes] = useState<string[] | null>(null);
+  const [busy, setBusy] = useState(false);
+  const load = useCallback(async () => {
+    const { data } = await supabase.rpc('mfa_recovery_status');
+    setStatus((data ?? null) as { unused: number; generated_at: string | null } | null);
+  }, [supabase]);
+  useEffect(() => { void load(); }, [load]);
+  async function generate() {
+    if (status && status.unused > 0 && !window.confirm('This replaces your current recovery codes. Continue?')) return;
+    setBusy(true);
+    const { data, error } = await supabase.rpc('mfa_recovery_generate');
+    setBusy(false);
+    if (error) return void toast.error('The recovery codes could not be created. Sign in again with your authenticator code and retry.');
+    setCodes(data as string[]);
+    await load();
+  }
+  return (
+    <div className="space-y-2 border-t border-border pt-3">
+      <p className="text-sm font-medium">Recovery codes</p>
+      <p className="text-sm text-muted-foreground">If you lose your phone, one of these codes lets you sign in once and set up a new authenticator. Keep them somewhere safe; each works once.{status ? ` You have ${status.unused} unused code${status.unused === 1 ? '' : 's'}.` : ''}</p>
+      <Button type="button" variant="outline" disabled={busy} onClick={generate}>{status && status.unused > 0 ? 'Create new codes' : 'Create recovery codes'}</Button>
+      {codes && (
+        <div className="space-y-2 rounded-md border border-border bg-muted p-3" role="status">
+          <p className="text-sm font-medium">Save these now. They will not be shown again.</p>
+          <ul className="grid grid-cols-2 gap-1 font-mono text-sm sm:grid-cols-5">{codes.map((c) => <li key={c}>{c}</li>)}</ul>
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" onClick={() => { void navigator.clipboard?.writeText(codes.join('\n')); toast.success('Copied.'); }}>Copy</Button>
+            <Button type="button" variant="outline" onClick={() => setCodes(null)}>I have saved them</Button>
+          </div>
+        </div>
       )}
     </div>
   );
