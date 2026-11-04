@@ -15,8 +15,7 @@ beforeAll(async () => {
 }, 180_000);
 
 describe('writing', () => {
-  it('is RPC-only for clients, and anon cannot call', async () => {
-    await expect(asUser(U.superAdmin, "update announcement set title = 'x'")).rejects.toThrow(/permission denied/);
+  it('anon cannot call', async () => {
     await expect(as('anon', null, 'select * from public.announcement_feed()')).rejects.toThrow(/permission denied/);
   });
   it('validates input', async () => {

@@ -1,7 +1,7 @@
 -- Announcements (Communication module). Hand-written (not from the MySQL source).
 --
 -- DESIGN
---  * announcement is RPC-only for writes (the generated direct-write policies are dropped). Every RPC authorises with the COMMUNICATION permissions at the
+--  * The generated direct-write policies and the APPROVE workflow guard on announcement stay in place (the screens use the RPCs, which add the lifecycle rules below). Every RPC authorises with the COMMUNICATION permissions at the
 --    announcement's department scope; a NULL department means institution-wide and therefore needs a GLOBAL grant (sims_private.can_department falls back to can_global).
 --  * Everyone who is an active member reads the feed through announcement_feed(); staff manage through announcement_manage_list().
 --
@@ -12,11 +12,6 @@
 --     DEPARTMENT and PROGRAMME (there is no programme column) members of announcement.department_id (a student enrolled in one of its programmes, an employee with a current assignment there);
 --     CUSTOM has no recipient list in the schema and is therefore never shown in the feed.
 --  3  DEPARTMENT / PROGRAMME audiences need a department; publish_to must be later than publish_from.
-
-DROP POLICY announcement_insert ON announcement;
-DROP POLICY announcement_update ON announcement;
-DROP POLICY announcement_delete ON announcement;
-REVOKE INSERT, UPDATE, DELETE ON announcement FROM authenticated;
 
 CREATE TRIGGER trg_announcement_audit AFTER INSERT OR UPDATE OR DELETE ON announcement FOR EACH ROW EXECUTE FUNCTION sims_private.audit_row('COMMUNICATION', 'announcement_id');
 
