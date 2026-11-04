@@ -158,5 +158,39 @@ Error codes: `42501` not authorised / unknown; `22023` invalid input; `23505` ke
 ### Not covered
 Admission-application (`application_id`) payments, fee receipts (the numbering rule is not defined in the source), online-gateway confirmation, late-fee/installment automation, ledger postings. Concurrent interleavings are protected by row locks and unique keys but **have not been load-tested** (tests ran on a single connection).
 
+## Identity administration and audit viewer (migration 041)
+Everything needs a GLOBAL grant: `IAM.ALL.READ` to read, `IAM.ALL.UPDATE` to change, `AUDIT.ALL.READ` for the audit viewer. Without it the list functions return no rows and the others raise `42501`.
+| RPC | Notes |
+|---|---|
+| `iam_user_list(search?, status?, limit, offset)` / `iam_user_detail(user_id)` / `iam_roles()` | Users with roles and the student or employee they are linked to; detail includes every role assignment and `is_self`. |
+| `iam_set_account_status(user_id, status, reason?)` | ACTIVE, DISABLED or LOCKED; a reason is required to disable or lock; not for your own account; the last active GLOBAL SUPER_ADMIN is protected; writes an `activity_audit` row (`IAM` / `ACCOUNT_STATUS`). |
+| `iam_assign_role(user_id, role_id, scope_type, scope_entity_id?, reason?)` -> assignment id | Scope must equal the role's level; role active and assignable; only a super administrator grants SUPER_ADMIN; not for your own account; an identical active assignment is returned, not duplicated. |
+| `iam_revoke_role(assignment_id, reason?)` | Sets REVOKED and ends validity; same protections; identical replay returns quietly. |
+| `audit_list(module?, action?, search?, from?, to?, limit, offset)` / `audit_get(id)` / `audit_modules()` | Newest first with `total_count`; `audit_get` returns the before, after and details JSON. |
+Role assignments and permission overrides are row-audited, so permission changes appear in the audit log.
+
+## Student documents (migration 042)
+Private bucket `sims-documents`, keys `student/<student_id>/<random>-<name>` (see [STORAGE_DOCUMENTATION.md](STORAGE_DOCUMENTATION.md)). Owners act by identity; staff need `DOCUMENT.ALL.*` at the student's scope.
+| RPC | Permission | Notes |
+|---|---|---|
+| `student_document_register(student_id, document_type_id, storage_key, file_name, mime_type, size, checksum?, number?, issue_date?, expiry_date?)` -> id | owner or CREATE | Validates type, size, extension, key shape, that the object exists and its size matches; creates `file_object` and a PENDING `student_document`. |
+| `student_document_list(student_id)` | owner or READ | Includes `effective_status` (VERIFIED past its expiry shows EXPIRED). |
+| `student_document_download_info(id)` | owner or READ | Logs a DOWNLOAD audit row and returns the key to sign. |
+| `student_document_review(id, decision, remarks?)` | VERIFY | PENDING -> VERIFIED or REJECTED; remarks required to reject. |
+| `student_document_delete(id)` -> storage key | owner or DELETE | Never a VERIFIED document; the caller then removes the orphaned object. |
+
+## Student activities (migration 043)
+Students act on their own activities by identity; staff need `STUDENT.STUDENT_ACTIVITY[_EVIDENCE|_REPORT].*` at the student's scope. Direct writes to the five activity tables are closed.
+| RPC | Permission | Notes |
+|---|---|---|
+| `student_activity_save(activity_id?, student_id?, p jsonb)` -> id | owner or CREATE / UPDATE | `p` holds type, title, dates, achievement, rank, award, link, texts, year, level, mode; scope is taken from the latest enrolment; only DRAFT can be edited. |
+| `student_activity_submit(id)` | owner or UPDATE | Needs start date, team name for team types, mandatory evidence; sets SUBMITTED / PENDING. Replay returns quietly. |
+| `student_activity_review(id, step, decision, remarks?)` | VERIFY or APPROVE | VERIFY: VERIFIED, NEEDS_CORRECTION, REJECTED; APPROVE: APPROVED, REJECTED. Remarks required unless the decision is VERIFIED / APPROVED. |
+| `student_activity_delete(id, reason?)` | owner or DELETE | Soft delete of a DRAFT or REJECTED activity. |
+| `student_activity_team_add(...)` / `student_activity_team_remove(member_id)` | owner or UPDATE | Draft only; a member is either a student or an external person. |
+| `student_activity_evidence_add(...)` / `_replace(...)` / `_download_info(id)` / `_delete(id, reason?)` | owner or EVIDENCE.CREATE / UPDATE / READ / DELETE | Same file rules as student documents; replace adds a version; every action writes `student_activity_evidence_audit`; delete is soft. |
+| `student_activity_list(student_id?, search?, approval?, limit, offset)` / `student_activity_get(id)` | owner or READ | The list returns the caller's own plus every activity they may read. `get` includes team, current evidence and `can_*` flags. |
+| `student_activity_report(year?)` | REPORT.READ | Counts per type and approval status, and how many carry an award. |
+
 ## Workflow guards (migration 020)
 Not an API, but visible to clients: updates that set approval/verification/publication state or actor columns raise `42501` ("Not authorised to APPROVE/VERIFY/PUBLISH …" or "… must be the acting user") unless the caller holds the matching permission at the row's scope.

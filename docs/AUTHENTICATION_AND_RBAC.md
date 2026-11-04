@@ -27,7 +27,7 @@ Resolved by `sims_private.eff()` from the source view `v_effective_user_permissi
 `current_user_id/student_id/employee_id`, `eff`, `covers`, `can_global/institution/campus/department/programme`, `can_student/employee/user`, `is_active_member`, `link_auth_user`.
 
 ## Not done yet
-- Next.js login/logout/forgot/reset/verify flows, protected routes, profile page, session-expiry handling.
+- Login, logout, forgot / reset password, protected routes and session-expiry handling are built, but have **never been exercised signed in** against a real project (no Auth user exists yet).
 - **Bootstrap**: there is no first administrator. Needed: create an Auth user, a `user_account`, a SUPER_ADMIN assignment and the identity link (admin script using the DB connection).
-- Admin RPCs for assigning roles, overrides and linking users (all IAM writes are currently server-only, by design).
+- Role assignment, revocation and account activation / deactivation are built (migration 041, `/admin/users`). Still missing: RPCs and screens for permission overrides and for linking Auth users to students or employees (those writes are still server-only).
 - MFA enforcement (`multi_factor_enabled` is not consulted).

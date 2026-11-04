@@ -17,4 +17,4 @@ Node 22+, npm 10+. Python 3.11+ with `psycopg2-binary` and `openpyxl` only for `
 - Authentication → URL configuration: Site URL and redirect URLs (`http://localhost:3000/auth/callback`, your production origin + `/auth/callback`).
 - Authentication → Providers → Email: decide on sign-ups (disabled recommended: accounts are provisioned by administrators), confirm-email, password policy (min 10, mixed case, number to match the app).
 - Authentication → SMTP: configure a real SMTP provider before relying on password-reset emails.
-- Storage buckets and policies: not created yet.
+- Storage: migration 042 creates the private `sims-documents` bucket and its policies; check them in the dashboard after applying it (STORAGE_DOCUMENTATION.md).

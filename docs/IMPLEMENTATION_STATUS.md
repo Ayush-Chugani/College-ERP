@@ -1,5 +1,5 @@
 # Implementation Status (honest report)
-Date: 2026-11-03
+Date: 2026-11-04
 
 | Area | Status |
 |---|---|
@@ -25,17 +25,20 @@ Date: 2026-11-03
 | Mentoring: mentor assignments, confidential counselling sessions with four visibility rules, end assignment (migration 038; assignment writes and all session access are RPC-only) | Built; migration 038 applied live; 15 DB tests + 7 unit tests (371 total); typecheck, lint, build pass. **Not exercised signed in.** Rules are my inference (KI-49) |
 | Grievance: student filing and follow-up, staff handling with history, internal notes, category management (migration 039; writes RPC-only) | Built; migration 039 applied live; 12 DB tests + 8 unit tests (391 total); typecheck, lint, build pass. **Not exercised signed in.** Rules are my inference and no handler role exists yet (KI-50) |
 | Communication: announcements with approval workflow and audience rules, feed for students and staff, manage list, editor (migration 040; writes RPC-only; attachments not built) | Built; migration 040 applied live; 18 DB tests + 7 unit tests (415 total); typecheck, lint, build pass. **Not exercised signed in.** Rules are my inference (KI-51); no attachments |
-| IAM administration and audit viewer: account status, role assignment and revocation with self-lock-out and last-super-admin protection, audit log screens (migration 041, built in a parallel session and merged) | Built; migration 041 applied live; 8 DB tests + 5 unit tests (428 total in the merged tree); typecheck, lint, build pass. **Not exercised signed in.** Rules are inference (KI-52); no permission-override or user-linking screens |
-| Playwright e2e specs, `vercel.json`, `supabase/config.toml`, loading/error/not-found pages (parallel session, merged) | Files present; **e2e specs not run by me**; nothing deployed |
+| Identity administration: user list, account activation / deactivation, role assignment and revocation with safeguards (migration 041; `/admin/users`) | Built; 8 DB tests + unit tests. M041 applied live. No override or user-linking screens, no MFA (KI-52) |
+| Audit viewer: filters, paging, before / after detail (migration 041; `/audit`) | Built; shares the M041 tests. Shows writes only |
+| Student documents on private Storage: upload, register, list, signed-URL open (logged), verify / reject, delete (migration 042; `/my-documents`, `/students/[id]/documents`) | Built; 12 DB tests + 8 unit tests. **M042 not applied to the live project; the bucket has never been created on a real Supabase project.** Student documents only (KI-53) |
+| Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 24 smoke tests pass; nothing deployed |
+| Student activities and evidence: drafting, team members, evidence with versions and logged downloads, submission gate on mandatory evidence, verification and approval, summary report (migration 043; `/activities`) | Built; 14 DB tests + 9 unit tests. **M043 not applied to the live project.** Gaps in KI-54 |
 | Policy anchor lookups (029) | Fixes a flaw in 018/020: multi-hop anchors read intermediate tables as the caller, so writers without read access to another module were silently denied. 63 tables now resolve through SECURITY DEFINER lookups; regression-tested |
 | Workflow guards (020) and finance RPCs (021) | Implemented, tested, applied to live project. UI built (see Finance UI row) |
-| Admin RPCs, create/edit/detail screens, other 22 modules | Not started |
-| Storage buckets/policies | Not started |
+| Admin RPCs for permission overrides and user linking; staff profile and research (22) module | Not started |
+| Storage buckets/policies | Student documents only (M042); other document kinds not started |
 | Module services/CRUD | Not started |
-| Tests | 231 tests passing (DB + unit) (schema/triggers, RLS, guards, finance RPCs). No Playwright/e2e, signed-in UI tests or concurrency tests |
-| Security audit, performance report | Not started |
+| Tests | 470 passing (310 database + 160 unit) plus 24 Playwright smoke tests. No signed-in UI tests or concurrency tests (see TESTING_REPORT.md) |
+| Security audit | Done as a self-review (SECURITY_AUDIT.md). Performance report: not started |
 
-Pending modules: all 23 application modules (database layer exists for each; no application layer).
+Pending modules: 22 (Staff Profile and Research), plus the gaps listed per module in RTM.md.
 Known issues: see `docs/DATABASE_MIGRATION.md` (divergences, SD-1, collation).
 
 See also [RTM.md](RTM.md), the full requirements traceability matrix (requirement to implementation, tests and status).
