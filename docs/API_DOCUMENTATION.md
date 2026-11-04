@@ -47,6 +47,20 @@ Teaching sections, instructor assignments and class sessions are written directl
 
 `my_context().permissions` lists the caller's ALLOW codes at non-SELF scopes, for hiding UI actions only.
 
+## Communication (migration 040)
+`announcement` and `announcement_attachment` are **RPC-only** for writes; the author is kept in `sims_private.announcement_author` (the source has no author column).
+
+| RPC | Needs | Notes |
+|---|---|---|
+| `announcement_save(id?, type, department?, title, description, publish_from, publish_to?, audience)` -> id | `COMMUNICATION.ALL.CREATE` at the department (global for institution-wide); editing needs the author or `UPDATE` | Only in DRAFT or REJECTED (editing returns REJECTED to DRAFT). Audience ALL / STUDENTS / STAFF / DEPARTMENT. |
+| `announcement_submit(id)` | author or `UPDATE` | DRAFT or REJECTED -> PENDING; replay is a no-op. |
+| `announcement_decide(id, approve)` | `COMMUNICATION.ALL.APPROVE` at the department; not the author unless global `CONFIGURE` | PENDING -> APPROVED or REJECTED. |
+| `announcement_archive(id)` | `UPDATE` holder, or the author of a draft or rejected one | Not while PENDING. |
+| `announcements_manage(status, search, limit, offset)` | `COMMUNICATION.ALL.READ` at the department, or the author | Management list. |
+| `announcements_feed(limit)` | signed-in student or staff member | Approved, inside the publication window, audience matches. |
+| `announcement_detail(id)` -> jsonb | manager, or a recipient of an approved announcement | Same refusal for unknown and not-for-you ids; includes `can_edit` / `can_decide` / `can_archive` flags. |
+| `announcement_targets()`, `announcement_can_post_global()` | `CREATE` | Departments the caller may post to, for the editor. |
+
 ## Grievance (migration 039)
 `grievance` and `grievance_action` are **RPC-only** for writes. Students are authorised by identity (their own record); staff by `GRIEVANCE.ALL.READ` / `UPDATE` at the student's scope.
 

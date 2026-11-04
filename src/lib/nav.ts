@@ -14,6 +14,7 @@ export type NavItem = {
 /** Only pages that actually exist belong here. Visibility is a convenience; RLS is the enforcement. */
 export const NAV_ITEMS: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard' },
+  { href: '/announcements', label: 'Announcements' },
   { href: '/students', label: 'Students', module: 'STUDENT' },
   { href: '/admissions', label: 'Admissions', module: 'ADMISSION' },
   { href: '/registration', label: 'Registration', module: 'REGISTRATION' },

@@ -1,7 +1,7 @@
 # Requirements Traceability Matrix (RTM)
 
 SIMS: MySQL to Supabase migration, backend and frontend.
-Snapshot: 2026-11-04, repository `Ayush-Chugani/College-ERP`, `main` after commit `c5dac73` (this file is added in the next commit).
+Snapshot: 2026-11-04, repository `Ayush-Chugani/College-ERP`, `main` after commit `50d1df6`, updated for Communication (migration 040).
 
 This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (sections 2 to 18) to the design that answers it, the code that implements it, the tests that prove it and its honest status. It was written from the repository as it is, not from intentions: a row says **Done** only when the evidence column names something that exists and, where a test is claimed, that test was executed.
 
@@ -20,7 +20,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 **Evidence conventions**
 
-- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). All of M001 to M039 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`.
+- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). All of M001 to M040 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`.
 - `DB:` and `UT:` name the Vitest files in `tests/db/` and `tests/unit/`, with the number of tests in brackets.
 - `KI-n` is an entry in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - Routes are paths under `src/app/(app)/`.
@@ -29,11 +29,11 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 | Check | Result |
 |---|---|
-| `npx vitest run` | **391 passed, 0 failed** (34 files: 18 database files with 258 tests, 16 unit files with 133 tests) |
+| `npx vitest run` | **415 passed, 0 failed** (36 files: 19 database files with 276 tests, 17 unit files with 140 tests) |
 | `npx tsc --noEmit` | clean (strict mode, `noUncheckedIndexedAccess`) |
 | `npm run lint` | clean |
 | `npm run build` | succeeds |
-| Migrations applied to the live project | 39 of 39 |
+| Migrations applied to the live project | 40 of 40 |
 | Signed-in manual or browser verification of any screen | **not done** (no Auth user exists yet, see R-AUTH-9 and KI-3, KI-14) |
 | Playwright end-to-end tests | **not written** |
 | Multi-connection (concurrent) tests | **not run** (the test database is single-connection embedded PostgreSQL) |
@@ -46,7 +46,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 |---|---|
 | Schema migration (213 tables, 500 FKs, 16 triggers, 10 views) | **Done**, catalogue comparison shows no differences, applied live |
 | RLS on all tables, RBAC resolution, identity mapping | **Done**, tested on embedded PostgreSQL; sampled rather than exhaustive per table (KI-2) |
-| Modules with working screens, RPCs and tests | 13 of 23 are built (some with gaps), 6 are partial, 4 are not started |
+| Modules with working screens, RPCs and tests | 14 of 23 are built (some with gaps), 6 are partial, 3 are not started |
 | Supabase Storage / document workflows | **Not started** |
 | Supabase Auth flows in the app | Built; **never exercised signed in** |
 | Edge Functions | **Not started** (not needed so far; RPCs were used) |
@@ -87,7 +87,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | R-STK-11 | PostgreSQL functions, RPC and triggers | M014, M017 to M039 | Done | |
 | R-STK-12 | Git | Repository initialised and pushed to `Ayush-Chugani/College-ERP` | Done | |
 | R-STK-13 | ESLint and Prettier | `eslint.config.mjs` (flat config), `.prettierrc.json`, `npm run lint`, `npm run format` | Done | |
-| R-STK-14 | Vitest | 391 tests | Done | |
+| R-STK-14 | Vitest | 415 tests | Done | |
 | R-STK-15 | Playwright | `@playwright/test` is installed; there is **no config and no test** | Not started | |
 | R-STK-16 | Supabase CLI and migration-based version control | Migrations are versioned SQL files in `supabase/migrations/` and recorded in `supabase_migrations.schema_migrations`; they were applied with a small Python script (the CLI was not used, and the direct database host is IPv6-only from the dev machine) | Partial | `supabase db push` and a `supabase/config.toml` are not set up |
 | R-STK-17 | No unnecessary backend frameworks; PostgreSQL authoritative | No separate backend server exists | Done | |
@@ -137,7 +137,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 | ID | Requirement | Evidence | Status | Gap or note |
 |---|---|---|---|---|
-| R-P1-18 | Clean `supabase/migrations/` with meaningful sequential names | 39 files (section 12) | Done | Names follow the real dependencies, not the prompt's suggested list |
+| R-P1-18 | Clean `supabase/migrations/` with meaningful sequential names | 40 files (section 18) | Done | Names follow the real dependencies, not the prompt's suggested list |
 | R-P1-19 | Migration comparison report: tables, columns, PK, FK, unique, check, index, trigger, view | [DATABASE_MIGRATION.md](DATABASE_MIGRATION.md) "Equivalence report" | Done | |
 | R-P1-20 | Seed-data equivalence | M011 carries the source seed data | Partial | A row-by-row seed comparison was not run |
 | R-P1-21 | Trigger behaviour equivalence | Each ported trigger has a test | DB: finance [14], schema [17], employees [13] | Done | Not compared against a running MySQL |
@@ -191,7 +191,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | R-RLS-6 | Prevent privilege escalation | `anon` has 0 grants; `authenticated` cannot touch the identity map or IAM writes; RPC-only tables lose client write grants | DB: rls asserts anon grants = 0 | Done | |
 | R-RLS-7 | Context-aware tenant authorisation, not a view alone | SECURITY DEFINER helpers in the private schema; policies call them | M017, M029 | Done | |
 | R-RLS-8 | Do not use user-editable metadata for access | Only `auth.uid()` from the verified JWT is read | M017 | Done | |
-| R-RLS-9 | Test authorised and unauthorised access | Each module's DB test includes allowed and refused callers | 258 database tests | Done | |
+| R-RLS-9 | Test authorised and unauthorised access | Each module's DB test includes allowed and refused callers | 276 database tests | Done | |
 | R-RLS-10 | Multi-hop anchor lookups work for users without cross-module read | 34 definer lookups | M029; DB: registration [16] regression | Done | Fixed a real defect (KI-33) |
 
 ### 6.4 Backend services
@@ -221,7 +221,7 @@ Table counts come from the dictionary map in `tools/rls/table_module.json` (265 
 | 7 | Employee Management | 26 | **Partial** | M023 | `/employees` (list, detail, create, edit, assign, status) | DB: employees [13]; UT: employees [7] | KI-20, KI-21; no screens for the 20+ HR sub-tables (qualifications, bank, PAN and Aadhaar, documents) |
 | 8 | Document Management | 5 | **Not started** | schema only (M005, M009) | none | none | See section 8 |
 | 9 | Audit and Compliance | 1 | **Partial** | M006, M022 and per-module audit triggers | none | DB: audit assertions inside module tests | No audit viewer; KI-19 |
-| 10 | Communication | 3 | **Not started** | schema only (M005) | none | none | |
+| 10 | Communication | 3 | **Built (gaps)** | M040 | `/announcements`, `/announcements/manage`, `/announcements/new`, `/announcements/[id]`, `/announcements/[id]/edit` | DB: communication [18]; UT: communication [7] | KI-51: no attachments (needs Storage), no notification delivery |
 | 11 | Admissions | 4 | **Built** | M027 | `/admissions` (list, detail, new, categories) | DB: admissions [16]; UT: admissions [9] | KI-28, KI-29, KI-30 |
 | 12 | Student Registration | 6 | **Built** | M028, M030 | `/registration` (offerings, term registration, course registration) | DB: registration [16]; UT: registration [7] | KI-31, KI-32, KI-34 |
 | 13 | Teaching Allocation | 3 | **Built (inside Attendance)** | M031 | `/attendance/section/[id]` (sections, instructor assignments, roster) | DB: attendance [15] | KI-34, KI-37 |
@@ -238,7 +238,7 @@ Table counts come from the dictionary map in `tools/rls/table_module.json` (265 
 | - | Dashboards (cross-cutting) | n/a | **Built (gaps)** | M036 | `/dashboard` | DB: dashboard [10]; UT: dashboard [9] | KI-45 |
 | - | Lesson Plan | 22 | **Backlog** | none | none | none | Needs a source-of-truth decision (KI-11) |
 
-Counts: **Built or Built (gaps): 13 modules (3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20); Partial: 6 modules (1, 2, 6, 7, 9, 21); Not started: 4 modules (8, 10, 22, 23).** That is 23 in total. Dashboards are cross-cutting and not counted. Student Finance is Partial because most of its 31 tables have no workflow.
+Counts: **Built or Built (gaps): 14 modules (3, 4, 5, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20); Partial: 6 modules (1, 2, 6, 7, 9, 21); Not started: 3 modules (8, 22, 23).** That is 23 in total. Dashboards are cross-cutting and not counted. Student Finance is Partial because most of its 31 tables have no workflow.
 
 ### 7.2 Per-module feature matrix
 
@@ -260,6 +260,7 @@ Legend: Y = implemented and tested, P = partly, N = not implemented, n/a = does 
 | Assessment and results | P | Y | Y | Y | P | Y | N | Y | N | Y | Y | Y | Y | Y | P (sheets) | Y |
 | Finance | P | Y | Y | Y | N | N (by design) | Y | Y | N | Y | Y | Y | Y | Y | P (dashboard) | Y |
 | Feedback | P | Y | Y | Y | N | N | N | N | N | N | Y | Y | Y | Y | Y (results) | Y |
+| Communication | N | Y | Y | Y | Y | Y (archive) | Y | Y | N | Y | Y | Y | Y | Y | N | Y |
 | Mentoring | N | Y | Y | Y | Y (sessions) | Y (end) | Y | Y | N | Y | Y | Y | Y | Y | N | Y |
 | Grievance | N | Y | Y | Y | N | Y (close) | Y | Y | P (priority order) | Y | Y | Y | Y | Y | N | Y |
 
@@ -294,7 +295,7 @@ Reading the matrix: server-side sorting is mostly fixed (not user-selectable); o
 | R-FE-2 | Forgot password page | `(auth)/forgot-password` | Partial | Same |
 | R-FE-3 | Main layout, sidebar, top navigation | `src/components/app-shell.tsx`; `src/lib/nav.ts` shows items by readable module | Done | UT: lib [8] tests visibility |
 | R-FE-4 | User profile menu | Signed-in user and sign-out in the shell; `/settings` | Partial | |
-| R-FE-5 | Notifications | None | Not started | |
+| R-FE-5 | Notifications | An announcements feed exists (`/announcements`); there is no notification bell, read tracking or delivery | Partial | |
 | R-FE-6 | Breadcrumb navigation | `Breadcrumbs` in `app-shell.tsx` | Done | Built from the navigation list, not from deep routes |
 | R-FE-7 | Global search | None (each module has its own search) | Not started | |
 | R-FE-8 | Dashboard | `/dashboard` | Partial | One dashboard that adapts to readable modules (section 9.2) |
@@ -407,9 +408,9 @@ One page serves every role. It shows a count tile for each readable module and t
 | R-TST-7 | Concurrent financial operations | Not run | | Not started | Needs real multi-connection PostgreSQL |
 | R-TST-8 | Authentication tests (login, logout, invalid credentials, expiry, reset, unauthorised routes) | None automated | | Not started | Blocked on the first Auth user for real flows |
 | R-TST-9 | RLS tests for every important role | DB: rls [30] plus module tests with registrar, faculty, finance, student and super-admin identities | Done | KI-2: representative, not every table |
-| R-TST-10 | Frontend tests (page load, validation, CRUD, search, pagination, filters, navigation, errors, responsive) | Unit tests of validation, payload builders and navigation only (133 tests) | Partial | No component or page tests |
+| R-TST-10 | Frontend tests (page load, validation, CRUD, search, pagination, filters, navigation, errors, responsive) | Unit tests of validation, payload builders and navigation only (140 tests) | Partial | No component or page tests |
 | R-TST-11 | End-to-end tests with Playwright | None | Not started | |
-| R-TST-12 | Do not mark tests passed unless executed | The 391 figure is from an executed run | Done | |
+| R-TST-12 | Do not mark tests passed unless executed | The 415 figure is from an executed run | Done | |
 | R-TST-13 | `TESTING_REPORT.md` | Not written (this RTM section 14 holds the inventory) | Partial | |
 
 ### 12.2 The twelve workflows the prompt lists
@@ -450,7 +451,7 @@ None has an end-to-end browser test. The right-hand column shows what is covered
 
 ## 14. Test inventory
 
-All 391 tests passed in the 2026-11-04 run. Counts per file (`vitest --reporter=json`).
+All 415 tests passed in the 2026-11-04 run. Counts per file (`vitest --reporter=json`).
 
 | Database tests (`tests/db`) | Tests | Covers |
 |---|---|---|
@@ -468,15 +469,16 @@ All 391 tests passed in the 2026-11-04 run. Counts per file (`vitest --reporter=
 | finance.test.ts | 14 | Money RPCs, idempotency, limits |
 | finance-read.test.ts | 7 | Account helpers, account opening |
 | timetable.test.ts | 12 | Clash guard, class-session generation |
+| communication.test.ts | 18 | Announcement workflow, audience rules, feed |
 | dashboard.test.ts | 10 | Scoped aggregates |
 | feedback.test.ts | 19 | Anonymity, visibility, suppression |
 | mentoring.test.ts | 15 | Confidentiality, audit hygiene |
 | grievance.test.ts | 12 | Workflow, internal notes |
-| **Database total** | **258** | |
+| **Database total** | **276** | |
 
 | Unit tests (`tests/unit`) | Tests |
 |---|---|
-| academic 7, admissions 9, assessment 9, attendance 8, courses 10, dashboard 9, employees 7, feedback 10, finance 10, grievance 8, lib 8, mentoring 6, registration 7, structure 10, students 7, timetable 8 | **133** |
+| academic 7, admissions 9, assessment 9, attendance 8, communication 7, courses 10, dashboard 9, employees 7, feedback 10, finance 10, grievance 8, lib 8, mentoring 6, registration 7, structure 10, students 7, timetable 8 | **140** |
 
 Known limits of this evidence: the database runs on embedded PostgreSQL (PGlite), a real PostgreSQL build without the Supabase stack (no PostgREST, no `auth` or `storage` schemas, roles simulated), on a single connection. Live-project checks done separately: applied-migration list, function privileges for `anon` and `authenticated`, and absence of client write grants on RPC-only tables.
 
@@ -558,17 +560,17 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | 5 | Supabase authentication works | **Not met** | Built, never exercised; no Auth user exists |
 | 6 | RBAC and RLS enforced | **Met** | On embedded PostgreSQL and by live privilege checks |
 | 7 | Tenant isolation tested | **Met (sampled)** | KI-2 |
-| 8 | Backend business logic implemented | **Partly met** | For the 13 built modules; not for the not-started modules |
+| 8 | Backend business logic implemented | **Partly met** | For the 14 built modules; not for the not-started modules |
 | 9 | Supabase Storage works securely | **Not met** | |
 | 10 | Frontend forms connect to real backend services | **Met** for built modules | Not click-tested |
 | 11 | CRUD operations work | **Partly met** | See the feature matrix |
 | 12 | Important institutional workflows work end to end | **Not demonstrated** | No browser-level run |
-| 13 | Automated tests executed | **Met** | 391 of 391 passing |
+| 13 | Automated tests executed | **Met** | 415 of 415 passing |
 | 14 | No unresolved P0 security defects | **Met as far as known** | No P0 is open; there is no security audit report and no external review |
 | 15 | Production build succeeds | **Met** | `npm run build` |
 | 16 | Deployment instructions complete | **Not met** | |
 
-**Overall: the project does not yet meet its acceptance criteria.** The database and security foundation and thirteen modules are in place and tested. Authentication has not been run end to end, storage and documents are missing, four modules and part of three more are unbuilt, and there are no end-to-end tests, performance report, security audit or deployment guide.
+**Overall: the project does not yet meet its acceptance criteria.** The database and security foundation and fourteen modules are in place and tested. Authentication has not been run end to end, storage and documents are missing, four modules and part of three more are unbuilt, and there are no end-to-end tests, performance report, security audit or deployment guide.
 
 ---
 
@@ -615,6 +617,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | M037 | Feedback | hand-written |
 | M038 | Mentoring | hand-written |
 | M039 | Grievance | hand-written |
+| M040 | Communication (announcements) | hand-written |
 
 ## 19. Screen inventory
 
@@ -636,6 +639,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | Feedback | `/feedback`, `/feedback/give/[cycle]`, `/feedback/results/[cycle]`, `/feedback/results/[cycle]/[offering]`, `/feedback/setup` |
 | Mentoring | `/mentoring`, `/mentoring/[id]` |
 | Grievance | `/grievances`, `/grievances/[id]` |
+| Communication | `/announcements`, `/announcements/manage`, `/announcements/new`, `/announcements/[id]`, `/announcements/[id]/edit` |
 
 ## 20. Open decisions and blockers (owner actions)
 

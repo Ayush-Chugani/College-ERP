@@ -61,11 +61,12 @@ describe('scope containment for staff', () => {
     expect(await ids(U.superAdmin, 'select student_id id from student')).toEqual([1, 2, 3]);
   });
   it('writes are checked against scope: faculty may write in own department only', async () => {
-    const ins = (dept: number) =>
-      `insert into announcement (announcement_type_id, title, description, publish_from, department_id) values (1,'t','d',now(),${dept})`;
-    await expect(asUser(U.facultyD1, ins(2))).rejects.toThrow(/row-level security/i);
-    await expect(asUser(U.facultyD1, ins(3))).rejects.toThrow(/row-level security/i);
-    await asUser(U.facultyD1, ins(1));
+    // announcements are written through RPCs (migration 040); the scope check lives in announcement_save
+    const save = (dept: number) => `select public.announcement_save(null, (select min(announcement_type_id) from announcement_type), ${dept}, 't', 'd', now(), null, 'ALL')`;
+    await expect(asUser(U.facultyD1, save(2))).rejects.toThrow(/Not authorised/);
+    await expect(asUser(U.facultyD1, save(3))).rejects.toThrow(/Not authorised/);
+    await asUser(U.facultyD1, save(1));
+    await expect(asUser(U.facultyD1, "insert into announcement (announcement_type_id, title, description, publish_from, department_id) values (1,'t','d',now(),1)")).rejects.toThrow(/permission denied/i);
   });
   it('registrar cannot create a campus under another institution', async () => {
     await expect(asUser(U.registrar1, "insert into campus (institution_id, campus_code, campus_name) values (2,'X','X')")).rejects.toThrow(/row-level security/i);
@@ -109,22 +110,24 @@ describe('my_context() RPC', () => {
 });
 
 describe('workflow guards (APPROVE / VERIFY / PUBLISH)', () => {
-  const insAnn = (status: string) =>
-    `insert into announcement (announcement_type_id, title, description, publish_from, department_id, approval_status) values (1,'g','d',now(),1,'${status}')`;
+  // announcement writes are RPC-only since migration 040; the workflow is exercised through those RPCs
+  const typeId = '(select min(announcement_type_id) from announcement_type)';
+  const decide = (yes: boolean) => `select public.announcement_decide((select announcement_id from announcement where title='g'), ${yes})`;
 
   it('faculty may draft but not self-approve an announcement', async () => {
-    await asUser(U.facultyD1, insAnn('DRAFT'));
-    await expect(asUser(U.facultyD1, insAnn('APPROVED'))).rejects.toThrow(/Not authorised to APPROVE/);
-    await expect(asUser(U.facultyD1, "update announcement set approval_status='APPROVED' where title='g'")).rejects.toThrow(/Not authorised to APPROVE/);
+    await asUser(U.facultyD1, `select public.announcement_save(null, ${typeId}, 1, 'g', 'd', now(), null, 'ALL')`);
+    await asUser(U.facultyD1, "select public.announcement_submit((select announcement_id from announcement where title='g'))");
+    await expect(asUser(U.facultyD1, decide(true))).rejects.toThrow(/Not authorised/);
+    await expect(asUser(U.facultyD1, "update announcement set approval_status='APPROVED' where title='g'")).rejects.toThrow(/permission denied/i);
   });
-  it('a holder of the APPROVE permission can approve; ordinary edits stay allowed', async () => {
-    const r = await asUser(U.superAdmin, "update announcement set approval_status='APPROVED' where title='g' returning announcement_id");
-    expect(r.length).toBeGreaterThan(0);
-    await asUser(U.facultyD1, "update announcement set description='edited' where title='g' and approval_status='DRAFT'");
+  it('a holder of the APPROVE permission can approve; the author keeps editing rights only before approval', async () => {
+    await asUser(U.registrar1, decide(true));
+    expect(String((await db.query<{ s: string }>("select approval_status s from announcement where title='g'")).rows[0]?.s)).toBe('APPROVED');
+    await expect(asUser(U.facultyD1, `select public.announcement_save((select announcement_id from announcement where title='g'), ${typeId}, 1, 'g', 'edited', now(), null, 'ALL')`)).rejects.toThrow(/cannot be edited/);
   });
 
-  it('un-approving also needs the permission (cannot revoke a decision)', async () => {
-    await expect(asUser(U.facultyD1, "update announcement set approval_status='DRAFT' where title='g' and approval_status='APPROVED'")).rejects.toThrow(/Not authorised to APPROVE/);
+  it('un-approving is not possible once a decision is made', async () => {
+    await expect(asUser(U.registrar1, decide(false))).rejects.toThrow(/Only a PENDING/);
   });
 
   describe('employee_document verification and actor integrity', () => {
