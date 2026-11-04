@@ -32,6 +32,8 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/calendar', label: 'Academic calendar', module: 'ACADEMIC_CALENDAR' },
   { href: '/curriculum', label: 'Curriculum', module: 'CURRICULUM' },
   { href: '/courses', label: 'Courses', module: 'CURRICULUM' },
+  { href: '/admin/users', label: 'Users and roles', module: 'IAM' },
+  { href: '/audit', label: 'Audit log', module: 'AUDIT' },
   { href: '/settings', label: 'Settings' },
 ];
 
