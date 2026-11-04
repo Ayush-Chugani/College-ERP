@@ -7,6 +7,8 @@ export type NavItem = {
   module?: string;
   /** shown only to a signed-in student (linked student record) */
   studentOnly?: boolean;
+  /** also shown to a linked student even without the module (the feature authorises students by identity) */
+  alsoStudent?: boolean;
 };
 
 /** Only pages that actually exist belong here. Visibility is a convenience; RLS is the enforcement. */
@@ -20,6 +22,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/assessment', label: 'Assessment', module: 'ASSESSMENT' },
   { href: '/results/grades', label: 'Grading', module: 'RESULT' },
   { href: '/my-results', label: 'My results', studentOnly: true },
+  { href: '/grievances', label: 'Grievances', module: 'GRIEVANCE', alsoStudent: true },
   { href: '/mentoring', label: 'Mentoring', module: 'MENTORING' },
   { href: '/feedback', label: 'Feedback', module: 'FEEDBACK' },
   { href: '/finance', label: 'Fees', module: 'FEES' },
@@ -33,7 +36,7 @@ export const NAV_ITEMS: NavItem[] = [
 
 export function visibleNav(ctx: SimsContext): NavItem[] {
   const mods = new Set(ctx.readable_modules);
-  return NAV_ITEMS.filter((i) => (i.studentOnly ? ctx.student_id !== null : !i.module || mods.has(i.module)));
+  return NAV_ITEMS.filter((i) => (i.studentOnly ? ctx.student_id !== null : !i.module || mods.has(i.module) || (i.alsoStudent === true && ctx.student_id !== null)));
 }
 
 export function primaryRoleLabel(ctx: SimsContext): string {

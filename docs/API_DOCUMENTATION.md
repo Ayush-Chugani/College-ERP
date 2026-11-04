@@ -47,6 +47,18 @@ Teaching sections, instructor assignments and class sessions are written directl
 
 `my_context().permissions` lists the caller's ALLOW codes at non-SELF scopes, for hiding UI actions only.
 
+## Grievance (migration 039)
+`grievance` and `grievance_action` are **RPC-only** for writes. Students are authorised by identity (their own record); staff by `GRIEVANCE.ALL.READ` / `UPDATE` at the student's scope.
+
+| RPC | Needs | Notes |
+|---|---|---|
+| `grievance_submit(category, department?, subject, description, priority)` -> id | student | Active category, subject <= 200, description <= 5000, at most 10 non-closed; writes the first history entry. |
+| `grievance_my()` | student | The caller's own grievances. |
+| `grievance_student_respond(id, 'CLOSE' or 'REOPEN', notes?)` | the owner | Close a resolved/rejected grievance; re-open a resolved one (clears resolved_at). |
+| `grievance_list(search, status, priority, limit, offset)` | `GRIEVANCE.ALL.READ` at the student | Urgent and high priority first. |
+| `grievance_detail(id)` -> jsonb | owner or staff reader | The owner never sees INTERNAL_NOTE actions. |
+| `grievance_act(id, 'COMMENT' / 'INTERNAL_NOTE' / 'STATUS_CHANGE', notes?, new_status?, resolution?)` | `GRIEVANCE.ALL.UPDATE` | Transition rules in KI-50; replays of a status change are no-ops. |
+
 ## Mentoring (migration 038)
 `mentor_assignment` writes and all `counselling_session` access are **RPC-only**. Session notes never enter the audit log.
 

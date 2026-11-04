@@ -59,13 +59,15 @@ describe('navigation visibility', () => {
     expect(visibleNav(ctx(['INSTITUTION'])).map((i) => i.href)).toEqual(['/dashboard', '/structure', '/settings']);
     expect(visibleNav(ctx(['ASSESSMENT'])).map((i) => i.href)).toEqual(['/dashboard', '/assessment', '/settings']);
     expect(visibleNav(ctx(['TIMETABLE'])).map((i) => i.href)).toEqual(['/dashboard', '/timetable', '/settings']);
+    expect(visibleNav(ctx(['GRIEVANCE'])).map((i) => i.href)).toEqual(['/dashboard', '/grievances', '/settings']);
+    expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toContain('/grievances');
     expect(visibleNav(ctx(['MENTORING'])).map((i) => i.href)).toEqual(['/dashboard', '/mentoring', '/settings']);
     expect(visibleNav(ctx(['FEEDBACK'])).map((i) => i.href)).toEqual(['/dashboard', '/feedback', '/settings']);
     expect(visibleNav(ctx(['FEES'])).map((i) => i.href)).toEqual(['/dashboard', '/finance', '/settings']);
     expect(visibleNav(ctx(['RESULT'])).map((i) => i.href)).toEqual(['/dashboard', '/results/grades', '/settings']);
     // "My results" is for linked students only, whatever modules they can read
-    expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toEqual(['/dashboard', '/my-results', '/settings']);
-    expect(visibleNav({ ...ctx(['STUDENT', 'ADMISSION', 'REGISTRATION', 'ATTENDANCE', 'TIMETABLE', 'ASSESSMENT', 'RESULT', 'MENTORING', 'FEEDBACK', 'FEES', 'EMPLOYEE', 'INSTITUTION', 'ACADEMIC_CALENDAR', 'CURRICULUM']), student_id: 5 }).map((i) => i.href)).toEqual(NAV_ITEMS.map((i) => i.href));
+    expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toEqual(['/dashboard', '/my-results', '/grievances', '/settings']);
+    expect(visibleNav({ ...ctx(['STUDENT', 'ADMISSION', 'REGISTRATION', 'ATTENDANCE', 'TIMETABLE', 'ASSESSMENT', 'RESULT', 'GRIEVANCE', 'MENTORING', 'FEEDBACK', 'FEES', 'EMPLOYEE', 'INSTITUTION', 'ACADEMIC_CALENDAR', 'CURRICULUM']), student_id: 5 }).map((i) => i.href)).toEqual(NAV_ITEMS.map((i) => i.href));
   });
   it('parseContext rejects malformed payloads', () => {
     expect(parseContext(null)).toBeNull();
