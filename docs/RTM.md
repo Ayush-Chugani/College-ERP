@@ -20,7 +20,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 **Evidence conventions**
 
-- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M043 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh`. **M044 to M049 (staff profile, account features, record sections and reference data, receipts and holds, personal dashboard, permission memo) are not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
+- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M050 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh` (M044 to M050 on 2026-11-04 with `tools/apply_migrations.py`, after review). **M051 (the permission memo) is not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
 - `DB:` and `UT:` name the Vitest files in `tests/db/` and `tests/unit/`, with the number of tests in brackets.
 - `KI-n` is an entry in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - Routes are paths under `src/app/(app)/`.
@@ -33,7 +33,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | `npx tsc --noEmit` | clean (strict mode, `noUncheckedIndexedAccess`) |
 | `npm run lint` | clean |
 | `npm run build` | succeeds |
-| Migrations applied to the live project | 43 of 49 (M044 to M049 pending) |
+| Migrations applied to the live project | 50 of 51 (M051 pending) |
 | Signed-in manual or browser verification of any screen | **not done** (no Auth user exists yet, see R-AUTH-9 and KI-3, KI-14) |
 | Playwright end-to-end tests | **38 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
 | Multi-connection (concurrent) tests | **not run** (the test database is single-connection embedded PostgreSQL) |
@@ -154,7 +154,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 | ID | Requirement | Implementation | Evidence | Status | Gap or note |
 |---|---|---|---|---|---|
-| R-AUTH-1 | Registration where permitted | Not offered: sign-up is meant to be disabled (users are provisioned) | | Partial | The "where permitted" case (applicant self-registration) is not built; KI-29 |
+| R-AUTH-1 | Registration where permitted | Self-registration stays off (sign-up disabled). Administrators create users: `/admin/users/new` (server action with the service-role key) and `tools/create_admin.mjs` for the first administrator (M049) | DB: user-provisioning [6]; UT: user-provisioning [6] | Partial | Not run against a real Supabase project (needs your service-role key); applicant self-registration is not built (KI-29, KI-62) |
 | R-AUTH-2 | Login | `src/app/(auth)/login` | Build; no signed-in test | Partial | Never exercised with a real user |
 | R-AUTH-3 | Logout | `src/app/auth/signout/route.ts` | Build | Partial | Same |
 | R-AUTH-4 | Forgot password | `src/app/(auth)/forgot-password` | Build | Partial | Needs Auth redirect settings (R-AUTH-10) |
@@ -437,14 +437,14 @@ None has an end-to-end browser test. The right-hand column shows what is covered
 
 | ID | Requirement | Evidence | Status | Gap or note |
 |---|---|---|---|---|
-| R-PERF-1 | Proper indexes | 104 source indexes migrated; extra indexes in M009, M012 and M049 (audit and sign-in logs, activity lists) | Done | RLS helper lookups are fast now that M049 caches the caller's permissions; `pg_trgm` indexes for substring search are a recommendation, not built |
+| R-PERF-1 | Proper indexes | 104 source indexes migrated; extra indexes in M009, M012 and M051 (audit and sign-in logs, activity lists) | Done | RLS helper lookups are fast now that M049 caches the caller's permissions; `pg_trgm` indexes for substring search are a recommendation, not built |
 | R-PERF-2 | Pagination and server-side filtering | List screens page at 20 rows; filters run in the database or RPC | Done | Feedback and a few reference lists load up to 200 to 500 rows at once |
 | R-PERF-3 | Avoid retrieving whole tables | Same | Done | |
 | R-PERF-4 | Avoid N+1 queries | List helpers return joined rows from one RPC; ledgers batch with `IN` lists | Done | Not measured |
 | R-PERF-5 | Efficient dashboard aggregation | `dash_*` functions aggregate in the database | Done | |
-| R-PERF-6 | `EXPLAIN ANALYZE` of important queries | `tools/perf/run.ts` on a real PostgreSQL with 20,000 students and 100,000 audit rows, 21 queries as RLS-restricted users; it found three real problems, fixed in M049 | [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md) | Done | Single-user numbers; no load test |
-| R-PERF-7 | Caching that cannot leak across users | The only cache is a per-transaction memo of the caller's identity and permissions (M049): transaction-local, keyed by the auth user, MFA level and permission codes, discarded when the transaction ends; no cross-request or cross-user cache anywhere | DB: permission-equivalence [5] | Done | KI-61 |
-| R-PERF-8 | **Performance report** | [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md), regenerated by `node tools/perf/report.mjs` | | Done | |
+| R-PERF-6 | `EXPLAIN ANALYZE` of important queries | Two runs: `tests/perf/explain.perf.ts` on the embedded database found the P1 row-by-row policy cost (KI-61); `tools/perf/run.ts` repeated it on a real PostgreSQL 16 (21 queries as RLS-restricted users, 20,000 students, 100,000 audit rows), found two further problems and measured the fix (M051) | [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md), [PERFORMANCE_REPORT_NATIVE.md](PERFORMANCE_REPORT_NATIVE.md) | Done | Single-user numbers; no load test |
+| R-PERF-7 | Caching that cannot leak across users | The only cache is a per-transaction memo of the caller's identity and permissions (M051): transaction-local, keyed by the auth user, MFA level and permission codes, discarded when the transaction ends; no cross-request or cross-user cache anywhere | DB: permission-equivalence [5] | Done | KI-64 |
+| R-PERF-8 | **Performance report** | [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md) (first measurement) and [PERFORMANCE_REPORT_NATIVE.md](PERFORMANCE_REPORT_NATIVE.md) (native server, before and after the fix; regenerated by `node tools/perf/report.mjs`) | | Done | The set-based policy rewrite is not done and not needed at the current size |
 
 ---
 
@@ -505,7 +505,7 @@ Known limits of this evidence: the database runs on embedded PostgreSQL (PGlite)
 | 11 | SECURITY_AUDIT.md | Done (self-review) |
 | 12 | DEPLOYMENT_GUIDE.md | Done (checklist; nothing deployed) |
 | 13 | ENVIRONMENT_SETUP.md | Done |
-| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-61) |
+| 14 | KNOWN_ISSUES.md | Done (KI-1 to KI-64) |
 | 15 | IMPLEMENTATION_STATUS.md | Done |
 
 Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLICY_MAP.md (generated), DEVELOPMENT_CHECKLIST.md, this RTM.
@@ -519,7 +519,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | R-DEP-3 | Seed scripts | Partial | Reference seed is in M011; no sample-data or per-role test-user seed (and no fabricated records, by the rules) |
 | R-DEP-4 | Test scripts | Done | `npm test`, `npm run test:db`, `npm run test:unit` |
 | R-DEP-5 | Deployment configuration | `vercel.json` (framework, install and build commands, HSTS) and `supabase/config.toml` | Done | Neither has been used for a real deployment |
-| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M043 are applied to the Supabase project; M044 to M049 are not) |
+| R-DEP-6 | Supabase project configuration, Vercel deployment, production environment variables, migration execution, bucket configuration, Auth redirect configuration, domain configuration | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) is the checklist | Blocked | Needs you: nothing was deployed (migrations M001 to M050 are applied to the Supabase project; M051 is not) |
 | R-DEP-7 | Never commit secrets; never run a destructive production migration without approval and backup | Done | |
 
 ---
@@ -628,7 +628,9 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 | M046 | Record sections (student and employee sub-tables) and reference-data administration | hand-written |
 | M047 | Fee receipts and financial holds | hand-written |
 | M048 | Personal dashboard (`my_dashboard`) | hand-written |
-| M049 | Per-transaction permission memo, flatter `covers` / `can_student` / `can_employee`, cheaper lists, audit indexes (found by the performance run) | hand-written |
+| M049 | User provisioning (service-role function, `iam_can_provision`) | hand-written |
+| M050 | Revoke EXECUTE on trigger functions from anon and authenticated | hand-written (found by the live check) |
+| M051 | Per-transaction permission memo, flatter `covers` / `can_student` / `can_employee`, cheaper lists, audit indexes (found by the native performance run) | hand-written |
 
 ## 19. Screen inventory
 
@@ -676,7 +678,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 
 ## 21. Remaining work in priority order
 
-1. **Unblock authentication** (D-1, D-2): create the first Auth user, apply migrations 044-049 to the live project, then verify every built screen signed in and run the skipped Playwright flows.
+1. **Unblock authentication** (D-1, D-2): apply migration 051 to the live project, create the first Auth user if none exists yet (`tools/create_admin.mjs`), then verify every built screen signed in and run the skipped Playwright flows.
 2. **Owner decisions** that block or shape work: fee permissions for students and the super admin (D-5), the receipt numbering rule (D-9), who holds the encryption keys for PAN, Aadhaar and bank data (D-7), Lesson Plan and the dictionary-only tables (D-6).
 3. **Finance completion:** applying concessions, scholarships and sponsorships to assessments, instalments, late fees, penalties, fee adjustments, fee-structure approval screens, enforcement of holds in other modules (KI-59).
 4. **Employee records:** identity numbers, bank accounts and HR documents (KI-8, KI-58); competencies.

@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { asUser, createWorld, db, fkSwitch, role, U } from './world';
 
 /**
- * Migration 049 rewrote covers(), can_student() and can_employee() for speed (a decoded, per-transaction permission set). This file keeps the ORIGINAL definitions under other names (they read the
+ * Migration 051 rewrote covers(), can_student() and can_employee() for speed (a decoded, per-transaction permission set). This file keeps the ORIGINAL definitions under other names (they read the
  * effective-permission view directly, with no caching) and checks that old and new agree for every user, permission set, target and mode in the fixture world, including DENY rows, SELF grants and NULL ids.
  * One deliberate difference: the original returned NULL (not false) when a caller who is not a student/employee held a SELF grant and asked about someone's record, because `p_id = current_student_id()` is NULL;
  * callers that write `IF NOT can_student(...)` would then skip their refusal. The new functions return false, so the comparison treats the original's NULL as false.

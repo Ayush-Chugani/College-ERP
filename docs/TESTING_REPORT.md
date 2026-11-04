@@ -26,7 +26,7 @@ Run on 2026-11-04 on the development container. Everything below was executed; n
 | Suite | Command | What it proves |
 |---|---|---|
 | Concurrency on real PostgreSQL 16 | `PG_CONCURRENCY_URL=postgres://... npm run test:concurrency` | 8 tests with 10 parallel connections: idempotent duplicate payments, no over-allocation of a payment, no overpayment of an item, no over-refund, unique receipt numbers, one active hold, no deadlock. Skipped when the variable is not set. The migrations also apply cleanly on real PostgreSQL there. |
-| Permission equivalence | part of `npm run test:db` | The rewritten `covers`, `can_student` and `can_employee` (M049) agree with the original definitions for every fixture user, permission set, target and mode. |
+| Permission equivalence | part of `npm run test:db` | The rewritten `covers`, `can_student` and `can_employee` (M051) agree with the original definitions for every fixture user, permission set, target and mode. |
 | Views | part of `npm run test:db` | The ten views exist, are security invoker, resolve, and return the right rows under each role. |
 | Seed counts | `npm run migrate:seed-check` | 37 of 38 seeded tables have the same row count as the MySQL source; 1 explained difference. |
 | Schema document | `node tools/validate/schema_doc.mjs --check` | `docs/DATABASE_SCHEMA.md` matches the migrated catalogue. |

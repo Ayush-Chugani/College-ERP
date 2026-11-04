@@ -1,4 +1,4 @@
--- Per-transaction memoisation of the caller's identity and effective permissions. Hand-written (not from the MySQL source). Found by tools/perf/run.ts on a real PostgreSQL (docs/PERFORMANCE_REPORT.md).
+-- Per-transaction memoisation of the caller's identity and effective permissions. Hand-written (not from the MySQL source). Found by tools/perf/run.ts on a real PostgreSQL (docs/PERFORMANCE_REPORT_NATIVE.md).
 --
 -- PROBLEM: row level security calls sims_private.can_student / can_employee / ... once PER ROW. Each call resolved the caller's identity (three lookups) and their effective permissions (a multi-join view over
 -- roles, role permissions, overrides and delegations) again. With 20,000 students a registrar's student list did not finish in 20 seconds.
@@ -6,7 +6,7 @@
 -- setting (set_config(..., is_local => true)). The setting disappears when the transaction ends, so a role change, a disabled account or an expired grant takes effect on the very next request. Keys carry the
 -- auth user, the MFA assurance level and the permission codes asked for, so one caller can never read another caller's entry. The functions return exactly what they returned before.
 --
--- LIMITS (KNOWN_ISSUES KI-61): inside ONE transaction a permission change is not seen by later checks of the same user; RPCs that change permissions (iam_assign_role ...) never rely on the changed user's own
+-- LIMITS (KNOWN_ISSUES KI-64; it implements steps 1 and 2 of the recommendation in KI-61 / PERFORMANCE_REPORT.md except the set-based policies): inside ONE transaction a permission change is not seen by later checks of the same user; RPCs that change permissions (iam_assign_role ...) never rely on the changed user's own
 -- checks in the same transaction. Do not add such a dependency.
 
 CREATE OR REPLACE FUNCTION sims_private.current_user_id() RETURNS bigint
