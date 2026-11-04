@@ -274,6 +274,21 @@ All SECURITY DEFINER; they authorise `FEES.<resource>.<action>` at the student's
 ## Permission overrides (migration 057)
 `iam_permission_options(search?)`, `iam_override_list(user)` (`IAM.ALL.READ`), `iam_override_set(user, permission, ALLOW/DENY, scope, entity?, justification, valid_to?)` and `iam_override_end(id, reason?)` (`IAM.ALL.UPDATE` globally; not your own; sensitive / IAM / AUDIT ALLOWs are for super administrators).
 
+## Linking and MFA policy (migration 058)
+`iam_link_auth_user(email, student_number?, employee_number?)` -> user id (`IAM.ALL.CREATE`; finds the Auth user by email, same rules as provisioning), `iam_link_person(user, student_number?, employee_number?)` (`IAM.ALL.UPDATE`, not yourself, one person per account), `iam_mfa_policy_list()` / `iam_mfa_policy_gaps()` (`IAM.ALL.READ`), `iam_mfa_policy_set(role_code, required)` (`IAM.ALL.CONFIGURE`). `my_context()` gains `mfa_setup_required`.
+
+## Announcement attachments (migration 059)
+`announcement_attachment_register(announcement, storage_key, file_name, mime, size, checksum?)` -> file id, `announcement_attachment_list(announcement)` -> `{files, can_edit}`, `announcement_attachment_download_info(announcement, file)` (logged), `announcement_attachment_remove(announcement, file)` -> storage key. Keys are `announcement/<id>/<random>-<name>`.
+
+## Certificate requests (migration 060)
+`cert_request_create(type, purpose, student?)`, `cert_request_list(student?, status?)`, `cert_request_decide(id, approve, remarks?)` (`DOCUMENT.ALL.APPROVE`), `cert_request_cancel(id)`, `cert_request_issue(id, number, storage_key, file_name, size, checksum?)` (`DOCUMENT.ALL.CREATE`; PDF under `student/<id>/`), `cert_request_download_info(id)` (logged).
+
+## Fee structures (migration 061)
+`fin_structure_save(id?, jsonb)`, `fin_structure_item_save(structure, item?, jsonb)`, `fin_structure_item_delete`, `fin_structure_submit`, `fin_structure_decide(id, approve, remarks?)` (`FEE_STRUCTURE.APPROVE`, not the submitter), `fin_structure_new_version`, `fin_structure_delete`, `fin_structure_list(search?, status?, limit, offset)`, `fin_structure_get(id)`; all at programme (or institution) scope.
+
+## Holds (migration 062)
+No new RPC: `student_term_registration` inserts are refused while an ACTIVE REGISTRATION hold exists, `my_results()` hides results under a RESULT hold, certificate requests cannot be approved or issued under a CERTIFICATE hold.
+
 ## Personal dashboard (migration 048)
 `my_dashboard()` takes no argument and describes the caller: students get `attendance` (per course: conducted, present, percentage) and `today` (classes); employees get `upcoming` (sessions of the next seven days), `unmarked` (past planned sessions of the last 30 days) and `sections`. `null` without an identity.
 

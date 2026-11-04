@@ -64,3 +64,5 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
     ) q
 $$;
 
+
+REVOKE ALL ON FUNCTION sims_guard_term_registration_hold(), sims_guard_certificate_hold() FROM PUBLIC, anon, authenticated;

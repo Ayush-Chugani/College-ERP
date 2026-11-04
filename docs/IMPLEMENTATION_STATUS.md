@@ -28,7 +28,7 @@ Date: 2026-11-04
 | Identity administration: user list, account activation / deactivation, role assignment and revocation with safeguards (migration 041; `/admin/users`) | Built; 8 DB tests + unit tests. M041 applied live. No override or user-linking screens, no MFA (KI-52) |
 | Audit viewer: filters, paging, before / after detail (migration 041; `/audit`) | Built; shares the M041 tests. Shows writes only |
 | Student documents on private Storage: upload, register, list, signed-URL open (logged), verify / reject, delete (migration 042; `/my-documents`, `/students/[id]/documents`) | Built; 12 DB tests + 8 unit tests. M042 applied live 2026-11-04: the private bucket exists on the real project (verified); the upload and signed-URL flow has not been run against it. Student documents only (KI-53) |
-| Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 48 smoke tests pass; nothing deployed |
+| Frontend states and tooling: shared loading skeleton, error boundary, not-found page, Playwright config with smoke tests, `supabase/config.toml`, `vercel.json` | Built; 56 smoke tests pass; nothing deployed |
 | Student activities and evidence: drafting, team members, evidence with versions and logged downloads, submission gate on mandatory evidence, verification and approval, summary report (migration 043; `/activities`) | Built; 14 DB tests + 9 unit tests. M043 applied live. Gaps in KI-54 |
 | Account features: two-step verification (TOTP) enforced by the database, sign-in log, self-service contact details, notifications with a header bell, global search (migration 045; `/settings`, `/mfa`, `/notifications`, `/search`, `/audit/logins`) | Built; 14 DB tests + 9 unit tests. M044-M050 applied live 2026-11-04 Gaps in KI-57 |
 | Record sections and reference data: student and employee sub-records (addresses, guardians, previous education, entrance exams, residence, qualifications, previous employment) and 32 maintainable reference lists (migration 046; `/students/[id]/records`, `/employees/[id]/records`, `/admin/reference`) | Built; 12 DB tests + 8 unit tests. M044-M050 applied live 2026-11-04 Gaps in KI-58 (PAN / Aadhaar / bank accounts / HR documents not covered) |
@@ -45,10 +45,15 @@ Date: 2026-11-04
 | MFA recovery codes (migration 056; `/settings`, `/mfa`) | Built; 6 DB tests (KI-66). Not applied live |
 | Permission overrides administration (migration 057; `/admin/users/[id]`) | Built; 5 DB tests (KI-68). Not applied live |
 | Upgrade to Next 16 (proxy, flat ESLint config) | Done; build, lint, tests and smoke tests pass (KI-13) |
-| Still not built | Lesson Plan and dictionary-only tables (decision D-6), certificate requests, announcement attachments, fee-structure approval screens, online payments, linking an existing Auth user, "require MFA" policy |
+| Link existing Auth users / persons and the MFA required-role policy (migration 058) | Built; 5 DB tests (KI-69). Not applied live |
+| Announcement attachments (migration 059) | Built; 5 DB tests. Not applied live |
+| Certificate requests (migration 060; `/certificates`) | Built; 6 DB tests. Not applied live |
+| Fee structure maintenance and approval (migration 061; `/finance/structures`) | Built; 6 DB tests. Not applied live |
+| Fee holds enforced in registration, results and certificates (migration 062) | Built; 3 DB tests. Not applied live |
+| Still not built | Lesson Plan and dictionary-only tables (decision D-6), online payments (needs a provider), admission-application payments, employee competencies and document access rules |
 | Storage buckets/policies | Student documents (M042), activity and staff evidence (M043, M044), HR documents (M054); certificate requests and announcement attachments not started |
 | Module services/CRUD | Not started |
-| Tests | 624 passing (422 database + 202 unit) plus 48 Playwright smoke tests. Plus 8 opt-in concurrency tests on a real PostgreSQL. No signed-in UI tests (see TESTING_REPORT.md) |
+| Tests | 649 passing (447 database + 202 unit) plus 56 Playwright smoke tests. Plus 8 opt-in concurrency tests on a real PostgreSQL. No signed-in UI tests (see TESTING_REPORT.md) |
 | Security audit | Done as a self-review (SECURITY_AUDIT.md). Performance report: not started |
 
 Pending modules: none unstarted; see listed per module in RTM.md.
