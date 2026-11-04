@@ -49,24 +49,24 @@ describe('redirect safety and routing', () => {
 
 describe('navigation visibility', () => {
   it('hides module pages the user cannot read, keeps universal pages', () => {
-    expect(visibleNav(ctx([])).map((i) => i.href)).toEqual(['/dashboard', '/settings']);
-    expect(visibleNav(ctx(['STUDENT'])).map((i) => i.href)).toEqual(['/dashboard', '/students', '/settings']);
-    expect(visibleNav(ctx(['EMPLOYEE'])).map((i) => i.href)).toEqual(['/dashboard', '/employees', '/settings']);
-    expect(visibleNav(ctx(['ACADEMIC_CALENDAR', 'CURRICULUM'])).map((i) => i.href)).toEqual(['/dashboard', '/calendar', '/curriculum', '/courses', '/settings']);
-    expect(visibleNav(ctx(['ATTENDANCE'])).map((i) => i.href)).toEqual(['/dashboard', '/attendance', '/settings']);
-    expect(visibleNav(ctx(['REGISTRATION'])).map((i) => i.href)).toEqual(['/dashboard', '/registration', '/settings']);
-    expect(visibleNav(ctx(['ADMISSION'])).map((i) => i.href)).toEqual(['/dashboard', '/admissions', '/settings']);
-    expect(visibleNav(ctx(['INSTITUTION'])).map((i) => i.href)).toEqual(['/dashboard', '/structure', '/settings']);
-    expect(visibleNav(ctx(['ASSESSMENT'])).map((i) => i.href)).toEqual(['/dashboard', '/assessment', '/settings']);
-    expect(visibleNav(ctx(['TIMETABLE'])).map((i) => i.href)).toEqual(['/dashboard', '/timetable', '/settings']);
-    expect(visibleNav(ctx(['GRIEVANCE'])).map((i) => i.href)).toEqual(['/dashboard', '/grievances', '/settings']);
+    expect(visibleNav(ctx([])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/settings']);
+    expect(visibleNav(ctx(['STUDENT'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/students', '/settings']);
+    expect(visibleNav(ctx(['EMPLOYEE'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/employees', '/settings']);
+    expect(visibleNav(ctx(['ACADEMIC_CALENDAR', 'CURRICULUM'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/calendar', '/curriculum', '/courses', '/settings']);
+    expect(visibleNav(ctx(['ATTENDANCE'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/attendance', '/settings']);
+    expect(visibleNav(ctx(['REGISTRATION'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/registration', '/settings']);
+    expect(visibleNav(ctx(['ADMISSION'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/admissions', '/settings']);
+    expect(visibleNav(ctx(['INSTITUTION'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/structure', '/settings']);
+    expect(visibleNav(ctx(['ASSESSMENT'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/assessment', '/settings']);
+    expect(visibleNav(ctx(['TIMETABLE'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/timetable', '/settings']);
+    expect(visibleNav(ctx(['GRIEVANCE'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/grievances', '/settings']);
     expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toContain('/grievances');
-    expect(visibleNav(ctx(['MENTORING'])).map((i) => i.href)).toEqual(['/dashboard', '/mentoring', '/settings']);
-    expect(visibleNav(ctx(['FEEDBACK'])).map((i) => i.href)).toEqual(['/dashboard', '/feedback', '/settings']);
-    expect(visibleNav(ctx(['FEES'])).map((i) => i.href)).toEqual(['/dashboard', '/finance', '/settings']);
-    expect(visibleNav(ctx(['RESULT'])).map((i) => i.href)).toEqual(['/dashboard', '/results/grades', '/settings']);
+    expect(visibleNav(ctx(['MENTORING'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/mentoring', '/settings']);
+    expect(visibleNav(ctx(['FEEDBACK'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/feedback', '/settings']);
+    expect(visibleNav(ctx(['FEES'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/finance', '/settings']);
+    expect(visibleNav(ctx(['RESULT'])).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/results/grades', '/settings']);
     // "My results" is for linked students only, whatever modules they can read
-    expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toEqual(['/dashboard', '/my-results', '/grievances', '/settings']);
+    expect(visibleNav({ ...ctx([]), student_id: 5 }).map((i) => i.href)).toEqual(['/dashboard', '/announcements', '/my-results', '/grievances', '/settings']);
     expect(visibleNav({ ...ctx(['STUDENT', 'ADMISSION', 'REGISTRATION', 'ATTENDANCE', 'TIMETABLE', 'ASSESSMENT', 'RESULT', 'GRIEVANCE', 'MENTORING', 'FEEDBACK', 'FEES', 'EMPLOYEE', 'INSTITUTION', 'ACADEMIC_CALENDAR', 'CURRICULUM']), student_id: 5 }).map((i) => i.href)).toEqual(NAV_ITEMS.map((i) => i.href));
   });
   it('parseContext rejects malformed payloads', () => {
