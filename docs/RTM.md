@@ -20,7 +20,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 
 **Evidence conventions**
 
-- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M050 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh` (M044 to M050 on 2026-11-04 with `tools/apply_migrations.py`, after review). **M051 to M063 (permission memo, role and fee access, finance benefits, employee identity data and HR documents, research leftovers, MFA recovery codes, permission overrides, user linking and MFA policy, announcement attachments, certificate requests, fee structures, hold enforcement, competencies, document sharing, service requests) are not applied to it yet.** M042 and M043 were reviewed and applied on 2026-11-04; the live check found the bucket `sims-documents` private (10 MB, PDF/JPEG/PNG only), three `sims_documents_*` Storage policies, no public bucket in the project, no `anon` execute on the 18 new functions and no client write grants on the activity tables. The Storage upload and signed-URL flow itself has **not** been run against the live project.
+- `M###` is a file in `supabase/migrations/` (for example M031 is `031_attendance.sql`). M001 to M063 are applied to the live Supabase project `khqqfgqvwdxlqkncwtmh` (M044 to M050 on 2026-11-04, M051 to M063 on 2026-11-05, each after review, with `tools/apply_migrations.py`). Live checks after M052 to M063: the Vault secret `sims_pii_key` exists (64 hex characters), the only public function `anon` can execute is `auth_failure_record`, no trigger function is executable by clients, the bucket `sims-documents` is private with nine `sims_*` Storage policies, `anon` has no table grants, no client has grants on `sims_private` tables, and the signed-in super administrator resolves with IAM read and fee-structure configure rights. Not run live: the encryption round trip, MFA recovery (needs a user with a verified factor), document upload and signed URLs.
 - `DB:` and `UT:` name the Vitest files in `tests/db/` and `tests/unit/`, with the number of tests in brackets.
 - `KI-n` is an entry in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - Routes are paths under `src/app/(app)/`.
@@ -33,7 +33,7 @@ This matrix traces every requirement of the **MASTER ENGINEERING PROMPT** (secti
 | `npx tsc --noEmit` | clean (strict mode, `noUncheckedIndexedAccess`) |
 | `npm run lint` | clean |
 | `npm run build` | succeeds |
-| Migrations applied to the live project | 51 of 63 (M052 to M063 pending; M051 reviewed and applied 2026-11-05, live identity and the signed-in dashboard re-verified) |
+| Migrations applied to the live project | 63 of 63 |
 | Signed-in manual or browser verification of any screen | **Partly done on 2026-11-04**: signed in as the first super administrator (Auth user created in the dashboard, linked with `tools/bootstrap_admin.py`), the dashboard, the Users page and the Staff profile page were opened and looked right, and 26 other list and form pages returned 200 with no error text. The database is empty, so only empty states were seen: no create, edit, approve or search flow was exercised, no other role (student, faculty, finance) was tried, and the Create user form was not submitted (no service-role key) |
 | Playwright end-to-end tests | **58 smoke tests pass** (desktop and phone); 4 signed-in tests skipped, no test user |
 | Multi-connection (concurrent) tests | **not run** (the test database is single-connection embedded PostgreSQL) |
@@ -703,7 +703,7 @@ Extra documents that exist: PROJECT_AUDIT.md, SCHEMA_RECONCILIATION.md, RLS_POLI
 
 ## 21. Remaining work in priority order
 
-1. **Unblock authentication** (D-1, D-2): apply migrations 051 to 062 to the live project (read the notes for M054, M056 and M062 in DEPLOYMENT_GUIDE.md), then verify every built screen signed in and run the skipped Playwright flows (`E2E_EMAIL` / `E2E_PASSWORD`, a throwaway test account).
+1. **Unblock authentication** (D-1, D-2): migrations 051 to 063 are applied to the live project; verify every built screen signed in and run the skipped Playwright flows (`E2E_EMAIL` / `E2E_PASSWORD`, a throwaway test account).
 2. **Owner decisions still open:** Lesson Plan and the dictionary-only tables (D-6, with `SIMS_schema_review.md`); an online payment provider and its credentials (KI-42); the admission-application payment rules; confirm or correct the inferred rules (D-4); rotate the shared database password (D-3).
 3. **Employee records:** key rotation tooling (KI-65); using competencies to restrict course assignment (KI-70).
 4. **Hard database enforcement** of the "require MFA" policy if wanted (KI-69); real hall tickets (printable, seating, subjects), hostel allocation and degree audit if the institution needs more than the request workflow (KI-70).
