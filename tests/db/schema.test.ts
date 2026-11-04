@@ -187,3 +187,12 @@ describe('finance integrity triggers', () => {
     await fails("insert into fee_refund (refund_request_id, refund_transaction_number, refund_date, refund_amount, refund_mode_id, refund_status) values (1,'RF2',now(),150,1,'SUCCESS')", 'Refund exceeds approved amount');
   });
 });
+
+describe('function privileges', () => {
+  it('no trigger function in the public schema is executable by anon or authenticated (triggers still fire)', async () => {
+    const r = await db.query<{ n: string }>(
+      "select p.proname n from pg_proc p join pg_namespace s on s.oid = p.pronamespace where s.nspname = 'public' and p.prorettype = 'pg_catalog.trigger'::regtype and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))",
+    );
+    expect(r.rows.map((x) => x.n)).toEqual([]);
+  });
+});
